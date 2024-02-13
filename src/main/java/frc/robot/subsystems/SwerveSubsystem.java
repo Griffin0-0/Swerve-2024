@@ -122,47 +122,55 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // SmartDashboard.putNumber("/timer", Timer.getMatchTime());
-        
-        // Alliance test = Alliance.Blue;
+        SmartDashboard.putNumber("heading", getHeading());
 
-        // if (DriverStation.getAlliance() == Alliance.Red) {
+        // UNCOMMENT THIS CODE FOR COMPETITION: v
+        // if (DriverStation.getAlliance().get() == Alliance.Red) {
         //     SmartDashboard.putBoolean("Alliance:", false);
         //     isAllianceBlue = false;
-        // } else if (DriverStation.getAlliance() == Alliance.Blue) {
+        // } else if (DriverStation.getAlliance().get() == Alliance.Blue) {
         //     SmartDashboard.putBoolean("Alliance:", true);
         //     isAllianceBlue = true;
         // }
-        // if (test == Alliance.Red) {
-        //     SmartDashboard.putBoolean("Alliance:", false);
-        //     isAllianceBlue = false;
-        // } else if (test == Alliance.Blue) {
-        //     SmartDashboard.putBoolean("Alliance:", true);
-        //     isAllianceBlue = true;
-        // }
+        // ^
 
-        // limeLightPose = limeLight.runLimeLight(isAllianceBlue);
-        // SmartDashboard.putString("Limelight Pose", limeLightPose.toString());
+        // COMMENT THIS CODE FOR COMPETITION: v
+        Alliance test = Alliance.Blue;
+        if (test == Alliance.Red) {
+            SmartDashboard.putBoolean("Alliance:", false);
+            isAllianceBlue = false;
+        } else if (test == Alliance.Blue) {
+            SmartDashboard.putBoolean("Alliance:", true);
+            isAllianceBlue = true;
+        }
+        // ^
 
-        // new Rotation2d();
-        // if (limeLightPose != new Pose2d(0, 0, Rotation2d.fromDegrees(0))) {
-        //     resetOdometry(limeLightPose);
-        // }
+        limeLightPose = limeLight.runLimeLight(isAllianceBlue);
 
-        // pose = kOdometry.update(getRotation2d(),
-        //     new SwerveModulePosition[] {
-        //         backLeft.getPosition(),
-        //         backRight.getPosition(),
-        //         frontLeft.getPosition(),
-        //         frontRight.getPosition()
-        //     });
-        // SmartDashboard.putNumber("X", pose.getX());
-        // SmartDashboard.putNumber("Y", pose.getY());
-        // SmartDashboard.putString("Pose in Meters?", getPose().toString());
-        // SmartDashboard.putString("Pose", getPose().toString());
-        // SmartDashboard.putNumber("Odometry Rotation", pose.getRotation().getDegrees());
-        // limeLight.runLimeLight();
+        if (limeLight.seesTargets()) {
+            gyro.reset();
+            gyro.setAngleAdjustment(-limeLightPose.getRotation().getDegrees());
+            resetOdometry(limeLightPose);
+        }
+
+        SmartDashboard.putString("Limelight Pose", limeLightPose.toString());
+        SmartDashboard.putBoolean("Limelight Sees Targets", limeLight.seesTargets());
+
+        pose = kOdometry.update(getRotation2d(),
+            new SwerveModulePosition[] {
+                backLeft.getPosition(),
+                backRight.getPosition(),
+                frontLeft.getPosition(),
+                frontRight.getPosition()
+            });
+
+        SmartDashboard.putNumber("X", pose.getX());
+        SmartDashboard.putNumber("Y", pose.getY());
+        SmartDashboard.putString("Pose in Meters?", getPose().toString());
+        SmartDashboard.putString("Pose", getPose().toString());
+        SmartDashboard.putNumber("Odometry Rotation", pose.getRotation().getDegrees());
     }
+    
     public void coordinateFunction() {
         resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
         backLeft.resetEncoders();

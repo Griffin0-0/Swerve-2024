@@ -110,7 +110,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void toggleIntake() {
         if (intakePos == "up") {
             intakePos = "down";
-            runIntake(IntakeConstants.kIntakeMotorSpeed);
+            runIntake(-IntakeConstants.kIntakeMotorSpeed);
         } 
 
         else if (intakePos == "down") {

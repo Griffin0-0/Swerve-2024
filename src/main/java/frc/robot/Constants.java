@@ -57,10 +57,15 @@ public class Constants {
         public static final boolean kGyroReversed = true;
 
         // Turning encoder offsets
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = -2.6;
-        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 3.14159;
-        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 0.436332;
-        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 1.53589;
+        // public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = -2.6;
+        // public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 3.14159;
+        // public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 0.436332;
+        // public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 1.53589;
+
+        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = -148 * Math.PI / 180;
+        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 180 * Math.PI / 180;
+        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 25 * Math.PI / 180;
+        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 88 * Math.PI / 180;
 
         // Robot speeds
         public static final double kPhysicalMaxSpeedMetersPerSecond = 3.6; // PHYSICAL max speed of the modules (safety cap) 3.6
@@ -139,7 +144,7 @@ public class Constants {
     public static final class AutoConstants {
 
         //Speed
-        public static final double kAutoMaxSpeedMetersPerSecond = 2; // Max speed set for auto
+        public static final double kAutoMaxSpeedMetersPerSecond = 0.75; // Max speed set for auto
 
         //Accel
         public static final double kAutoMaxAccelerationUnitsPerSecond = 6;
@@ -152,12 +157,9 @@ public class Constants {
         public static final double kAutoMinSpeed = 0.02;
         public static final double kAutoMinTurnSpeedRadians = 0.05;
 
-        public static final int kAutoStoppedCheckTicks = 20; // Ticks it waits to make sure swerve has come to a complete stop before moving to next point
-        public static final int kAutoStartCheckTicks = 7; // Ticks it waits after beginning to move to another point before starting to count the stop check ticks
+        public static final int kAutoStoppedCheckTicks = 200; // Ticks it waits to make sure swerve has come to a complete stop before moving to next point 20
+        public static final int kAutoStartCheckTicks = 70; // Ticks it waits after beginning to move to another point before starting to count the stop check ticks 7
+    
+        public static final int kAutoAmpStoppedCheckTicks = 200; // Ticks it waits to make sure swerve has come to a complete stop before depositing note to amp 20
     }
-
-    public static final class AprilTags {
-        public static final Pose2d kID1 = new Pose2d(1, 0, Rotation2d.fromDegrees(180));
-    }
-
 }
