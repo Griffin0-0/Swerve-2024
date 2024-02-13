@@ -159,6 +159,7 @@ public class Constants {
 
         public static final int kAutoStoppedCheckTicks = 200; // Ticks it waits to make sure swerve has come to a complete stop before moving to next point 20
         public static final int kAutoStartCheckTicks = 70; // Ticks it waits after beginning to move to another point before starting to count the stop check ticks 7
+    
+        public static final int kAutoAmpStoppedCheckTicks = 200; // Ticks it waits to make sure swerve has come to a complete stop before depositing note to amp 20
     }
-
 }

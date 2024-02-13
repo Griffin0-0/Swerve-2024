@@ -112,7 +112,6 @@ public class RobotContainer {
     };
 
     return new SequentialCommandGroup(
-          new InstantCommand(() -> SmartDashboard.getBoolean("Done Auto", false)),
           new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
           new MoveToPosCmd(swerveSubsystem, path1, true, false), //90 * Math.PI / 180
           // new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
