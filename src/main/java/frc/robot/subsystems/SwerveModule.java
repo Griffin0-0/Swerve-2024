@@ -15,6 +15,7 @@ import frc.robot.Constants.ModuleConstants;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 
+
 public class SwerveModule extends SubsystemBase{
 
     private final CANSparkMax driveMotor;
@@ -34,7 +35,7 @@ public class SwerveModule extends SubsystemBase{
 
         this.absoluteEncoderOffsetRad = absoluteEncoderOffset;
         this.absoluteEncoderReversed = absoluteEncoderReversed;
-        absoluteEncoder = new CANcoder(absoluteEncoderId);
+        absoluteEncoder = new CANcoder(absoluteEncoderId, "rio");
         
         System.out.println("Creating Drive Controller, ID " + driveMotorId);
         driveMotor = new CANSparkMax(driveMotorId, MotorType.kBrushless);
@@ -75,7 +76,7 @@ public class SwerveModule extends SubsystemBase{
     }
 
     public double getAbsoluteEncoderRad() {
-        double angle = absoluteEncoder.getPosition().getValue() / 360; // CHANGED: Gets position in (presumably) degrees, then converts to percentage
+        double angle = absoluteEncoder.getPosition().getValue(); // CHANGED: Gets position in (presumably) degrees, then converts to percentage
         angle *= 2.0 * Math.PI;
         angle -= absoluteEncoderOffsetRad;
         return angle * (absoluteEncoderReversed ? -1.0 : 1.0);

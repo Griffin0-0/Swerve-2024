@@ -35,5 +35,13 @@ public class LimeLight {
             return botposeRed;
         }
     }
+
+    public boolean seesTargets() {
+        final String json = table.getEntry("json").getString(null);
+
+        try {node = new ObjectMapper().readTree(json);} catch (JsonProcessingException e) {e.printStackTrace();};
+
+        return !node.get("Results").get("Fiducial").isEmpty();
+    }
     
 }

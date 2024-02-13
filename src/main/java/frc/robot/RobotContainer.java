@@ -85,20 +85,20 @@ public class RobotContainer {
     new JoystickButton(driverJoystick, OIConstants.kDriverCoordinateButtonId).onTrue(swerveSubsystem.coordinate());
 
 
-    // new JoystickButton(driverJoystick, OIConstants.kDriverSpinOutButtonId).whileTrue(shooterSubsystem.sendSpinOut());
-    // new JoystickButton(driverJoystick, OIConstants.kDriverSpinInButtonId).whileTrue(shooterSubsystem.sendSpinIn());
+    new JoystickButton(driverJoystick, OIConstants.kDriverSpinOutButtonId).whileTrue(shooterSubsystem.sendSpinOut());
+    new JoystickButton(driverJoystick, OIConstants.kDriverSpinInButtonId).whileTrue(shooterSubsystem.sendSpinIn());
     new JoystickButton(driverJoystick, OIConstants.kDriverStopButtonId).onTrue(shooterSubsystem.sendStop());
     // new JoystickButton(driverJoystick, OIConstants.kDriverAmpOutButtonId).whileTrue(shooterSubsystem.sendAMPOut());
 
     // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeOutButtonId).whileTrue(intakeSubsystem.sendSpinOut());
-    // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeInButtonId).whileTrue(intakeSubsystem.sendSpinIn());
+    new JoystickButton(driverJoystick, OIConstants.kDriverIntakeInButtonId).whileTrue(intakeSubsystem.sendToggleIntake());
 
     // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeUpButtonId).whileTrue(intakeSubsystem.sendIntakeUp());
     // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeDownButtonId).whileTrue(intakeSubsystem.sendIntakeDown());
     // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeInButtonId).onTrue(intakeSubsystem.sendToggleIntake());
 
-    new JoystickButton(driverJoystick, OIConstants.kDriverSpinOutButtonId).whileTrue(climberSubsystem.sendSolenoidForward());
-    new JoystickButton(driverJoystick, OIConstants.kDriverSpinInButtonId).whileTrue(climberSubsystem.sendSolenoidReverse());
+    // new JoystickButton(driverJoystick, OIConstants.kDriverSpinOutButtonId).whileTrue(climberSubsystem.sendSolenoidForward());
+    // new JoystickButton(driverJoystick, OIConstants.kDriverSpinInButtonId).whileTrue(climberSubsystem.sendSolenoidReverse());
 
     new JoystickButton(driverJoystick, OIConstants.kDriverIntakeUpButtonId).whileTrue(shooterSubsystem.sendFlapUp());
     new JoystickButton(driverJoystick, OIConstants.kDriverIntakeDownButtonId).whileTrue(shooterSubsystem.sendFlapDown());
@@ -114,8 +114,8 @@ public class RobotContainer {
     return new SequentialCommandGroup(
           new InstantCommand(() -> SmartDashboard.getBoolean("Done Auto", false)),
           new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
-          // new MoveToPosCmd(swerveSubsystem, path1, true, false), //90 * Math.PI / 180
-          new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+          new MoveToPosCmd(swerveSubsystem, path1, true, false), //90 * Math.PI / 180
+          // new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
           new InstantCommand(() -> SmartDashboard.getBoolean("Done Auto", true)),
           new InstantCommand(() -> swerveSubsystem.stopModules()));
   }
