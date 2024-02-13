@@ -19,7 +19,7 @@ public class LimeLight {
     Pose2d botposeRed = new Pose2d(0,0,new Rotation2d());
     Pose2d botposeBlue = new Pose2d(0,0,new Rotation2d());
 
-    public Pose2d runLimeLight(boolean isAllianceBlue) { 
+    public Pose2d runLimeLight(boolean isAllianceBlue) {
         final String json = table.getEntry("json").getString(null);
 
         try {node = new ObjectMapper().readTree(json);} catch (JsonProcessingException e) {e.printStackTrace();};

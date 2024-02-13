@@ -144,7 +144,7 @@ public class Constants {
     public static final class AutoConstants {
 
         //Speed
-        public static final double kAutoMaxSpeedMetersPerSecond = 2; // Max speed set for auto
+        public static final double kAutoMaxSpeedMetersPerSecond = 0.75; // Max speed set for auto
 
         //Accel
         public static final double kAutoMaxAccelerationUnitsPerSecond = 6;

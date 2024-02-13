@@ -102,7 +102,7 @@ public class MoveToPosCmd extends Command {
     }
 
     public boolean isFinished() {
-        if (currentPosInList >= targetPath.length) {
+        if (currentPosInList >= targetPath.length && !repeatPath) {
             return true;
         }
         return false;
