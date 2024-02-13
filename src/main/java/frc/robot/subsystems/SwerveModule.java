@@ -75,7 +75,7 @@ public class SwerveModule extends SubsystemBase{
     }
 
     public double getAbsoluteEncoderRad() {
-        double angle = absoluteEncoder.getPosition().getValue() / 360; // CHANGED: Gets position in (presumably) degrees, then converts to percentage
+        double angle = absoluteEncoder.getPosition().getValue(); // CHANGED: Gets position in (presumably) degrees, then converts to percentage
         angle *= 2.0 * Math.PI;
         angle -= absoluteEncoderOffsetRad;
         return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
