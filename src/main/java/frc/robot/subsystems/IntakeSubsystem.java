@@ -21,9 +21,9 @@ import frc.robot.Constants.ModuleConstants;
 public class IntakeSubsystem extends SubsystemBase {
 
     private final CANSparkMax intakeMotor;
-    private final CANSparkMax articulateIntakeMotor;
+    // private final CANSparkMax articulateIntakeMotor;
 
-    private final RelativeEncoder articulateEncoder;
+    // private final RelativeEncoder articulateEncoder;
     private final DigitalInput limitSwitch_1;
     private final DigitalInput limitSwitch_2;
     private final DigitalInput limitSwitch_3;
@@ -50,11 +50,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public IntakeSubsystem() {
         intakeMotor = new CANSparkMax(IntakeConstants.kIntakeMotorId, MotorType.kBrushless);
-        articulateIntakeMotor = new CANSparkMax(IntakeConstants.kIntakeArticulateMotorId, MotorType.kBrushless);
+        // articulateIntakeMotor = new CANSparkMax(IntakeConstants.kIntakeArticulateMotorId, MotorType.kBrushless);
 
         articulateLimiter = new SlewRateLimiter(IntakeConstants.kIntakeArticulateAccelerationUnitsPerSecond);
-        articulateEncoder = articulateIntakeMotor.getEncoder();
-        articulateEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderRot2Rad);
+        // articulateEncoder = articulateIntakeMotor.getEncoder();
+        // articulateEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderRot2Rad);
 
         articulatePIDController = new PIDController(0.5 , 0, 0);
         articulatePIDController.enableContinuousInput(-Math.PI, Math.PI);
@@ -80,9 +80,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
     
 
-    public double getArticulatePosition() {
-        return articulateEncoder.getPosition();
-    }
+    // public double getArticulatePosition() {
+    //     return articulateEncoder.getPosition();
+    // }
 
     public void runIntake(double speed) {
         intakeMotor.set(speed);
@@ -93,7 +93,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void periodic() {
 
 
-        articulateIntakeEncoder.setDouble(getArticulatePosition());
+        // articulateIntakeEncoder.setDouble(getArticulatePosition());
         articulateDesiredPosition.setDouble(desiredPosition);
         articulateIntakePos.setString(intakePos);
 
@@ -121,10 +121,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void stop() {
         intakeMotor.set(0);
-        articulateIntakeMotor.set(0);
+        // articulateIntakeMotor.set(0);
     }
 
-    public void stopArticulate() {
-        articulateIntakeMotor.set(0);
-    }
+    // public void stopArticulate() {
+    //     articulateIntakeMotor.set(0);
+    // }
 }

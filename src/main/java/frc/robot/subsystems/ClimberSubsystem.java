@@ -36,7 +36,6 @@ public class ClimberSubsystem extends SubsystemBase {
 
         compressor = new Compressor(1, PneumaticsModuleType.REVPH);
         compressor.enableAnalog(115, 120);
-        // compressor.enableDigital();
         System.out.println("Init");
         }
 
