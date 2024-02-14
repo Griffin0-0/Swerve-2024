@@ -66,6 +66,11 @@ public class SwerveSubsystem extends SubsystemBase {
     public Pose2d pose;
     public Pose2d limeLightPose;
     public boolean isAllianceBlue;
+    public int tick = 0;
+    public double[] headingBuffer = new double[10];
+    boolean goodBuffer = false;
+    boolean fieldOriented = false;
+    
 
     public SwerveModule[] swerveModules = {frontLeft, frontRight, backLeft, backRight};
 
@@ -122,6 +127,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        tick++;
         SmartDashboard.putNumber("heading", getHeading());
 
         // UNCOMMENT THIS CODE FOR COMPETITION: v
@@ -153,10 +159,33 @@ public class SwerveSubsystem extends SubsystemBase {
 
         if (limeLight.seesTargets()) {
             if (limeLight.seesMultipleTargets()) {
-                gyro.reset();
-                gyro.setAngleAdjustment(-limeLightPose.getRotation().getDegrees());
+                int tickConstrained = tick % 10;
+
+                if (tickConstrained == 0) {
+                    goodBuffer = true;
+                }
+
+                headingBuffer[tickConstrained] = limeLightPose.getRotation().getDegrees();
+
+                if (tickConstrained == 9 && goodBuffer) {
+                    double sum = 0;
+
+                    for (int i = 0; i < 10; i++) {
+                        sum += headingBuffer[i];
+                    }
+
+                    new Rotation2d();
+                    Rotation2d averagedHeading = Rotation2d.fromDegrees(sum / 10);
+
+                    gyro.reset();
+                    gyro.setAngleAdjustment(-averagedHeading.getDegrees());
+
+                    fieldOriented = true;
+                }
+            } else {
+                goodBuffer = false;
             }
-            resetOdometry(limeLightPose);
+            resetOdometry(new Pose2d(limeLightPose.getTranslation(), getRotation2d()));
         }
 
         SmartDashboard.putString("Limelight Pose", limeLightPose.toString());
