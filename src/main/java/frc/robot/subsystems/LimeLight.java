@@ -43,5 +43,13 @@ public class LimeLight {
 
         return !node.get("Results").get("Fiducial").isEmpty();
     }
+
+    public boolean seesMultipleTargets() {
+        final String json = table.getEntry("json").getString(null);
+
+        try {node = new ObjectMapper().readTree(json);} catch (JsonProcessingException e) {e.printStackTrace();};
+
+        return node.get("Results").get("Fiducial").size() > 1;
+    }
     
 }

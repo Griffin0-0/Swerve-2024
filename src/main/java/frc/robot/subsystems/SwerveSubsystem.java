@@ -125,6 +125,7 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("heading", getHeading());
 
         // UNCOMMENT THIS CODE FOR COMPETITION: v
+
         // if (DriverStation.getAlliance().get() == Alliance.Red) {
         //     SmartDashboard.putBoolean("Alliance:", false);
         //     isAllianceBlue = false;
@@ -132,9 +133,11 @@ public class SwerveSubsystem extends SubsystemBase {
         //     SmartDashboard.putBoolean("Alliance:", true);
         //     isAllianceBlue = true;
         // }
+
         // ^
 
         // COMMENT THIS CODE FOR COMPETITION: v
+
         Alliance test = Alliance.Blue;
         if (test == Alliance.Red) {
             SmartDashboard.putBoolean("Alliance:", false);
@@ -143,13 +146,16 @@ public class SwerveSubsystem extends SubsystemBase {
             SmartDashboard.putBoolean("Alliance:", true);
             isAllianceBlue = true;
         }
+
         // ^
 
         limeLightPose = limeLight.runLimeLight(isAllianceBlue);
 
         if (limeLight.seesTargets()) {
-            gyro.reset();
-            gyro.setAngleAdjustment(-limeLightPose.getRotation().getDegrees());
+            if (limeLight.seesMultipleTargets()) {
+                gyro.reset();
+                gyro.setAngleAdjustment(-limeLightPose.getRotation().getDegrees());
+            }
             resetOdometry(limeLightPose);
         }
 
@@ -166,7 +172,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("X", pose.getX());
         SmartDashboard.putNumber("Y", pose.getY());
-        SmartDashboard.putString("Pose in Meters?", getPose().toString());
         SmartDashboard.putString("Pose", getPose().toString());
         SmartDashboard.putNumber("Odometry Rotation", pose.getRotation().getDegrees());
     }
