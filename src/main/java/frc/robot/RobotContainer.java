@@ -92,11 +92,8 @@ public class RobotContainer {
     new JoystickButton(driverJoystick, OIConstants.kDriverStopButtonId).onTrue(shooterSubsystem.sendStop());
     // new JoystickButton(driverJoystick, OIConstants.kDriverAmpOutButtonId).whileTrue(shooterSubsystem.sendAMPOut());
 
-    // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeOutButtonId).whileTrue(intakeSubsystem.sendSpinOut());
-    new JoystickButton(driverJoystick, OIConstants.kDriverIntakeInButtonId).whileTrue(intakeSubsystem.sendToggleIntake());
-
-    // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeUpButtonId).whileTrue(intakeArticulate.sendToggleArticulate(5.0));
-    // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeDownButtonId).whileTrue(intakeArticulate.sendToggleArticulate(0.0));
+    new JoystickButton(driverJoystick, OIConstants.kDriverIntakeUpButtonId).whileTrue(intakeArticulate.sendToggleArticulate(0.1));
+    new JoystickButton(driverJoystick, OIConstants.kDriverIntakeDownButtonId).whileTrue(intakeArticulate.sendToggleArticulate(0.0));
     new JoystickButton(driverJoystick, OIConstants.kDriverIntakeInButtonId).onTrue(intakeSubsystem.sendToggleIntake());
 
     // new JoystickButton(driverJoystick, OIConstants.kDriverSpinOutButtonId).whileTrue(climberSubsystem.sendSolenoidForward());
