@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,8 +20,12 @@ public class ShooterSubsystem extends SubsystemBase {
     private final CANSparkMax shooterMotor_1;
     private final CANSparkMax shooterMotor_2;
 
+    private final SlewRateLimiter shooterLimiter;
+
     private final Servo servo_1;
     private final Servo servo_2;
+
+    public double setting = 0;
     
     // String shooterState = "idle";
 
@@ -56,6 +61,8 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterMotor_1 = new CANSparkMax(ShooterConstants.kShooterSpinMotorId_1, MotorType.kBrushless);
         shooterMotor_2 = new CANSparkMax(ShooterConstants.kShooterSpinMotorId_2, MotorType.kBrushless);
 
+        shooterLimiter = new SlewRateLimiter(1);
+
         servo_1 = new Servo(ShooterConstants.kShooterFlapServoId_1);
         servo_2 = new Servo(ShooterConstants.kShooterFlapServoId_2);
         // intakeMotor = new CANSparkMax(IntakeConstants.kIntakeMotorId, MotorType.kBrushless);
@@ -64,19 +71,24 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void spinOut() {
-        shooterMotor_1.set(ShooterConstants.kShooterFlywheelSpeed);
-        shooterMotor_2.set(-ShooterConstants.kShooterFlywheelSpeed);
-        // intakeMotor.set(IntakeConstants.kIntakeMotorSpeed);
+        setting = 1;
     }
 
     public void spinIn() {
-        shooterMotor_1.set(-ShooterConstants.kShooterIntakeSpeed);
-        shooterMotor_2.set(ShooterConstants.kShooterIntakeSpeed);
+
+    }
+    @Override
+    public void periodic() {
+        double speed = shooterLimiter.calculate(setting);
+        SmartDashboard.putNumber("speed", speed);
+
+        shooterMotor_1.set(speed);
+        shooterMotor_2.set(-speed);
     }
 
     public void flapMove(double pos) {
         servo_1.setAngle(pos);
-        servo_2.setAngle(pos - 180);
+        servo_2.setAngle(180 - pos);
     }
 
     // public void shoot() {
@@ -91,13 +103,8 @@ public class ShooterSubsystem extends SubsystemBase {
     public void stop() {
         shooterMotor_1.set(0);
         shooterMotor_2.set(0);
+        setting = 0;
         // intakeMotor.set(0);
         // shooterMotor.set(0);
-    }
-
-    @Override
-    public void periodic() {
-        SmartDashboard.putNumber("Servo Angle", servo_1.getAngle());
-        SmartDashboard.putNumber("Servo Angle", servo_2.getAngle());
     }
 }

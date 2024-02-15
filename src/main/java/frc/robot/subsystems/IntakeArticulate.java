@@ -32,14 +32,13 @@ public class IntakeArticulate extends TrapezoidProfileSubsystem {
 
     public IntakeArticulate() {
         super(
-            new TrapezoidProfile.Constraints(0.3, 0.1), 0
+            new TrapezoidProfile.Constraints(3, 1), 0
         );
         articulateMotor = new CANSparkMax(IntakeConstants.kIntakeArticulateMotorId, MotorType.kBrushless);
         articulatePID = articulateMotor.getPIDController();
 
         trapezoid = Shuffleboard.getTab("Driver")
             .add("Trapezoid", 0.0)
-            .withWidget(BuiltInWidgets.kGraph) // specify the widget here
             .getEntry();
       }
 
@@ -47,9 +46,9 @@ public class IntakeArticulate extends TrapezoidProfileSubsystem {
     public void useState(TrapezoidProfile.State setpoint) {
         // Calculate the feedforward from the sepoint
         double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
-        // Add the feedforward to the PID output to get the motor output
+        // Add the feedforward to the PID output to get the motor output 
 
-        trapezoid.setDouble(setpoint.velocity);
+        trapezoid.setDouble(setpoint.position);
         articulatePID.setReference(setpoint.velocity, ControlType.kVelocity, 0, feedforward);
     }
 }

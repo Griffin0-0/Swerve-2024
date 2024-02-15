@@ -36,7 +36,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
         // compressor = new Compressor(1, PneumaticsModuleType.REVPH);
         // compressor.enableAnalog(115, 120);
-        // System.out.println("Init");
+        System.out.println("Init");
         }
 
     public void solenoidForward() {
