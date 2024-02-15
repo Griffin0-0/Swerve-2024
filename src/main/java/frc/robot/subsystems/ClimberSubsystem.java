@@ -18,7 +18,7 @@ public class ClimberSubsystem extends SubsystemBase {
     private final DoubleSolenoid solenoid_1;
     private final DoubleSolenoid solenoid_2;
 
-    private final Compressor compressor;
+    // private final Compressor compressor;
 
 
     public Command sendSolenoidForward() {
@@ -34,9 +34,9 @@ public class ClimberSubsystem extends SubsystemBase {
         solenoid_1 = new DoubleSolenoid(PneumaticsModuleType.REVPH, 6, 7);
         solenoid_2 = new DoubleSolenoid(PneumaticsModuleType.REVPH, 9, 8);
 
-        compressor = new Compressor(1, PneumaticsModuleType.REVPH);
-        compressor.enableAnalog(115, 120);
-        System.out.println("Init");
+        // compressor = new Compressor(1, PneumaticsModuleType.REVPH);
+        // compressor.enableAnalog(115, 120);
+        // System.out.println("Init");
         }
 
     public void solenoidForward() {

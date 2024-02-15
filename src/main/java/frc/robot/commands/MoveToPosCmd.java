@@ -5,6 +5,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -40,39 +41,53 @@ public class MoveToPosCmd extends Command {
         tick++;
         SmartDashboard.putNumber("Auto Ticks", tick);
 
+        // If the current position in the list is less than the length of the targetPath, then move swerve to targetPose
         if (currentPosInList < targetPath.length) {
+
             targetPose = targetPath[currentPosInList];
+
             if (moveSwerve()) {
+
+                // If swerve reached targetPose, go to next pos in list
                 currentPosInList++;
                 startTick = -AutoConstants.kAutoStartCheckTicks;
                 SmartDashboard.putNumber("CurrentPos", currentPosInList);
+
             }
+
         } else if (repeatPath) {
+            // If repeatPath is true, then reset the current position in the list to 0
             currentPosInList = 0;
         }
     }
 
-    // Moves swerve to whatever the targetPose is. Returns true when it reaches the position
+    // Moves swerve to targetPose. Returns true when it reaches the position
     public boolean moveSwerve() {
         startTick++;
         SmartDashboard.putNumber("startTick", startTick);
+
+        // Calculate the error between current position and targetPos
         double xError = targetPose.getX() - swerveSubsystem.getPose().getX();
         double yError = targetPose.getY() - swerveSubsystem.getPose().getY();
-        double turnError = (targetPose.getRotation().minus(swerveSubsystem.getRotation2d())).getRadians() * 40;
+        double turnError = (targetPose.getRotation().minus(swerveSubsystem.getRotation2d())).getRadians();
+        
+        SmartDashboard.putNumber("turnError Degrees", turnError * 180 / Math.PI);
 
+        // Calculate the angle and speed to move swerve to targetPose
         double angle = Math.atan2(yError, xError);
         double speed = (xError * xError + yError * yError) * 15 * (1 / AutoConstants.kAutoMaxSpeedMetersPerSecond) * (1 / AutoConstants.kAutoMaxSpeedMetersPerSecond) * (1 / AutoConstants.kAutoMaxSpeedMetersPerSecond) > AutoConstants.kAutoMaxSpeedMetersPerSecond ? AutoConstants.kAutoMaxSpeedMetersPerSecond : (xError * xError + yError * yError) * 7;
 
+        // Calculate xSpeed, ySpeed, and turnSpeed
         double xSpeed = Math.cos(angle) * speed;
         double ySpeed = Math.sin(angle) * speed;
+        double turnSpeed = (Math.abs(Math.pow(turnError * 60, 1) * 0.005) < AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond) ? Math.abs(Math.pow(turnError * 60, 1)) * Math.signum(turnError) * -0.005 : AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond * Math.signum(turnError);
 
-        double turnSpeed = (Math.abs(turnError * Math.sqrt(Math.abs(turnError)) * -0.005) < AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond) ? turnError * Math.sqrt(Math.abs(turnError)) * -0.005 : AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond * Math.signum(turnError);
-
-
+        // Limit xSpeed, ySpeed, and turnSpeed to max speeds
         xSpeed = Math.abs(xSpeed) > AutoConstants.kAutoMinSpeed ? xSpeed : 0.0;
         ySpeed = Math.abs(ySpeed) > AutoConstants.kAutoMinSpeed ? ySpeed : 0.0;
         turnSpeed = Math.abs(turnSpeed) > AutoConstants.kAutoMinTurnSpeedRadians ? turnSpeed : 0.0;
 
+        // Limit xSpeed, ySpeed, and turnSpeed to max acceleration
         xSpeed = xLimiter.calculate(xSpeed) * AutoConstants.kAutoMaxSpeedMetersPerSecond;
         ySpeed = yLimiter.calculate(ySpeed) * AutoConstants.kAutoMaxSpeedMetersPerSecond;
         turnSpeed = turningLimiter.calculate(turnSpeed) * AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond;
@@ -80,28 +95,39 @@ public class MoveToPosCmd extends Command {
         SmartDashboard.putNumber("xSpeed", xSpeed);
         SmartDashboard.putNumber("ySpeed", ySpeed);
         SmartDashboard.putNumber("turnSpeed", turnSpeed);
-        
+
+        // Set the module states to move swerve to targetPose with field orientation
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveSubsystem.getRotation2d());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
         
-
+        // If swerve speed is bellow a certain threshold, check if it needs to stop or to continue without stopping
         if ((Math.abs(xSpeed) <= (0.4 * Math.sqrt(AutoConstants.kAutoMaxSpeedMetersPerSecond))) && (Math.abs(ySpeed) <= 0.4 * Math.sqrt(AutoConstants.kAutoMaxSpeedMetersPerSecond)) && (Math.abs(turnSpeed) <= 0.2 * Math.sqrt(AutoConstants.kAutoMaxSpeedMetersPerSecond)) && (startTick > 0)) {
+
+            // If swerve is close to targetPose and stopAtEnd is true, then stop swerve
             if (currentPosInList == targetPath.length - 1 && ((Math.abs(xSpeed) <= 0.04) && (Math.abs(ySpeed) <= 0.04) && (Math.abs(turnSpeed) == 0) && (startTick > 0)) && stopAtEnd) {
+                // wait for a StoppedCheckTicks before returning true
                 if (currentStopTick < AutoConstants.kAutoStoppedCheckTicks) {
                     currentStopTick++;
                 } else {
                     return true;
                 }
+            } else {
+                // If swerve is close to targetPose and stopAtEnd is false, then return true
+                return true;
             }
-            return true;
+
         } else {
+            // If swerve is not close to targetPose, then reset currentStopTick
             currentStopTick = 0;
         }
+
+        // If swerve is not close to targetPose, then return false
         return false;
     }
 
     public boolean isFinished() {
+        // If current position in list is greater than or equal to the length of the targetPath and repeatPath is false, then return true and exit command
         if (currentPosInList >= targetPath.length && !repeatPath) {
             return true;
         }
