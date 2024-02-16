@@ -54,12 +54,6 @@ public class RobotContainer {
   private final Joystick rotateStick = new Joystick(OIConstants.kDriverRotateStickPort);
 
   public RobotContainer() {
-    GenericEntry isStickDrive = Shuffleboard.getTab("Driver")
-    .add("Stick Drive", false)
-    .withWidget(BuiltInWidgets.kToggleButton) // specify the widget here
-    .getEntry();
-
-    SmartDashboard.putBoolean("isStickDrive", isStickDrive.getBoolean(false));
 
     swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
       swerveSubsystem,
@@ -90,14 +84,10 @@ public class RobotContainer {
     new JoystickButton(driverJoystick, OIConstants.kDriverSpinOutButtonId).whileTrue(shooterSubsystem.sendSpinOut());
     new JoystickButton(driverJoystick, OIConstants.kDriverSpinInButtonId).whileTrue(shooterSubsystem.sendSpinIn());
     new JoystickButton(driverJoystick, OIConstants.kDriverStopButtonId).onTrue(shooterSubsystem.sendStop());
-    // new JoystickButton(driverJoystick, OIConstants.kDriverAmpOutButtonId).whileTrue(shooterSubsystem.sendAMPOut());
 
     new JoystickButton(driverJoystick, OIConstants.kDriverIntakeUpButtonId).whileTrue(intakeArticulate.sendToggleArticulate(0.1));
     new JoystickButton(driverJoystick, OIConstants.kDriverIntakeDownButtonId).whileTrue(intakeArticulate.sendToggleArticulate(0.0));
-    new JoystickButton(driverJoystick, OIConstants.kDriverIntakeInButtonId).onTrue(intakeSubsystem.sendToggleIntake());
-
-    // new JoystickButton(driverJoystick, OIConstants.kDriverSpinOutButtonId).whileTrue(climberSubsystem.sendSolenoidForward());
-    // new JoystickButton(driverJoystick, OIConstants.kDriverSpinInButtonId).whileTrue(climberSubsystem.sendSolenoidReverse());
+    new JoystickButton(driverJoystick, OIConstants.kDriverIntakeOutButtonId).onTrue(intakeSubsystem.sendIntakeSpinOut());
 
     // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeUpButtonId).whileTrue(shooterSubsystem.sendFlapUp());
     // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeDownButtonId).whileTrue(shooterSubsystem.sendFlapDown());

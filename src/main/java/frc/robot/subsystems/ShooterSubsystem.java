@@ -25,9 +25,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private final Servo servo_1;
     private final Servo servo_2;
 
-    public double setting = 0;
-    
-    // String shooterState = "idle";
+    public double limiterSetting = 0;
+
 
     public Command sendSpinOut() {
         return Commands.startEnd(() -> spinOut(), () -> stop());
@@ -53,9 +52,6 @@ public class ShooterSubsystem extends SubsystemBase {
         return Commands.runOnce(() -> flapMove(30));
     }
 
-    // public Command sendShoot() {
-    //     return Commands.runOnce(() -> shoot());
-    // }
 
     public ShooterSubsystem() {
         shooterMotor_1 = new CANSparkMax(ShooterConstants.kShooterSpinMotorId_1, MotorType.kBrushless);
@@ -65,21 +61,19 @@ public class ShooterSubsystem extends SubsystemBase {
 
         servo_1 = new Servo(ShooterConstants.kShooterFlapServoId_1);
         servo_2 = new Servo(ShooterConstants.kShooterFlapServoId_2);
-        // intakeMotor = new CANSparkMax(IntakeConstants.kIntakeMotorId, MotorType.kBrushless);
-
-        // shooterMotor = new CANSparkMax(IntakeConstants.kIntakeEntryMotorId, MotorType.kBrushless);
     }
 
     public void spinOut() {
-        setting = 1;
+        limiterSetting = ShooterConstants.kShooterFlywheelSpeed;
     }
 
     public void spinIn() {
 
     }
+
     @Override
     public void periodic() {
-        double speed = shooterLimiter.calculate(setting);
+        double speed = shooterLimiter.calculate(limiterSetting);
         SmartDashboard.putNumber("speed", speed);
 
         shooterMotor_1.set(speed);
@@ -91,10 +85,6 @@ public class ShooterSubsystem extends SubsystemBase {
         servo_2.setAngle(180 - pos);
     }
 
-    // public void shoot() {
-    //     // shooterMotor.set(0.5);
-    // }
-
     public void AMPOut() {
         shooterMotor_1.set(ShooterConstants.kShooterAmpSpeed);
         shooterMotor_2.set(-ShooterConstants.kShooterAmpSpeed);
@@ -103,8 +93,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public void stop() {
         shooterMotor_1.set(0);
         shooterMotor_2.set(0);
-        setting = 0;
-        // intakeMotor.set(0);
-        // shooterMotor.set(0);
+        limiterSetting = 0;
     }
 }

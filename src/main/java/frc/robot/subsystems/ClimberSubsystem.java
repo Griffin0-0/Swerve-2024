@@ -18,15 +18,13 @@ public class ClimberSubsystem extends SubsystemBase {
     private final DoubleSolenoid solenoid_1;
     private final DoubleSolenoid solenoid_2;
 
+    public boolean extended = false;
+
     // private final Compressor compressor;
 
 
-    public Command sendSolenoidForward() {
-        return Commands.runOnce(() -> solenoidForward());
-    }
-
-    public Command sendSolenoidReverse() {
-        return Commands.runOnce(() -> solenoidReverse());
+    public Command sendToggleExtention() {
+        return Commands.runOnce(() -> toggleExtention());
     }
 
     public ClimberSubsystem() {
@@ -36,8 +34,18 @@ public class ClimberSubsystem extends SubsystemBase {
 
         // compressor = new Compressor(1, PneumaticsModuleType.REVPH);
         // compressor.enableAnalog(115, 120);
-        System.out.println("Init");
         }
+
+    public void toggleExtention() {
+        if (extended) {
+            solenoidReverse();
+            extended = false;
+
+        } else if (!extended) {
+            solenoidForward();
+            extended = true;
+        }
+    }
 
     public void solenoidForward() {
         solenoid_1.set(kForward);
