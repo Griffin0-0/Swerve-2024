@@ -69,7 +69,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public int tick = 0;
     public double[] headingBuffer = new double[10];
     boolean goodBuffer = false;
-    boolean fieldOriented = false;
+    public boolean fieldOriented = false;
     
 
     public SwerveModule[] swerveModules = {frontLeft, frontRight, backLeft, backRight};
@@ -130,6 +130,7 @@ public class SwerveSubsystem extends SubsystemBase {
         tick++;
         SmartDashboard.putNumber("heading", getHeading());
 
+
         // UNCOMMENT THIS CODE FOR COMPETITION: v
 
         // if (DriverStation.getAlliance().get() == Alliance.Red) {
@@ -145,6 +146,7 @@ public class SwerveSubsystem extends SubsystemBase {
         // COMMENT THIS CODE FOR COMPETITION: v
 
         Alliance test = Alliance.Blue;
+
         if (test == Alliance.Red) {
             SmartDashboard.putBoolean("Alliance:", false);
             isAllianceBlue = false;
@@ -155,9 +157,14 @@ public class SwerveSubsystem extends SubsystemBase {
 
         // ^
 
+
+        //Get pose from limelight
         limeLightPose = limeLight.runLimeLight(isAllianceBlue);
 
+        // If limelight sees targets, then update odometry translation
         if (limeLight.seesTargets()) {
+
+            // If limelight sees multiple targets, then update odometry rotation with an average of the last 10 headings
             if (limeLight.seesMultipleTargets()) {
                 int tickConstrained = tick % 10;
 
@@ -177,7 +184,7 @@ public class SwerveSubsystem extends SubsystemBase {
                     new Rotation2d();
                     Rotation2d averagedHeading = Rotation2d.fromDegrees(sum / 10);
 
-                    gyro.reset();
+                    // Field orient based on Limelight
                     gyro.setAngleAdjustment(-averagedHeading.getDegrees());
 
                     fieldOriented = true;
@@ -185,12 +192,14 @@ public class SwerveSubsystem extends SubsystemBase {
             } else {
                 goodBuffer = false;
             }
+            // Update odometry with limelight pose
             resetOdometry(new Pose2d(limeLightPose.getTranslation(), getRotation2d()));
         }
 
         SmartDashboard.putString("Limelight Pose", limeLightPose.toString());
         SmartDashboard.putBoolean("Limelight Sees Targets", limeLight.seesTargets());
 
+        // Update odometry with swerve module positions
         pose = kOdometry.update(getRotation2d(),
             new SwerveModulePosition[] {
                 backLeft.getPosition(),

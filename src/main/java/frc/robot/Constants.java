@@ -69,7 +69,7 @@ public class Constants {
 
         // Robot speeds
         public static final double kPhysicalMaxSpeedMetersPerSecond = 3.6; // PHYSICAL max speed of the modules (safety cap) 3.6
-        public static final double kTeleDriveMaxSpeedMetersPerSecond = 1; // Max speed set for teleop
+        public static final double kTeleDriveMaxSpeedMetersPerSecond = 3; // Max speed set for teleop
 
         // Robot turning speeds
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
@@ -148,10 +148,10 @@ public class Constants {
 
         //Accel
         public static final double kAutoMaxAccelerationUnitsPerSecond = 6;
-        public static final double kAutoMaxAngularAccelerationUnitsPerSecond = 3;
+        public static final double kAutoMaxAngularAccelerationUnitsPerSecond = 2; // 3
 
         //Turning speed
-        public static final double kAutoMaxAngularSpeedRadiansPerSecond = DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
+        public static final double kAutoMaxAngularSpeedRadiansPerSecond = DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 6; // 4
 
         //Min Speed
         public static final double kAutoMinSpeed = 0.02;
