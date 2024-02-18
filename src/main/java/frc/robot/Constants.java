@@ -134,7 +134,7 @@ public class Constants {
 
     public static final class IntakeConstants {
         public static final int kIntakeMotorId = 51;
-        public static final double kIntakeMotorSpeed = 0.5;
+        public static final double kIntakeMotorSpeed = 0.7;
 
         public static final double kIntakeArticulateSpeed = 0.3;
         public static final int kIntakeArticulateMotorId = 54;
@@ -144,7 +144,7 @@ public class Constants {
     public static final class AutoConstants {
 
         //Speed
-        public static final double kAutoMaxSpeedMetersPerSecond = 0.75; // Max speed set for auto
+        public static final double kAutoMaxSpeedMetersPerSecond = 1.0; // Max speed set for auto
 
         //Accel
         public static final double kAutoMaxAccelerationUnitsPerSecond = 6;
@@ -157,9 +157,11 @@ public class Constants {
         public static final double kAutoMinSpeed = 0.02;
         public static final double kAutoMinTurnSpeedRadians = 0.05;
 
-        public static final int kAutoStoppedCheckTicks = 200; // Ticks it waits to make sure swerve has come to a complete stop before moving to next point 20
-        public static final int kAutoStartCheckTicks = 70; // Ticks it waits after beginning to move to another point before starting to count the stop check ticks 7
+        public static final int kAutoStoppedCheckTicks = 20; // Ticks it waits to make sure swerve has come to a complete stop before moving to next point 20
+        public static final int kAutoStartCheckTicks = 7; // Ticks it waits after beginning to move to another point before starting to count the stop check ticks 7
     
-        public static final int kAutoAmpStoppedCheckTicks = 200; // Ticks it waits to make sure swerve has come to a complete stop before depositing note to amp 20
+        public static final int kAutoAmpStoppedCheckTicks = 30; // Ticks it waits to make sure swerve has come to a complete stop before depositing note to amp 20
+
+        public static final int kAutoSpeakerShotCheckTicks = 40;
     }
 }

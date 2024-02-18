@@ -5,6 +5,8 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
@@ -16,9 +18,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.function.Supplier;
 
-public class FireAtSpeakerCmd extends Command {
+public class IntakeFromGroundCmd extends Command {
     private final SwerveSubsystem swerveSubsystem;
-    private final ShooterSubsystem shooterSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
     private int tick = 0;
@@ -26,13 +27,13 @@ public class FireAtSpeakerCmd extends Command {
     // private int startTick = -AutoConstants.kAutoStartCheckTicks;
     private int currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks; 
     private double shootingDistance = 1.75;
-    private Pose2d speakerPos = new Pose2d(0.1,5.45, Rotation2d.fromDegrees(0));
     private Pose2d targetPose;
+    private Translation2d targetTranslation;
 
-    public FireAtSpeakerCmd(SwerveSubsystem swerveSubsystem, ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem) {
+    public IntakeFromGroundCmd(SwerveSubsystem swerveSubsystem, IntakeSubsystem intakeSubsystem, Translation2d targetTranslation) {
         this.swerveSubsystem = swerveSubsystem;
-        this.shooterSubsystem = shooterSubsystem;
         this.intakeSubsystem = intakeSubsystem;
+        this.targetTranslation = targetTranslation;
         this.xLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAngularAccelerationUnitsPerSecond);
@@ -44,24 +45,19 @@ public class FireAtSpeakerCmd extends Command {
         tick++;
         SmartDashboard.putNumber("Speaker Ticks", tick);
 
-        Pose2d difference = new Pose2d(speakerPos.getX() - swerveSubsystem.getPose().getX(), speakerPos.getY() - swerveSubsystem.getPose().getY(), Rotation2d.fromDegrees(0));
+        Translation2d difference = new Translation2d(targetTranslation.getX() - swerveSubsystem.getPose().getTranslation().getX(), targetTranslation.getY() - swerveSubsystem.getPose().getTranslation().getY());
         new Rotation2d();
         Rotation2d angle = Rotation2d.fromRadians(Math.atan2(difference.getY(), difference.getX()));
-        targetPose = new Pose2d(speakerPos.getX() - Math.cos(angle.getRadians()) * shootingDistance, speakerPos.getY() - Math.sin(angle.getRadians()) * shootingDistance, angle.minus(Rotation2d.fromDegrees(180)));
-        SmartDashboard.putString("Speaker Target Pose", targetPose.toString());
+        
+        targetPose = new Pose2d(targetTranslation, angle);
 
         moveSwerve();
 
-        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 1 && currentShootTick > 0) {
-            shooterSubsystem.spinOut();
-        } else {
-            shooterSubsystem.stop();
+        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 1) {
+            intakeSubsystem.runIntake(IntakeConstants.kIntakeMotorSpeed);
         }
 
-        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 0.2 && currentShootTick > 0) {
-            intakeSubsystem.runIntake(-IntakeConstants.kIntakeMotorSpeed);
-            currentShootTick--;
-        } else {
+        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 0.1) {
             intakeSubsystem.stop();
         }
     }
