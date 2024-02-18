@@ -69,9 +69,7 @@ public class MoveToPosCmd extends Command {
         // Calculate the error between current position and targetPos
         double xError = targetPose.getX() - swerveSubsystem.getPose().getX();
         double yError = targetPose.getY() - swerveSubsystem.getPose().getY();
-        double turnError = (targetPose.getRotation().minus(swerveSubsystem.getRotation2d())).getRadians();
-        
-        SmartDashboard.putNumber("turnError Degrees", turnError * 180 / Math.PI);
+        double turnError = (targetPose.getRotation().minus(swerveSubsystem.getRotation2d())).getRadians() * 40;
 
         // Calculate the angle and speed to move swerve to targetPose
         double angle = Math.atan2(yError, xError);
@@ -80,9 +78,9 @@ public class MoveToPosCmd extends Command {
         // Calculate xSpeed, ySpeed, and turnSpeed
         double xSpeed = Math.cos(angle) * speed;
         double ySpeed = Math.sin(angle) * speed;
-        double turnSpeed = (Math.abs(Math.pow(turnError * 60, 1) * 0.005) < AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond) ? Math.abs(Math.pow(turnError * 60, 1)) * Math.signum(turnError) * -0.005 : AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond * Math.signum(turnError);
+        double turnSpeed = (Math.abs(turnError * Math.sqrt(Math.abs(turnError)) * -0.005) < AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond) ? turnError * Math.sqrt(Math.abs(turnError)) * -0.005 : AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond * Math.signum(turnError);
 
-        // Limit xSpeed, ySpeed, and turnSpeed to max speeds
+        // Limit xSpeed, ySpeed, and turnSpeed to min speeds
         xSpeed = Math.abs(xSpeed) > AutoConstants.kAutoMinSpeed ? xSpeed : 0.0;
         ySpeed = Math.abs(ySpeed) > AutoConstants.kAutoMinSpeed ? ySpeed : 0.0;
         turnSpeed = Math.abs(turnSpeed) > AutoConstants.kAutoMinTurnSpeedRadians ? turnSpeed : 0.0;
@@ -105,7 +103,7 @@ public class MoveToPosCmd extends Command {
         if ((Math.abs(xSpeed) <= (0.4 * Math.sqrt(AutoConstants.kAutoMaxSpeedMetersPerSecond))) && (Math.abs(ySpeed) <= 0.4 * Math.sqrt(AutoConstants.kAutoMaxSpeedMetersPerSecond)) && (Math.abs(turnSpeed) <= 0.2 * Math.sqrt(AutoConstants.kAutoMaxSpeedMetersPerSecond)) && (startTick > 0)) {
 
             // If swerve is close to targetPose and stopAtEnd is true, then stop swerve
-            if (currentPosInList == targetPath.length - 1 && ((Math.abs(xSpeed) <= 0.04) && (Math.abs(ySpeed) <= 0.04) && (Math.abs(turnSpeed) == 0) && (startTick > 0)) && stopAtEnd) {
+            if (currentPosInList == targetPath.length - 1 && ((Math.abs(xSpeed) <= 0.04) && (Math.abs(ySpeed) <= 0.04) && (Math.abs(turnSpeed) < 0.02) && (startTick > 0)) && stopAtEnd) {
                 // wait for a StoppedCheckTicks before returning true
                 if (currentStopTick < AutoConstants.kAutoStoppedCheckTicks) {
                     currentStopTick++;

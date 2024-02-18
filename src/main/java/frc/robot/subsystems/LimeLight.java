@@ -26,7 +26,9 @@ public class LimeLight {
         botposeRed = new Pose2d(node.get("Results").get("botpose_wpired").get(0).asDouble(), node.get("Results").get("botpose_wpired").get(1).asDouble(), Rotation2d.fromDegrees(node.get("Results").get("botpose_wpired").get(5).asDouble()));
         SmartDashboard.putString("Botpose Red", botposeRed.toString());
         botposeBlue = new Pose2d(node.get("Results").get("botpose_wpiblue").get(0).asDouble(), node.get("Results").get("botpose_wpiblue").get(1).asDouble(), Rotation2d.fromDegrees(node.get("Results").get("botpose_wpiblue").get(5).asDouble()));
-        SmartDashboard.putString("Botpose Blue", botposeRed.toString());
+        SmartDashboard.putString("Botpose Blue", botposeBlue.toString());
+
+        SmartDashboard.putNumber("Number of Targets", node.get("Results").get("Fiducial").size());
 
         if (isAllianceBlue) {
             return botposeBlue;

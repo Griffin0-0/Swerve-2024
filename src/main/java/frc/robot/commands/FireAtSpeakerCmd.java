@@ -21,8 +21,10 @@ public class FireAtSpeakerCmd extends Command {
     private final IntakeSubsystem intakeSubsystem;
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
     private int tick = 0;
-    private double shootingDistance = 0;
-    private Pose2d speakerPos = new Pose2d(0,0, Rotation2d.fromDegrees(0));
+    private int currentStopTick;
+    private int startTick = -AutoConstants.kAutoStartCheckTicks;
+    private double shootingDistance = 1.75;
+    private Pose2d speakerPos = new Pose2d(0.1,5.45, Rotation2d.fromDegrees(0));
     private Pose2d targetPose;
 
     public FireAtSpeakerCmd(SwerveSubsystem swerveSubsystem, ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem) {
@@ -43,8 +45,20 @@ public class FireAtSpeakerCmd extends Command {
         Pose2d difference = new Pose2d(speakerPos.getX() - swerveSubsystem.getPose().getX(), speakerPos.getY() - swerveSubsystem.getPose().getY(), Rotation2d.fromDegrees(0));
         new Rotation2d();
         Rotation2d angle = Rotation2d.fromRadians(Math.atan2(difference.getY(), difference.getX()));
-        targetPose = new Pose2d(speakerPos.getX() - Math.cos(angle.getRadians()) * shootingDistance, speakerPos.getY() - Math.sin(angle.getRadians()) * shootingDistance, angle);
-        SmartDashboard.putString("Speaker Target Pose", targetPose.toString()); 
+        targetPose = new Pose2d(speakerPos.getX() - Math.cos(angle.getRadians()) * shootingDistance, speakerPos.getY() - Math.sin(angle.getRadians()) * shootingDistance, angle.minus(Rotation2d.fromDegrees(180)));
+        SmartDashboard.putString("Speaker Target Pose", targetPose.toString());
+
+        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 1.5) {
+            shooterSubsystem.spinOut();
+        } else {
+            shooterSubsystem.stop();
+        }
+
+        if (moveSwerve()) {
+            intakeSubsystem.toggleIntake();
+        } else {
+            intakeSubsystem.sendStop();
+        }
     }
 
     public boolean moveSwerve() {
@@ -76,6 +90,19 @@ public class FireAtSpeakerCmd extends Command {
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveSubsystem.getRotation2d());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
+
+        if ((Math.abs(xSpeed) <= (0.4 * Math.sqrt(AutoConstants.kAutoMaxSpeedMetersPerSecond))) && (Math.abs(ySpeed) <= 0.4 * Math.sqrt(AutoConstants.kAutoMaxSpeedMetersPerSecond)) && (Math.abs(turnSpeed) <= 0.2 * Math.sqrt(AutoConstants.kAutoMaxSpeedMetersPerSecond)) && (startTick > 0)) {
+            if (((Math.abs(xSpeed) <= 0.04) && (Math.abs(ySpeed) <= 0.04) && (Math.abs(turnSpeed) == 0) && (startTick > 0))) {
+                if (currentStopTick < AutoConstants.kAutoStoppedCheckTicks) {
+                    currentStopTick++;
+                } else {
+                    return true;
+                }
+            }
+            return true;
+        } else {
+            currentStopTick = 0;
+        }
 
         return false;
     }
