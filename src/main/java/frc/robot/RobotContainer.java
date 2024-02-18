@@ -104,18 +104,18 @@ public class RobotContainer {
   }
   public Command getAutonomousCommand() {
     Pose2d[] path1 = {
-      new Pose2d(1.9,6.9,new Rotation2d(0 * Math.PI / 180)),
       new Pose2d(1.9,5.9,new Rotation2d(0 * Math.PI / 180)),
-      new Pose2d(1.9,6.9,new Rotation2d(0 * Math.PI / 180)),
-      new Pose2d(1.9,6.9,new Rotation2d(45 * Math.PI / 180)),
+      new Pose2d(1.9,4.9,new Rotation2d(0 * Math.PI / 180)),
+      new Pose2d(1.9,5.9,new Rotation2d(0 * Math.PI / 180)),
       new Pose2d(1.9,5.9,new Rotation2d(45 * Math.PI / 180)),
-      new Pose2d(1.9,5.9,new Rotation2d(0 * Math.PI / 180)),
+      new Pose2d(1.9,4.9,new Rotation2d(45 * Math.PI / 180)),
+      new Pose2d(1.9,4.9,new Rotation2d(0 * Math.PI / 180)),
     };
 
     return new SequentialCommandGroup(
           new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", false)),
-          new MoveToPosCmd(swerveSubsystem, path1, true, true), //90 * Math.PI / 180
-          // new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+          // new MoveToPosCmd(swerveSubsystem, path1, true, true), //90 * Math.PI / 180
+          new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
           new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", true)),
           new InstantCommand(() -> swerveSubsystem.stopModules()));
   }

@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -68,7 +69,9 @@ public class SwerveSubsystem extends SubsystemBase {
     public boolean isAllianceBlue;
     public int tick = 0;
     public double[] headingBuffer = new double[10];
-    boolean goodBuffer = false;
+    public Translation2d[] translationBuffer = new Translation2d[5];
+    boolean goodHeadingBuffer = false;
+    boolean goodTranslationBuffer = false;
     public boolean fieldOriented = false;
     
 
@@ -162,42 +165,67 @@ public class SwerveSubsystem extends SubsystemBase {
         limeLightPose = limeLight.runLimeLight(isAllianceBlue);
 
         // If limelight sees targets, then update odometry translation
-        if (limeLight.seesTargets()) {
+        if (limeLight.seesMultipleTargets()) {
+
+            int tickConstrainedTranslation = tick % 5;
+
+            if (tickConstrainedTranslation == 0) {
+                goodTranslationBuffer = true;
+            }
+
+            translationBuffer[tickConstrainedTranslation] = limeLightPose.getTranslation();
+
+            if (tickConstrainedTranslation == 4 && goodTranslationBuffer) {
+                double sumX = 0;
+                double sumY = 0;
+
+                for (int i = 0; i < 5; i++) {
+                    sumX += translationBuffer[i].getX();
+                    sumY += translationBuffer[i].getY();
+                }
+
+                new Translation2d();
+                Translation2d averagedTranslation = new Translation2d(sumX / 5, sumY / 5);
+
+                // Update odometry with limelight pose
+                resetOdometry(new Pose2d(averagedTranslation, getRotation2d()));
+            }
 
             // If limelight sees multiple targets, then update odometry rotation with an average of the last 10 headings
-            if (limeLight.seesMultipleTargets()) {
-                int tickConstrained = tick % 10;
+            int tickConstrainedHeading = tick % 10;
 
-                if (tickConstrained == 0) {
-                    goodBuffer = true;
-                }
-
-                headingBuffer[tickConstrained] = limeLightPose.getRotation().getDegrees();
-
-                if (tickConstrained == 9 && goodBuffer) {
-                    double sum = 0;
-
-                    for (int i = 0; i < 10; i++) {
-                        sum += headingBuffer[i];
-                    }
-
-                    new Rotation2d();
-                    Rotation2d averagedHeading = Rotation2d.fromDegrees(sum / 10);
-
-                    // Field orient based on Limelight
-                    gyro.setAngleAdjustment(-averagedHeading.getDegrees());
-
-                    fieldOriented = true;
-                }
-            } else {
-                goodBuffer = false;
+            if (tickConstrainedHeading == 0) {
+                goodHeadingBuffer = true;
             }
-            // Update odometry with limelight pose
-            resetOdometry(new Pose2d(limeLightPose.getTranslation(), getRotation2d()));
+
+            headingBuffer[tickConstrainedHeading] = limeLightPose.getRotation().getDegrees();
+
+            if (tickConstrainedHeading == 9 && goodHeadingBuffer) {
+                double sum = 0;
+
+                for (int i = 0; i < 10; i++) {
+                    sum += headingBuffer[i];
+                }
+
+                new Rotation2d();
+                Rotation2d averagedHeading = Rotation2d.fromDegrees(sum / 10);
+
+                gyro.reset();
+
+                // Field orient based on Limelight
+                gyro.setAngleAdjustment(-averagedHeading.getDegrees());
+
+                fieldOriented = true;
+            } else {
+                goodHeadingBuffer = false;
+            }
+        } else {
+            goodTranslationBuffer = false;
         }
 
         SmartDashboard.putString("Limelight Pose", limeLightPose.toString());
         SmartDashboard.putBoolean("Limelight Sees Targets", limeLight.seesTargets());
+        SmartDashboard.putBoolean("Limelight Sees Multiple Targets", limeLight.seesMultipleTargets());
 
         // Update odometry with swerve module positions
         pose = kOdometry.update(getRotation2d(),
