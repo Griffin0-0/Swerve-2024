@@ -45,9 +45,7 @@ public class RobotContainer {
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-  private final IntakeArticulate intakeArticulate = new IntakeArticulate();
-  
+  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();  
 
   private final Joystick driverJoystick = new Joystick(OIConstants.kOperatorControllerPort);
   private final Joystick translateStick = new Joystick(OIConstants.kDriverTranslateStickPort);
@@ -85,9 +83,8 @@ public class RobotContainer {
     new JoystickButton(driverJoystick, OIConstants.kDriverSpinInButtonId).whileTrue(shooterSubsystem.sendSpinIn());
     new JoystickButton(driverJoystick, OIConstants.kDriverStopButtonId).onTrue(shooterSubsystem.sendStop());
 
-    new JoystickButton(driverJoystick, OIConstants.kDriverIntakeUpButtonId).whileTrue(intakeArticulate.sendToggleArticulate(0.1));
-    new JoystickButton(driverJoystick, OIConstants.kDriverIntakeDownButtonId).whileTrue(intakeArticulate.sendToggleArticulate(0.0));
-    new JoystickButton(driverJoystick, OIConstants.kDriverIntakeOutButtonId).onTrue(intakeSubsystem.sendIntakeSpinOut());
+    new JoystickButton(driverJoystick, OIConstants.kDriverIntakeUpButtonId).whileTrue(intakeSubsystem.sendToggleArticulate());
+    // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeOutButtonId).onTrue(intakeSubsystem.sendIntakeSpinOut());
 
     // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeUpButtonId).whileTrue(shooterSubsystem.sendFlapUp());
     // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeDownButtonId).whileTrue(shooterSubsystem.sendFlapDown());
