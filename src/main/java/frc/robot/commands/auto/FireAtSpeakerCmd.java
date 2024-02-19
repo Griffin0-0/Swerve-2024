@@ -40,20 +40,13 @@ public class FireAtSpeakerCmd extends Command {
         this.xLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAngularAccelerationUnitsPerSecond);
+        addRequirements(swerveSubsystem);
 
         if (swerveSubsystem.isAllianceBlue) {
             this.speakerPos = blueSpeakerPos;
         } else {
             this.speakerPos = redSpeakerPos;
         }
-
-        addRequirements(swerveSubsystem);
-    }
-
-    @Override
-    public void execute() {
-        tick++;
-        SmartDashboard.putNumber("Speaker Ticks", tick);
 
         // Calculate the difference between the speaker position and swerve's position
         Translation2d difference = new Translation2d(speakerPos.getX() - swerveSubsystem.getPose().getX(), speakerPos.getY() - swerveSubsystem.getPose().getY());
@@ -63,10 +56,16 @@ public class FireAtSpeakerCmd extends Command {
         Rotation2d angle = Rotation2d.fromRadians(Math.atan2(difference.getY(), difference.getX()));
 
         // Calculate the target position for swerve to move to
-        targetPose = new Pose2d(speakerPos.getX() - Math.cos(angle.getRadians()) * shootingDistance, speakerPos.getY() - Math.sin(angle.getRadians()) * shootingDistance, angle.minus(Rotation2d.fromDegrees(180)));
+        this.targetPose = new Pose2d(speakerPos.getX() - Math.cos(angle.getRadians()) * shootingDistance, speakerPos.getY() - Math.sin(angle.getRadians()) * shootingDistance, angle.minus(Rotation2d.fromDegrees(180)));
 
         // Spin up shooter
-        shooterSubsystem.spinOut();
+        this.shooterSubsystem.spinOut();
+    }
+
+    @Override
+    public void execute() {
+        tick++;
+        SmartDashboard.putNumber("Speaker Ticks", tick);
 
         // If close to targetPos, shoot
         if (moveSwerve()) {

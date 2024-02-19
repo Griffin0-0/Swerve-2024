@@ -39,12 +39,6 @@ public class IntakeFromGroundCmd extends Command {
         this.yLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAngularAccelerationUnitsPerSecond);
         addRequirements(swerveSubsystem);
-    }
-
-    @Override
-    public void execute() {
-        tick++;
-        SmartDashboard.putNumber("Speaker Ticks", tick);
 
         // Calculate the difference between the note position and swerve's position
         Translation2d difference = new Translation2d(targetTranslation.getX() - swerveSubsystem.getPose().getX(), targetTranslation.getY() - swerveSubsystem.getPose().getY());
@@ -55,8 +49,14 @@ public class IntakeFromGroundCmd extends Command {
         SmartDashboard.putNumber("Target Angle", angle.getDegrees());
 
         // Calculate the target position for swerve to move to
-        targetPose = new Pose2d(targetTranslation.getX() - Math.cos(angle.getRadians()) * collectionDistance, targetTranslation.getY() - Math.sin(angle.getRadians()) * collectionDistance, angle);
+        this.targetPose = new Pose2d(targetTranslation.getX() - Math.cos(angle.getRadians()) * collectionDistance, targetTranslation.getY() - Math.sin(angle.getRadians()) * collectionDistance, angle);
+    }
 
+    @Override
+    public void execute() {
+        tick++;
+        SmartDashboard.putNumber("Speaker Ticks", tick);
+        
         if (moveSwerve()) {
             // If swerve reached targetPose, start collecting note
             collectedCheckTick--;
