@@ -101,15 +101,6 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
-
-    // public boolean checkLimits() {
-    //     if (!limitSwitch_1.get() || !limitSwitch_2.get() || !limitSwitch_3.get()) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
     public void stop() {
         intakeMotor.set(0);
         articulateMotor.set(0);

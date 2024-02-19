@@ -44,7 +44,7 @@ public class DepositToAmpCmd extends Command {
         targetPose = ampDepositPos;
         
         if (moveSwerve()) {
-            shooterSubsystem.AMPOut();
+            // shooterSubsystem.AMPOut();
             done = true;
         }
     }
