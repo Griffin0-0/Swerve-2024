@@ -29,7 +29,7 @@ public class IntakeFromGroundCmd extends Command {
     private Pose2d targetPose;
     private Translation2d targetTranslation;
     private Boolean isDone = false;
-    private double collectionDistance = 0.5;
+    private double collectionDistance = 0.75;
 
     public IntakeFromGroundCmd(SwerveSubsystem swerveSubsystem, IntakeSubsystem intakeSubsystem, Translation2d targetTranslation) {
         this.swerveSubsystem = swerveSubsystem;
@@ -39,12 +39,6 @@ public class IntakeFromGroundCmd extends Command {
         this.yLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAngularAccelerationUnitsPerSecond);
         addRequirements(swerveSubsystem);
-    }
-
-    @Override
-    public void execute() {
-        tick++;
-        SmartDashboard.putNumber("Speaker Ticks", tick);
 
         // Calculate the difference between the note position and swerve's position
         Translation2d difference = new Translation2d(targetTranslation.getX() - swerveSubsystem.getPose().getX(), targetTranslation.getY() - swerveSubsystem.getPose().getY());
@@ -52,23 +46,33 @@ public class IntakeFromGroundCmd extends Command {
         new Rotation2d();
         // Calculate the angle between the note and swerve
         Rotation2d angle = Rotation2d.fromRadians(Math.atan2(difference.getY(), difference.getX()));
+        SmartDashboard.putNumber("Target Angle", angle.getDegrees());
 
         // Calculate the target position for swerve to move to
-        targetPose = new Pose2d(targetTranslation.getX() - Math.cos(angle.getRadians()) * collectionDistance, targetTranslation.getY() - Math.sin(angle.getRadians()) * collectionDistance, angle.minus(Rotation2d.fromDegrees(180)));
+        this.targetPose = new Pose2d(targetTranslation.getX() - Math.cos(angle.getRadians()) * collectionDistance, targetTranslation.getY() - Math.sin(angle.getRadians()) * collectionDistance, angle);
+    }
 
+    @Override
+    public void execute() {
+        tick++;
+        SmartDashboard.putNumber("Speaker Ticks", tick);
+        
         if (moveSwerve()) {
             // If swerve reached targetPose, start collecting note
             collectedCheckTick--;
         }
 
         // Once made sure swerve has collected note from ground, exit command
-        if (collectedCheckTick <= 0) {
+        if (collectedCheckTick <= AutoConstants.kAutoGroundIntakeCheckTicks / 4) {
             intakeSubsystem.stopIntake();
             intakeSubsystem.intakeUp();
-            isDone = true;
         } else {
             intakeSubsystem.runIntake(IntakeConstants.kGroundIntakeMotorSpeed);
             intakeSubsystem.intakeDown();
+        }
+
+        if (collectedCheckTick <= 0) {
+            isDone = true;
         }
 
     }
@@ -76,15 +80,18 @@ public class IntakeFromGroundCmd extends Command {
     public boolean moveSwerve() {
         double xError = targetPose.getX() - swerveSubsystem.getPose().getX();
         double yError = targetPose.getY() - swerveSubsystem.getPose().getY();
-        double turnError = (targetPose.getRotation().minus(swerveSubsystem.getRotation2d())).getRadians() * 40;
+        double turnError = (targetPose.getRotation().minus(swerveSubsystem.getRotation2d())).getRadians();
 
+        SmartDashboard.putNumber("TurnError Ground Intake", turnError);
+
+        // Calculate the angle and speed to move swerve to targetPose
         double angle = Math.atan2(yError, xError);
         double speed = (xError * xError + yError * yError) * 15 * (1 / AutoConstants.kAutoMaxSpeedMetersPerSecond) * (1 / AutoConstants.kAutoMaxSpeedMetersPerSecond) * (1 / AutoConstants.kAutoMaxSpeedMetersPerSecond) > AutoConstants.kAutoMaxSpeedMetersPerSecond ? AutoConstants.kAutoMaxSpeedMetersPerSecond : (xError * xError + yError * yError) * 7;
 
+        // Calculate xSpeed, ySpeed, and turnSpeed
         double xSpeed = Math.cos(angle) * speed;
         double ySpeed = Math.sin(angle) * speed;
-
-        double turnSpeed = (Math.abs(turnError * Math.sqrt(Math.abs(turnError)) * 0.005) < AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond) ? turnError * Math.sqrt(Math.abs(turnError)) * -0.005 : AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond * Math.signum(turnError);
+        double turnSpeed = (Math.abs(turnError * 60 * Math.sqrt(Math.abs(turnError * 60)) * -0.005) < AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond) ? turnError * 60 * Math.sqrt(Math.abs(turnError * 60)) * -0.005 : AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond * Math.signum(turnError);
 
 
         xSpeed = Math.abs(xSpeed) > AutoConstants.kAutoMinSpeed ? xSpeed : 0.0;
