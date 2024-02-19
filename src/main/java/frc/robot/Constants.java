@@ -165,8 +165,8 @@ public class Constants {
         public static final double kAutoToleranceMeters = 0.07;
         public static final double kAutoToleranceDegrees = 5.0;
 
-        public static int kAutoDepositCheckTicks = 300;
+        public static  final int kAutoDepositCheckTicks = 300;
 
-        public static int kAutoIntookCheckTicks = 200;
+        public static final int kAutoSourceIntakeCheckTicks = 200;
     }
 }

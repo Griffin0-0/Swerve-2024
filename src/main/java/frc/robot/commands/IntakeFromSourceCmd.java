@@ -20,7 +20,7 @@ public class IntakeFromSourceCmd extends Command {
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
     private int currentStopTick;
     private int startTick = -AutoConstants.kAutoStartCheckTicks;
-    private int intookCheckTick = AutoConstants.kAutoIntookCheckTicks;
+    private int intookCheckTick = AutoConstants.kAutoSourceIntakeCheckTicks;
     private Pose2d targetPose;
     private int tick = 0;
     private Boolean isDone = false;
