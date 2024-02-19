@@ -4,17 +4,9 @@
 
 package frc.robot;
 
-import java.io.Console;
-import java.util.List;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -27,9 +19,11 @@ import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.auto.FireAtSpeakerCmd;
 import frc.robot.commands.auto.IntakeFromGroundCmd;
 import frc.robot.commands.auto.MoveToPosCmd;
+import frc.robot.commands.functions.EmergencyStopMechanismsCmd;
 import frc.robot.commands.functions.ShootAmpCmd;
 import frc.robot.commands.functions.ShootCmd;
 import frc.robot.commands.functions.ToggleArticulateCmd;
+import frc.robot.commands.functions.ToggleClimberCmd;
 import frc.robot.commands.functions.ToggleFlapCmd;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -82,8 +76,8 @@ public class RobotContainer {
   private void configureBindings() {
     new JoystickButton(driverJoystick, OIConstants.kDriverResetGyroButtonId).onTrue(swerveSubsystem.zeroHeading());
     new JoystickButton(driverJoystick, OIConstants.kDriverCoordinateButtonId).onTrue(swerveSubsystem.coordinate());
-    new JoystickButton(driverJoystick, OIConstants.kDriverStopButtonId).whileTrue(shooterSubsystem.sendVibrateFlap());
-    // new JoystickButton(driverJoystick, OIConstants.kDriverStopButtonId).onTrue(shooterSubsystem.sendStop());
+    new JoystickButton(driverJoystick, OIConstants.kDriverStopButtonId).onTrue(new EmergencyStopMechanismsCmd(shooterSubsystem, intakeSubsystem, climberSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverToggleClimberButtonId).onTrue(new ToggleClimberCmd(climberSubsystem));
 
     // TRIGGERS
     new JoystickButton(driverJoystick, OIConstants.kDriverToggleFlapButtonId).whileTrue(new ToggleFlapCmd(shooterSubsystem));

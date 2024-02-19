@@ -3,14 +3,13 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
-//`import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Compressor;
 
 
 public class ClimberSubsystem extends SubsystemBase {
@@ -20,17 +19,14 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public boolean extended = false;
 
-    // private final Compressor compressor;
+    // public final Compressor compressor;
 
-
-    public Command sendToggleExtention() {
-        return Commands.runOnce(() -> toggleExtention());
-    }
 
     public ClimberSubsystem() {
 
         solenoid_1 = new DoubleSolenoid(PneumaticsModuleType.REVPH, 6, 7);
         solenoid_2 = new DoubleSolenoid(PneumaticsModuleType.REVPH, 9, 8);
+        solenoidReverse();
 
         // compressor = new Compressor(1, PneumaticsModuleType.REVPH);
         // compressor.enableAnalog(115, 120);
