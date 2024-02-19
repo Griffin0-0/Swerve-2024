@@ -75,6 +75,9 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
 
+    public void spinIn() {
+        limiterSetting = -ShooterConstants.kShooterIntakeSpeed;
+    }
 
     public void spinOut() {
         limiterSetting = ShooterConstants.kShooterFlywheelSpeed;
@@ -97,6 +100,16 @@ public class ShooterSubsystem extends SubsystemBase {
             flapMove(ShooterConstants.kShooterFlapUpPos);
             flapState = true;
         }
+    }
+
+    public void flapUp() {
+        flapMove(ShooterConstants.kShooterFlapUpPos);
+        flapState = true;
+    }
+
+    public void flapDown() {
+        flapMove(30);
+        flapState = false;
     }
 
     public void stop() {
