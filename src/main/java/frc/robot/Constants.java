@@ -1,11 +1,6 @@
 package frc.robot;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
@@ -163,5 +158,10 @@ public class Constants {
         public static final int kAutoSpeakerShotCheckTicks = 70;
 
         public static final int kAutoGroundIntakeCheckTicks = 300;
+
+        // Tolerances
+        public static final double kAutoToleranceMeters = 0.07;
+
+        public static final double kAutoToleranceDegrees = 5.0;
     }
 }
