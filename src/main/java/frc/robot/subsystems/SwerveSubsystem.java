@@ -110,6 +110,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
         // ^
 
+        this.tick = 0;
+
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
@@ -154,6 +156,7 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         tick++;
+
         SmartDashboard.putNumber("heading", getHeading());
 
         //Get pose from limelight
@@ -195,7 +198,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
             headingBuffer[tickConstrainedHeading] = limeLightPose.getRotation().getDegrees();
 
+            
+
             if (tickConstrainedHeading == 9 && goodHeadingBuffer) {
+
                 double sum = 0;
 
                 for (int i = 0; i < 10; i++) {
@@ -204,6 +210,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
                 new Rotation2d();
                 Rotation2d averagedHeading = Rotation2d.fromDegrees(sum / 10);
+                // averagedHeading.minus(Rotation2d.fromDegrees(180));
 
                 gyro.reset();
 
@@ -211,10 +218,9 @@ public class SwerveSubsystem extends SubsystemBase {
                 gyro.setAngleAdjustment(-averagedHeading.getDegrees());
 
                 fieldOriented = true;
-            } else {
-                goodHeadingBuffer = false;
             }
         } else {
+            goodHeadingBuffer = false;
             goodTranslationBuffer = false;
         }
 

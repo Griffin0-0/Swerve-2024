@@ -69,10 +69,12 @@ public class IntakeSubsystem extends SubsystemBase {
             .add("Trapezoid", 0.0)
             .withWidget(BuiltInWidgets.kGraph)
             .getEntry();
+
+        articulateEncoder.setPosition(0);
     }
 
     public void intakeDown() {
-        articulatePID.setReference(-32, ControlType.kPosition);
+        articulatePID.setReference(-30, ControlType.kPosition); // -33
     }
     public void intakeUp() {
         articulatePID.setReference(-0.5, ControlType.kPosition);
@@ -94,6 +96,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        trapezoid.setDouble(articulateEncoder.getPosition());
         if (intakeOut && (articulateEncoder.getPosition() < -30)) {
             runIntake(IntakeConstants.kIntakeMotorSpeed);
         } else {
