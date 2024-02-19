@@ -27,6 +27,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public double limiterSetting = 0;
     public boolean flapState = false; // up = true, down = false
     public boolean allowedShoot = false;
+    public int tick = 0;
 
 
     public Command sendSpinOut() {
@@ -67,6 +68,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        tick++;
         double speed = shooterLimiter.calculate(limiterSetting);
         shooterMotor_1.set(speed);
         shooterMotor_2.set(-speed);
@@ -76,6 +78,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void spinOut() {
         limiterSetting = ShooterConstants.kShooterFlywheelSpeed;
+    }
+
+    public void ampSpinOut() {
+        limiterSetting = ShooterConstants.kShooterAmpSpeed;
     }
 
     public void flapMove(double pos) {
@@ -97,5 +103,13 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterMotor_1.set(0);
         shooterMotor_2.set(0);
         limiterSetting = 0;
+    }
+
+    public void vibrateFlap() {
+        if (tick % 10 < 5) {
+            flapMove(ShooterConstants.kShooterFlapAmpPos + 5);
+        } else {
+            flapMove(ShooterConstants.kShooterFlapAmpPos - 5);
+        }
     }
 }

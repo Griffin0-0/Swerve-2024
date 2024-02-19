@@ -122,6 +122,8 @@ public class Constants {
         public static final int kShooterFlapServoId_2 = 8;
         public static final double kShooterFlapUpPos = 170;
 
+        public static final double kShooterFlapAmpPos = 100;
+
         public static final double kShooterSpeedCap = 1.0;
     }
 
@@ -163,5 +165,7 @@ public class Constants {
         public static final double kAutoToleranceMeters = 0.07;
 
         public static final double kAutoToleranceDegrees = 5.0;
+
+        public static int kAutoDepositCheckTicks = 300;
     }
 }
