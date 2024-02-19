@@ -6,6 +6,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -26,7 +27,9 @@ public class FireAtSpeakerCmd extends Command {
     // private int startTick = -AutoConstants.kAutoStartCheckTicks;
     private int currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks; 
     private double shootingDistance = 2.0;
-    private Pose2d speakerPos = new Pose2d(0.1,5.45, Rotation2d.fromDegrees(0));
+    private Translation2d blueSpeakerPos = new Translation2d(0.1,5.45);
+    private Translation2d redSpeakerPos = new Translation2d(0,0);
+    private Translation2d speakerPos;
     private Pose2d targetPose;
     private boolean isDone = false;
 
@@ -37,6 +40,13 @@ public class FireAtSpeakerCmd extends Command {
         this.xLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAngularAccelerationUnitsPerSecond);
+
+        if (swerveSubsystem.isAllianceBlue) {
+            this.speakerPos = blueSpeakerPos;
+        } else {
+            this.speakerPos = redSpeakerPos;
+        }
+
         addRequirements(swerveSubsystem);
     }
 
@@ -45,27 +55,28 @@ public class FireAtSpeakerCmd extends Command {
         tick++;
         SmartDashboard.putNumber("Speaker Ticks", tick);
 
-        Pose2d difference = new Pose2d(speakerPos.getX() - swerveSubsystem.getPose().getX(), speakerPos.getY() - swerveSubsystem.getPose().getY(), Rotation2d.fromDegrees(0));
+        // Calculate the difference between the speaker position and swerve's position
+        Translation2d difference = new Translation2d(speakerPos.getX() - swerveSubsystem.getPose().getX(), speakerPos.getY() - swerveSubsystem.getPose().getY());
+
         new Rotation2d();
+        // Calculate the angle between the speaker and swerve
         Rotation2d angle = Rotation2d.fromRadians(Math.atan2(difference.getY(), difference.getX()));
+
+        // Calculate the target position for swerve to move to
         targetPose = new Pose2d(speakerPos.getX() - Math.cos(angle.getRadians()) * shootingDistance, speakerPos.getY() - Math.sin(angle.getRadians()) * shootingDistance, angle.minus(Rotation2d.fromDegrees(180)));
-        SmartDashboard.putString("Speaker Target Pose", targetPose.toString());
 
-        moveSwerve();
+        // Spin up shooter
+        shooterSubsystem.spinOut();
 
-        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 1 && currentShootTick > 0) {
-            shooterSubsystem.spinOut();
-        } else {
-            shooterSubsystem.stop();
-        }
-
-        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 0.1 && currentShootTick > 0) {
+        // If close to targetPos, shoot
+        if (moveSwerve()) {
             intakeSubsystem.runIntake(-IntakeConstants.kIntakeMotorSpeed);
             currentShootTick--;
         } else {
             intakeSubsystem.stop();
         }
 
+        // If shooter is done shooting, stop shooter and exit command
         if (currentShootTick <= 0) {
             shooterSubsystem.stop();
             isDone = true;
@@ -102,6 +113,10 @@ public class FireAtSpeakerCmd extends Command {
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveSubsystem.getRotation2d());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
+
+        if (Math.sqrt(xError * xError + yError * yError) < AutoConstants.kAutoToleranceMeters && Math.abs(turnError * 180 / Math.PI) < AutoConstants.kAutoToleranceDegrees) {
+            return true;
+        }
 
         return false;
     }

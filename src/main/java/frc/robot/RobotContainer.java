@@ -85,7 +85,7 @@ public class RobotContainer {
     new JoystickButton(driverJoystick, OIConstants.kDriverToggleFlapButtonId).whileTrue(shooterSubsystem.sendToggleFlap());
     new JoystickButton(driverJoystick, OIConstants.kDriverToggleGroundIntakeButtonId).whileTrue(intakeSubsystem.sendToggleArticulate());
     // new JoystickButton(driverJoystick, OIConstants.kDriverRunAmpButtonId).whileTrue();
-    // new JoystickButton(driverJoystick, OIConstants.kDriverRunShooterButtonId).whileTrue(ShootSystemCmd.sendShoot()); Error Here Griffin
+    // new JoystickButton(driverJoystick, OIConstants.kDriverRunShooterButtonId).whileTrue(ShootSystemCmd.sendShoot());
   }
 
 

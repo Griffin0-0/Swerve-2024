@@ -9,20 +9,17 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.subsystems.LimeLight;
 
 public class SwerveSubsystem extends SubsystemBase {
     
@@ -87,6 +84,32 @@ public class SwerveSubsystem extends SubsystemBase {
             }, new Pose2d(0, 0, new Rotation2d()));
 
     public SwerveSubsystem() {
+        // UNCOMMENT THIS CODE FOR COMPETITION: v
+
+        // if (DriverStation.getAlliance().get() == Alliance.Red) {
+        //     SmartDashboard.putBoolean("Alliance:", false);
+        //     this.isAllianceBlue = false;
+        // } else if (DriverStation.getAlliance().get() == Alliance.Blue) {
+        //     SmartDashboard.putBoolean("Alliance:", true);
+        //     this.isAllianceBlue = true;
+        // }
+
+        // ^
+
+        // COMMENT THIS CODE FOR COMPETITION: v
+
+        Alliance test = Alliance.Blue;
+
+        if (test == Alliance.Red) {
+            SmartDashboard.putBoolean("Alliance:", false);
+            this.isAllianceBlue = false;
+        } else if (test == Alliance.Blue) {
+            SmartDashboard.putBoolean("Alliance:", true);
+            this.isAllianceBlue = true;
+        }
+
+        // ^
+
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
@@ -132,34 +155,6 @@ public class SwerveSubsystem extends SubsystemBase {
     public void periodic() {
         tick++;
         SmartDashboard.putNumber("heading", getHeading());
-
-
-        // UNCOMMENT THIS CODE FOR COMPETITION: v
-
-        // if (DriverStation.getAlliance().get() == Alliance.Red) {
-        //     SmartDashboard.putBoolean("Alliance:", false);
-        //     isAllianceBlue = false;
-        // } else if (DriverStation.getAlliance().get() == Alliance.Blue) {
-        //     SmartDashboard.putBoolean("Alliance:", true);
-        //     isAllianceBlue = true;
-        // }
-
-        // ^
-
-        // COMMENT THIS CODE FOR COMPETITION: v
-
-        Alliance test = Alliance.Blue;
-
-        if (test == Alliance.Red) {
-            SmartDashboard.putBoolean("Alliance:", false);
-            isAllianceBlue = false;
-        } else if (test == Alliance.Blue) {
-            SmartDashboard.putBoolean("Alliance:", true);
-            isAllianceBlue = true;
-        }
-
-        // ^
-
 
         //Get pose from limelight
         limeLightPose = limeLight.runLimeLight(isAllianceBlue);

@@ -25,10 +25,11 @@ public class IntakeFromGroundCmd extends Command {
     private int tick = 0;
     // private int currentStopTick;
     // private int startTick = -AutoConstants.kAutoStartCheckTicks;
-    private int collectedCheckTicks = AutoConstants.kAutoGroundIntakeCheckTicks;
+    private int collectedCheckTick = AutoConstants.kAutoGroundIntakeCheckTicks;
     private Pose2d targetPose;
     private Translation2d targetTranslation;
     private Boolean isDone = false;
+    private double collectionDistance = 0.5;
 
     public IntakeFromGroundCmd(SwerveSubsystem swerveSubsystem, IntakeSubsystem intakeSubsystem, Translation2d targetTranslation) {
         this.swerveSubsystem = swerveSubsystem;
@@ -43,33 +44,32 @@ public class IntakeFromGroundCmd extends Command {
     @Override
     public void execute() {
         tick++;
-        SmartDashboard.putNumber("Intake Ground Ticks", tick);
+        SmartDashboard.putNumber("Speaker Ticks", tick);
 
-        Translation2d difference = new Translation2d(targetTranslation.getX() - swerveSubsystem.getPose().getTranslation().getX(), targetTranslation.getY() - swerveSubsystem.getPose().getTranslation().getY());
+        // Calculate the difference between the note position and swerve's position
+        Translation2d difference = new Translation2d(targetTranslation.getX() - swerveSubsystem.getPose().getX(), targetTranslation.getY() - swerveSubsystem.getPose().getY());
+
         new Rotation2d();
+        // Calculate the angle between the note and swerve
         Rotation2d angle = Rotation2d.fromRadians(Math.atan2(difference.getY(), difference.getX()));
-        
-        targetPose = new Pose2d(targetTranslation, angle);
 
-        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) > 0.3) {
-            moveSwerve();
+        // Calculate the target position for swerve to move to
+        targetPose = new Pose2d(targetTranslation.getX() - Math.cos(angle.getRadians()) * collectionDistance, targetTranslation.getY() - Math.sin(angle.getRadians()) * collectionDistance, angle.minus(Rotation2d.fromDegrees(180)));
+
+        if (moveSwerve()) {
+            // If swerve reached targetPose, start collecting note
+            collectedCheckTick--;
         }
 
-        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 4 && !(swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 0.5)) {
-            intakeSubsystem.intakeDown();
-            intakeSubsystem.runIntake(IntakeConstants.kIntakeMotorSpeed);
-        }
-
-        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 0.5) {
-            intakeSubsystem.intakeUp();
+        // Once made sure swerve has collected note from ground, exit command
+        if (collectedCheckTick <= 0) {
             intakeSubsystem.stopIntake();
-            collectedCheckTicks--;
-            if (collectedCheckTicks < 0) {
-                isDone = true;
-            }
+            intakeSubsystem.intakeUp();
+            isDone = true;
+        } else {
+            intakeSubsystem.runIntake(IntakeConstants.kIntakeMotorSpeed);
+            intakeSubsystem.intakeDown();
         }
-        SmartDashboard.putNumber("collectedCheckTicks", collectedCheckTicks);
-        SmartDashboard.putBoolean("isDone", isDone);
 
     }
 
@@ -84,7 +84,7 @@ public class IntakeFromGroundCmd extends Command {
         double xSpeed = Math.cos(angle) * speed;
         double ySpeed = Math.sin(angle) * speed;
 
-        double turnSpeed = (Math.abs(turnError * Math.sqrt(Math.abs(turnError)) * -0.005) < AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond) ? turnError * Math.sqrt(Math.abs(turnError)) * -0.005 : AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond * Math.signum(turnError);
+        double turnSpeed = (Math.abs(turnError * Math.sqrt(Math.abs(turnError)) * 0.005) < AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond) ? turnError * Math.sqrt(Math.abs(turnError)) * -0.005 : AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond * Math.signum(turnError);
 
 
         xSpeed = Math.abs(xSpeed) > AutoConstants.kAutoMinSpeed ? xSpeed : 0.0;
@@ -102,6 +102,10 @@ public class IntakeFromGroundCmd extends Command {
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveSubsystem.getRotation2d());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
+
+        if (Math.sqrt(xError * xError + yError * yError) < AutoConstants.kAutoToleranceMeters && Math.abs(turnError * 180 / Math.PI) < AutoConstants.kAutoToleranceDegrees) {
+            return true;
+        }
 
         return false;
     }
