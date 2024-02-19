@@ -30,19 +30,9 @@ public class ShooterSubsystem extends SubsystemBase {
     public int tick = 0;
 
 
-    public Command sendSpinOut() {
-        return Commands.startEnd(() -> spinOut(), () -> stop());
+    public Command sendVibrateFlap() {
+        return Commands.run(() -> vibrateFlap());
     }
-
-    public Command sendStop() {
-        return Commands.runOnce(() -> stop());
-    }
-
-    public Command sendToggleFlap() {
-        return Commands.runOnce(() -> toggleFlap());
-    }
-    
-
 
     public ShooterSubsystem() {
         shooterMotor_1 = new CANSparkMax(ShooterConstants.kShooterSpinMotorId_1, MotorType.kBrushless);
@@ -64,6 +54,22 @@ public class ShooterSubsystem extends SubsystemBase {
         return limiterSetting;
     }
 
+    public void spinIn() {
+        limiterSetting = -ShooterConstants.kShooterIntakeSpeed;
+    }
+
+    public void spinOut() {
+        limiterSetting = ShooterConstants.kShooterFlywheelSpeed;
+    }
+
+    public void setRollerSpeed(double speed) {
+        limiterSetting = speed;
+    }
+
+    public void ampSpinOut() {
+        limiterSetting = ShooterConstants.kShooterAmpSpeed;
+    }
+
 
 
     @Override
@@ -75,31 +81,10 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
 
-    public void spinIn() {
-        limiterSetting = -ShooterConstants.kShooterIntakeSpeed;
-    }
-
-    public void spinOut() {
-        limiterSetting = ShooterConstants.kShooterFlywheelSpeed;
-    }
-
-    public void ampSpinOut() {
-        limiterSetting = ShooterConstants.kShooterAmpSpeed;
-    }
 
     public void flapMove(double pos) {
         servo_1.setAngle(pos);
         servo_2.setAngle(180 - pos);
-    }
-
-    public void toggleFlap() {
-        if (flapState) {
-            flapMove(30);
-            flapState = false;
-        } else {
-            flapMove(ShooterConstants.kShooterFlapUpPos);
-            flapState = true;
-        }
     }
 
     public void flapUp() {
@@ -112,17 +97,29 @@ public class ShooterSubsystem extends SubsystemBase {
         flapState = false;
     }
 
+    public void toggleFlap() {
+        if (flapState) {
+            flapDown();
+        } else {
+            flapUp();
+        }
+    }
+
+    public void shooterStop() {
+        limiterSetting = 0;
+    }
+
     public void stop() {
+        limiterSetting = 0;
         shooterMotor_1.set(0);
         shooterMotor_2.set(0);
-        limiterSetting = 0;
     }
 
     public void vibrateFlap() {
         if (tick % 10 < 5) {
-            flapMove(ShooterConstants.kShooterFlapAmpPos + 5);
+            flapMove(ShooterConstants.kShooterFlapAmpPos + 10);
         } else {
-            flapMove(ShooterConstants.kShooterFlapAmpPos - 5);
+            flapMove(ShooterConstants.kShooterFlapAmpPos);
         }
     }
 }
