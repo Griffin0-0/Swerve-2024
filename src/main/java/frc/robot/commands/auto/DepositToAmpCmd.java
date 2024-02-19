@@ -57,7 +57,7 @@ public class DepositToAmpCmd extends Command {
         targetPose = ampDepositPos;
         
         if (moveSwerve()) {
-            intakeSubsystem.runIntake(-IntakeConstants.kIntakeMotorSpeed);
+            intakeSubsystem.runIntake(-IntakeConstants.kIntakeOutMotorSpeed);
             depositCheckTick--;
             shooterSubsystem.vibrateFlap();
         } else {

@@ -70,7 +70,7 @@ public class FireAtSpeakerCmd extends Command {
 
         // If close to targetPos, shoot
         if (moveSwerve()) {
-            intakeSubsystem.runIntake(-IntakeConstants.kIntakeMotorSpeed);
+            intakeSubsystem.runIntake(-IntakeConstants.kIntakeOutMotorSpeed);
             currentShootTick--;
         } else {
             intakeSubsystem.stop();

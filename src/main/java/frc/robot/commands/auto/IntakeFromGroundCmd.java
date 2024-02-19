@@ -67,7 +67,7 @@ public class IntakeFromGroundCmd extends Command {
             intakeSubsystem.intakeUp();
             isDone = true;
         } else {
-            intakeSubsystem.runIntake(IntakeConstants.kIntakeMotorSpeed);
+            intakeSubsystem.runIntake(IntakeConstants.kGroundIntakeMotorSpeed);
             intakeSubsystem.intakeDown();
         }
 

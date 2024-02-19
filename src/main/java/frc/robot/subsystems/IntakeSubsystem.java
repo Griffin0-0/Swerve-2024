@@ -41,11 +41,11 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command sendIntakeSpinIn() {
-        return Commands.runOnce(() -> runIntake(IntakeConstants.kIntakeMotorSpeed));
+        return Commands.runOnce(() -> runIntake(IntakeConstants.kGroundIntakeMotorSpeed));
     }
 
     public Command sendIntakeSpinOut() {
-        return Commands.runOnce(() -> runIntake(-IntakeConstants.kIntakeMotorSpeed));
+        return Commands.runOnce(() -> runIntake(-IntakeConstants.kIntakeOutMotorSpeed));
     }
 
 
@@ -94,17 +94,17 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void spinIn() {
-        runIntake(IntakeConstants.kIntakeMotorSpeed);
+        runIntake(IntakeConstants.kGroundIntakeMotorSpeed);
     }
 
     public void spinOut() {
-        runIntake(-IntakeConstants.kIntakeMotorSpeed);
+        runIntake(-IntakeConstants.kIntakeOutMotorSpeed);
     }
 
     @Override
     public void periodic() {
         if (intakeOut && (articulateEncoder.getPosition() < -30)) {
-            runIntake(IntakeConstants.kIntakeMotorSpeed);
+            runIntake(IntakeConstants.kGroundIntakeMotorSpeed);
         } else {
             runIntake(0);
         }

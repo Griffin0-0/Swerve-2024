@@ -57,7 +57,7 @@ public class IntakeFromSourceCmd extends Command {
         targetPose = intakeSourcePos;
         
         if (moveSwerve()) {
-            intakeSubsystem.runIntake(IntakeConstants.kIntakeMotorSpeed);
+            intakeSubsystem.runIntake(IntakeConstants.kIntakeOutMotorSpeed);
             intookCheckTick--;
         } else {
             intakeSubsystem.stopIntake();
