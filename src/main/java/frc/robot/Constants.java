@@ -102,6 +102,7 @@ public class Constants {
         public static final int kDriverCoordinateButtonId = 3;
         public static final int kDriverToggleClimberButtonId = 4;
         public static final int kDriverStopButtonId = 10;
+        public static final int kDriverSourceIntakeButtonId = 1;
 
         // Triggers
         public static final int kDriverToggleFlapButtonId = 5;

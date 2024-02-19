@@ -22,6 +22,7 @@ import frc.robot.commands.auto.MoveToPosCmd;
 import frc.robot.commands.functions.EmergencyStopMechanismsCmd;
 import frc.robot.commands.functions.ShootAmpCmd;
 import frc.robot.commands.functions.ShootCmd;
+import frc.robot.commands.functions.SourceIntakeCmd;
 import frc.robot.commands.functions.ToggleArticulateCmd;
 import frc.robot.commands.functions.ToggleClimberCmd;
 import frc.robot.commands.functions.ToggleFlapCmd;
@@ -78,6 +79,7 @@ public class RobotContainer {
     new JoystickButton(driverJoystick, OIConstants.kDriverCoordinateButtonId).onTrue(swerveSubsystem.coordinate());
     new JoystickButton(driverJoystick, OIConstants.kDriverStopButtonId).onTrue(new EmergencyStopMechanismsCmd(shooterSubsystem, intakeSubsystem, climberSubsystem));
     new JoystickButton(driverJoystick, OIConstants.kDriverToggleClimberButtonId).onTrue(new ToggleClimberCmd(climberSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverSourceIntakeButtonId).onTrue(new SourceIntakeCmd(shooterSubsystem, intakeSubsystem));
 
     // TRIGGERS
     new JoystickButton(driverJoystick, OIConstants.kDriverToggleFlapButtonId).whileTrue(new ToggleFlapCmd(shooterSubsystem));
