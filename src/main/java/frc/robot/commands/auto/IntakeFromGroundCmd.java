@@ -29,7 +29,7 @@ public class IntakeFromGroundCmd extends Command {
     private Pose2d targetPose;
     private Translation2d targetTranslation;
     private Boolean isDone = false;
-    private double collectionDistance = 0.75;
+    private double collectionDistance = 0;
 
     public IntakeFromGroundCmd(SwerveSubsystem swerveSubsystem, IntakeSubsystem intakeSubsystem, Translation2d targetTranslation) {
         this.swerveSubsystem = swerveSubsystem;
@@ -43,6 +43,11 @@ public class IntakeFromGroundCmd extends Command {
         // Calculate the difference between the note position and swerve's position
         Translation2d difference = new Translation2d(targetTranslation.getX() - swerveSubsystem.getPose().getX(), targetTranslation.getY() - swerveSubsystem.getPose().getY());
 
+        SmartDashboard.putString("ground Target Real Position", targetTranslation.toString());
+
+        SmartDashboard.putString("ground difference", difference.toString());
+        SmartDashboard.putString("swervePos", this.swerveSubsystem.pose.toString());
+
         new Rotation2d();
         // Calculate the angle between the note and swerve
         Rotation2d angle = Rotation2d.fromRadians(Math.atan2(difference.getY(), difference.getX()));
@@ -55,7 +60,9 @@ public class IntakeFromGroundCmd extends Command {
     @Override
     public void execute() {
         tick++;
-        SmartDashboard.putNumber("Speaker Ticks", tick);
+        SmartDashboard.putNumber("Ground Ticks", tick);
+
+        SmartDashboard.putString("ground Target Position", targetPose.toString());
         
         if (moveSwerve()) {
             // If swerve reached targetPose, start collecting note
@@ -82,7 +89,7 @@ public class IntakeFromGroundCmd extends Command {
         double yError = targetPose.getY() - swerveSubsystem.getPose().getY();
         double turnError = (targetPose.getRotation().minus(swerveSubsystem.getRotation2d())).getRadians();
 
-        SmartDashboard.putNumber("TurnError Ground Intake", turnError);
+        SmartDashboard.putNumber("TurnError Ground Intake", turnError * 180 / Math.PI);
 
         // Calculate the angle and speed to move swerve to targetPose
         double angle = Math.atan2(yError, xError);
@@ -105,6 +112,9 @@ public class IntakeFromGroundCmd extends Command {
         SmartDashboard.putNumber("xSpeed", xSpeed);
         SmartDashboard.putNumber("ySpeed", ySpeed);
         SmartDashboard.putNumber("turnSpeed", turnSpeed);
+
+        // xSpeed = 0;
+        // ySpeed = 0;
         
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveSubsystem.getRotation2d());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);

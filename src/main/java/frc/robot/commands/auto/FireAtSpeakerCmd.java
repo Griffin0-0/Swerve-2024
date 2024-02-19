@@ -27,7 +27,7 @@ public class FireAtSpeakerCmd extends Command {
     // private int startTick = -AutoConstants.kAutoStartCheckTicks;
     private int currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks; 
     private double shootingDistance = 2.0;
-    private Translation2d blueSpeakerPos = new Translation2d(0.1,5.45);
+    private Translation2d blueSpeakerPos = new Translation2d(0.1,5.48);
     private Translation2d redSpeakerPos = new Translation2d(0,0);
     private Translation2d speakerPos;
     private Pose2d targetPose;

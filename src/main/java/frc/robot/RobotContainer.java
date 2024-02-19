@@ -107,8 +107,8 @@ public class RobotContainer {
     return new SequentialCommandGroup(
           new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", false)),
           // new MoveToPosCmd(swerveSubsystem, path1, true, true), //90 * Math.PI / 180
-          new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-          new IntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(4.5, 5.45)),
+          // new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+          new IntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(4.5, 5.48)),
           new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
           new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", true)),
           new InstantCommand(() -> swerveSubsystem.stopModules()));
