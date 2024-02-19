@@ -26,6 +26,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.MoveToPosCmd;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.FireAtSpeakerCmd;
+import frc.robot.commands.ShootSystemCmd;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -44,6 +45,7 @@ public class RobotContainer {
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();  
+  private final 
 
   private final Joystick driverJoystick = new Joystick(OIConstants.kOperatorControllerPort);
   private final Joystick translateStick = new Joystick(OIConstants.kDriverTranslateStickPort);
@@ -68,6 +70,8 @@ public class RobotContainer {
     //             () -> !driverJoystick.getRawButton(OIConstants.kDriverCoordinateButtonId),
     //             () -> driverJoystick.getRawButton(OIConstants.kDriverShootButtonId),
     //             () -> !driverJoystick.getRawButton(OIConstants.kDriverFieldOrientedButtonId)));
+
+
                 
     configureBindings();
   }
@@ -81,7 +85,7 @@ public class RobotContainer {
     new JoystickButton(driverJoystick, OIConstants.kDriverToggleFlapButtonId).whileTrue(shooterSubsystem.sendToggleFlap());
     new JoystickButton(driverJoystick, OIConstants.kDriverToggleGroundIntakeButtonId).whileTrue(intakeSubsystem.sendToggleArticulate());
     // new JoystickButton(driverJoystick, OIConstants.kDriverRunAmpButtonId).whileTrue();
-    new JoystickButton(driverJoystick, OIConstants.kDriverRunShooterButtonId).whileTrue(shooterSubsystem.sendSpinOut());
+    new JoystickButton(driverJoystick, OIConstants.kDriverRunShooterButtonId).whileTrue(ShootSystemCmd.sendShoot());
   }
 
 
