@@ -105,16 +105,14 @@ public class Constants {
         // Buttons
         public static final int kDriverResetGyroButtonId = 2;
         public static final int kDriverCoordinateButtonId = 3;
-
-        public static final int kDriverSpinOutButtonId = 8;
-        public static final int kDriverSpinInButtonId = 7;
+        public static final int kDriverToggleClimberButtonId = 4;
         public static final int kDriverStopButtonId = 10;
 
-        public static final int kDriverIntakeInButtonId = 5;
-        public static final int kDriverIntakeOutButtonId = 6;
-
-        public static final int kDriverIntakeUpButtonId = 1;
-        public static final int kDriverIntakeDownButtonId = 4;
+        // Triggers
+        public static final int kDriverToggleFlapButtonId = 5;
+        public static final int kDriverToggleGroundIntakeButtonId = 6;
+        public static final int kDriverRunAmpButtonId = 7;
+        public static final int kDriverRunShooterButtonId = 8;
     } 
 
     public static final class ShooterConstants {

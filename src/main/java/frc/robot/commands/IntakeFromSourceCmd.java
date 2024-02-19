@@ -43,7 +43,7 @@ public class IntakeFromSourceCmd extends Command {
         targetPose = IntakeSourcePos;
         
         if (moveSwerve()) {
-            shooterSubsystem.sendSpinIn();
+            // shooterSubsystem.sendSpinIn();
             done = true;
         }
     }

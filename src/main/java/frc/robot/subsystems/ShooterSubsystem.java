@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.IntakeConstants;
 
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
@@ -26,31 +25,22 @@ public class ShooterSubsystem extends SubsystemBase {
     private final Servo servo_2;
 
     public double limiterSetting = 0;
+    public boolean flapState = false; // up = true, down = false
+    public boolean allowedShoot = false;
 
 
     public Command sendSpinOut() {
         return Commands.startEnd(() -> spinOut(), () -> stop());
     }
 
-    public Command sendSpinIn() {
-        return Commands.startEnd(() -> spinIn(), () -> stop());
-    }
-
     public Command sendStop() {
         return Commands.runOnce(() -> stop());
     }
 
-    public Command sendAMPOut() {
-        return Commands.startEnd(() -> AMPOut(), () -> stop());
+    public Command sendToggleFlap() {
+        return Commands.runOnce(() -> toggleFlap());
     }
-
-    public Command sendFlapUp() {
-        return Commands.runOnce(() -> flapMove(ShooterConstants.kShooterFlapUpPos));
-    }
-
-    public Command sendFlapDown() {
-        return Commands.runOnce(() -> flapMove(30));
-    }
+    
 
 
     public ShooterSubsystem() {
@@ -63,21 +53,29 @@ public class ShooterSubsystem extends SubsystemBase {
         servo_2 = new Servo(ShooterConstants.kShooterFlapServoId_2);
     }
 
-    public void spinOut() {
-        limiterSetting = ShooterConstants.kShooterFlywheelSpeed;
+
+
+    public double getRollerSpeed() {
+        return (shooterMotor_1.getAppliedOutput() + shooterMotor_2.getAppliedOutput()) / 2;
     }
 
-    public void spinIn() {
-
+    public double getRollerGoal() {
+        return limiterSetting;
     }
+
+
 
     @Override
     public void periodic() {
         double speed = shooterLimiter.calculate(limiterSetting);
-        SmartDashboard.putNumber("speed", speed);
-
         shooterMotor_1.set(speed);
         shooterMotor_2.set(-speed);
+    }
+
+
+
+    public void spinOut() {
+        limiterSetting = ShooterConstants.kShooterFlywheelSpeed;
     }
 
     public void flapMove(double pos) {
@@ -85,9 +83,14 @@ public class ShooterSubsystem extends SubsystemBase {
         servo_2.setAngle(180 - pos);
     }
 
-    public void AMPOut() {
-        shooterMotor_1.set(ShooterConstants.kShooterAmpSpeed);
-        shooterMotor_2.set(-ShooterConstants.kShooterAmpSpeed);
+    public void toggleFlap() {
+        if (flapState) {
+            flapMove(30);
+            flapState = false;
+        } else {
+            flapMove(ShooterConstants.kShooterFlapUpPos);
+            flapState = true;
+        }
     }
 
     public void stop() {

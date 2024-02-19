@@ -36,8 +36,6 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.IntakeArticulate;
-
 
 
 public class RobotContainer {
@@ -77,18 +75,17 @@ public class RobotContainer {
   private void configureBindings() {
     new JoystickButton(driverJoystick, OIConstants.kDriverResetGyroButtonId).onTrue(swerveSubsystem.zeroHeading());
     new JoystickButton(driverJoystick, OIConstants.kDriverCoordinateButtonId).onTrue(swerveSubsystem.coordinate());
-
-
-    new JoystickButton(driverJoystick, OIConstants.kDriverSpinOutButtonId).whileTrue(shooterSubsystem.sendSpinOut());
-    new JoystickButton(driverJoystick, OIConstants.kDriverSpinInButtonId).whileTrue(shooterSubsystem.sendSpinIn());
     new JoystickButton(driverJoystick, OIConstants.kDriverStopButtonId).onTrue(shooterSubsystem.sendStop());
 
-    new JoystickButton(driverJoystick, OIConstants.kDriverIntakeUpButtonId).whileTrue(intakeSubsystem.sendToggleArticulate());
-    // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeOutButtonId).onTrue(intakeSubsystem.sendIntakeSpinOut());
-
-    // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeUpButtonId).whileTrue(shooterSubsystem.sendFlapUp());
-    // new JoystickButton(driverJoystick, OIConstants.kDriverIntakeDownButtonId).whileTrue(shooterSubsystem.sendFlapDown());
+    // TRIGGERS
+    new JoystickButton(driverJoystick, OIConstants.kDriverToggleFlapButtonId).whileTrue(shooterSubsystem.sendToggleFlap());
+    new JoystickButton(driverJoystick, OIConstants.kDriverToggleGroundIntakeButtonId).whileTrue(intakeSubsystem.sendToggleArticulate());
+    // new JoystickButton(driverJoystick, OIConstants.kDriverRunAmpButtonId).whileTrue();
+    new JoystickButton(driverJoystick, OIConstants.kDriverRunShooterButtonId).whileTrue(shooterSubsystem.sendSpinOut());
   }
+
+
+
   public Command getAutonomousCommand() {
     Pose2d[] path1 = {
       new Pose2d(1.9,5.9,new Rotation2d(0 * Math.PI / 180)),
