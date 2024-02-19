@@ -13,7 +13,6 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.function.Supplier;
@@ -54,7 +53,7 @@ public class IntakeFromGroundCmd extends Command {
         SmartDashboard.putNumber("Target Angle", angle.getDegrees());
 
         // Calculate the target position for swerve to move to
-        this.targetPose = new Pose2d(targetTranslation.getX() - Math.cos(angle.getRadians()) * collectionDistance, targetTranslation.getY() - Math.sin(angle.getRadians()) * collectionDistance, angle);
+        this.targetPose = new Pose2d(targetTranslation.getX() - angle.getCos() * collectionDistance, targetTranslation.getY() - angle.getSin() * collectionDistance, angle);
     }
 
     @Override

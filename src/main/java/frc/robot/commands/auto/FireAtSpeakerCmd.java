@@ -77,7 +77,7 @@ public class FireAtSpeakerCmd extends Command {
 
         // If shooter is done shooting, stop shooter and exit command
         if (currentShootTick <= 0) {
-            shooterSubsystem.stop();
+            shooterSubsystem.shooterStop();
             isDone = true;
         }
 
