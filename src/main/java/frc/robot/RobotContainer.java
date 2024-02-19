@@ -23,11 +23,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.commands.MoveToPosCmd;
 import frc.robot.commands.SwerveJoystickCmd;
-import frc.robot.commands.FireAtSpeakerCmd;
-import frc.robot.commands.ShootSystemCmd;
-import frc.robot.commands.IntakeFromGroundCmd;
+import frc.robot.commands.auto.FireAtSpeakerCmd;
+import frc.robot.commands.auto.IntakeFromGroundCmd;
+import frc.robot.commands.auto.MoveToPosCmd;
+import frc.robot.commands.functions.ShootAmpCmd;
+import frc.robot.commands.functions.ShootCmd;
+import frc.robot.commands.functions.ToggleArticulateCmd;
+import frc.robot.commands.functions.ToggleFlapCmd;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -79,13 +82,14 @@ public class RobotContainer {
   private void configureBindings() {
     new JoystickButton(driverJoystick, OIConstants.kDriverResetGyroButtonId).onTrue(swerveSubsystem.zeroHeading());
     new JoystickButton(driverJoystick, OIConstants.kDriverCoordinateButtonId).onTrue(swerveSubsystem.coordinate());
-    new JoystickButton(driverJoystick, OIConstants.kDriverStopButtonId).onTrue(shooterSubsystem.sendStop());
+    new JoystickButton(driverJoystick, OIConstants.kDriverStopButtonId).whileTrue(shooterSubsystem.sendVibrateFlap());
+    // new JoystickButton(driverJoystick, OIConstants.kDriverStopButtonId).onTrue(shooterSubsystem.sendStop());
 
     // TRIGGERS
-    new JoystickButton(driverJoystick, OIConstants.kDriverToggleFlapButtonId).whileTrue(shooterSubsystem.sendToggleFlap());
-    new JoystickButton(driverJoystick, OIConstants.kDriverToggleGroundIntakeButtonId).whileTrue(intakeSubsystem.sendToggleArticulate());
-    // new JoystickButton(driverJoystick, OIConstants.kDriverRunAmpButtonId).whileTrue();
-    // new JoystickButton(driverJoystick, OIConstants.kDriverRunShooterButtonId).whileTrue(ShootSystemCmd.sendShoot());
+    new JoystickButton(driverJoystick, OIConstants.kDriverToggleFlapButtonId).whileTrue(new ToggleFlapCmd(shooterSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverToggleGroundIntakeButtonId).whileTrue(new ToggleArticulateCmd(intakeSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverRunAmpButtonId).whileTrue(new ShootAmpCmd(shooterSubsystem, intakeSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverRunShooterButtonId).whileTrue(new ShootCmd(shooterSubsystem, intakeSubsystem));
   }
 
 
