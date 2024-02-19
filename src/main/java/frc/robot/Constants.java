@@ -134,7 +134,7 @@ public class Constants {
 
     public static final class IntakeConstants {
         public static final int kIntakeMotorId = 51;
-        public static final double kIntakeMotorSpeed = 0.7;
+        public static final double kIntakeMotorSpeed = 0.9;
 
         public static final double kIntakeArticulateSpeed = 0.3;
         public static final int kIntakeArticulateMotorId = 54;
@@ -162,6 +162,8 @@ public class Constants {
     
         public static final int kAutoAmpStoppedCheckTicks = 30; // Ticks it waits to make sure swerve has come to a complete stop before depositing note to amp 20
 
-        public static final int kAutoSpeakerShotCheckTicks = 40;
+        public static final int kAutoSpeakerShotCheckTicks = 70;
+
+        public static final int kAutoGroundIntakeCheckTicks = 300;
     }
 }

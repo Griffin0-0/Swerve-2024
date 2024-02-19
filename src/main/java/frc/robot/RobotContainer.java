@@ -26,6 +26,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.MoveToPosCmd;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.FireAtSpeakerCmd;
+import frc.robot.commands.IntakeFromGroundCmd;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -102,6 +103,8 @@ public class RobotContainer {
     return new SequentialCommandGroup(
           new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", false)),
           // new MoveToPosCmd(swerveSubsystem, path1, true, true), //90 * Math.PI / 180
+          new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+          new IntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(4.5, 5.45)),
           new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
           new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", true)),
           new InstantCommand(() -> swerveSubsystem.stopModules()));

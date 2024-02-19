@@ -60,7 +60,7 @@ public class IntakeSubsystem extends SubsystemBase {
         articulatePID = articulateMotor.getPIDController();
         articulateEncoder = articulateMotor.getEncoder();
 
-        articulatePID.setOutputRange(-0.15, 0.15);
+        articulatePID.setOutputRange(-0.4, 0.4);
         articulatePID.setP(0.5);
         articulatePID.setI(0);
         articulatePID.setD(0);
@@ -113,5 +113,9 @@ public class IntakeSubsystem extends SubsystemBase {
     public void stop() {
         intakeMotor.set(0);
         articulateMotor.set(0);
+    }
+
+    public void stopIntake() {
+        intakeMotor.set(0);
     }
 }

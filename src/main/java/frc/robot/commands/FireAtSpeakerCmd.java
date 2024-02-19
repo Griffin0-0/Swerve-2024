@@ -25,9 +25,10 @@ public class FireAtSpeakerCmd extends Command {
     // private int currentStopTick;
     // private int startTick = -AutoConstants.kAutoStartCheckTicks;
     private int currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks; 
-    private double shootingDistance = 1.75;
+    private double shootingDistance = 2.0;
     private Pose2d speakerPos = new Pose2d(0.1,5.45, Rotation2d.fromDegrees(0));
     private Pose2d targetPose;
+    private boolean isDone = false;
 
     public FireAtSpeakerCmd(SwerveSubsystem swerveSubsystem, ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem) {
         this.swerveSubsystem = swerveSubsystem;
@@ -58,12 +59,18 @@ public class FireAtSpeakerCmd extends Command {
             shooterSubsystem.stop();
         }
 
-        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 0.2 && currentShootTick > 0) {
+        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 0.1 && currentShootTick > 0) {
             intakeSubsystem.runIntake(-IntakeConstants.kIntakeMotorSpeed);
             currentShootTick--;
         } else {
             intakeSubsystem.stop();
         }
+
+        if (currentShootTick <= 0) {
+            shooterSubsystem.stop();
+            isDone = true;
+        }
+
     }
 
     public boolean moveSwerve() {
@@ -100,9 +107,6 @@ public class FireAtSpeakerCmd extends Command {
     }
 
     public boolean isFinished() {
-        // if (tick > 10000) {
-        //     return true;
-        // }
-        return false;
+        return isDone;
     }
 }

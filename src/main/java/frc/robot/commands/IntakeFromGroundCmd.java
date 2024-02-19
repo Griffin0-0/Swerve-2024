@@ -25,10 +25,10 @@ public class IntakeFromGroundCmd extends Command {
     private int tick = 0;
     // private int currentStopTick;
     // private int startTick = -AutoConstants.kAutoStartCheckTicks;
-    private int currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks; 
-    private double shootingDistance = 1.75;
+    private int collectedCheckTicks = AutoConstants.kAutoGroundIntakeCheckTicks;
     private Pose2d targetPose;
     private Translation2d targetTranslation;
+    private Boolean isDone = false;
 
     public IntakeFromGroundCmd(SwerveSubsystem swerveSubsystem, IntakeSubsystem intakeSubsystem, Translation2d targetTranslation) {
         this.swerveSubsystem = swerveSubsystem;
@@ -43,7 +43,7 @@ public class IntakeFromGroundCmd extends Command {
     @Override
     public void execute() {
         tick++;
-        SmartDashboard.putNumber("Speaker Ticks", tick);
+        SmartDashboard.putNumber("Intake Ground Ticks", tick);
 
         Translation2d difference = new Translation2d(targetTranslation.getX() - swerveSubsystem.getPose().getTranslation().getX(), targetTranslation.getY() - swerveSubsystem.getPose().getTranslation().getY());
         new Rotation2d();
@@ -51,15 +51,26 @@ public class IntakeFromGroundCmd extends Command {
         
         targetPose = new Pose2d(targetTranslation, angle);
 
-        moveSwerve();
+        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) > 0.3) {
+            moveSwerve();
+        }
 
-        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 1) {
+        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 4 && !(swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 0.5)) {
+            intakeSubsystem.intakeDown();
             intakeSubsystem.runIntake(IntakeConstants.kIntakeMotorSpeed);
         }
 
-        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 0.1) {
-            intakeSubsystem.stop();
+        if (swerveSubsystem.pose.getTranslation().getDistance(targetPose.getTranslation()) < 0.5) {
+            intakeSubsystem.intakeUp();
+            intakeSubsystem.stopIntake();
+            collectedCheckTicks--;
+            if (collectedCheckTicks < 0) {
+                isDone = true;
+            }
         }
+        SmartDashboard.putNumber("collectedCheckTicks", collectedCheckTicks);
+        SmartDashboard.putBoolean("isDone", isDone);
+
     }
 
     public boolean moveSwerve() {
@@ -96,9 +107,6 @@ public class IntakeFromGroundCmd extends Command {
     }
 
     public boolean isFinished() {
-        // if (tick > 10000) {
-        //     return true;
-        // }
-        return false;
+        return isDone;
     }
 }
