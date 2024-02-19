@@ -5,7 +5,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,9 +29,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public int tick = 0;
 
 
-    public Command sendVibrateFlap() {
-        return Commands.run(() -> vibrateFlap());
-    }
 
     public ShooterSubsystem() {
         shooterMotor_1 = new CANSparkMax(ShooterConstants.kShooterSpinMotorId_1, MotorType.kBrushless);
@@ -116,11 +112,11 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterMotor_2.set(0);
     }
 
-    public void vibrateFlap() {
-        if (tick % 10 < 5) {
-            flapMove(ShooterConstants.kShooterFlapAmpPos + 10);
-        } else {
-            flapMove(ShooterConstants.kShooterFlapAmpPos);
-        }
-    }
+    // public void vibrateFlap() {
+    //     if (tick % 10 < 5) {
+    //         flapMove(ShooterConstants.kShooterFlapAmpPos + 10);
+    //     } else {
+    //         flapMove(ShooterConstants.kShooterFlapAmpPos);
+    //     }
+    // }
 }

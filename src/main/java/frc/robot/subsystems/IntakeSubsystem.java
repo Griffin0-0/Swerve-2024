@@ -10,7 +10,6 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,23 +29,6 @@ public class IntakeSubsystem extends SubsystemBase {
     private final GenericEntry trapezoid;
 
     public boolean intakeOut = false;
-
-
-    public Command sendToggleArticulate() {
-        return Commands.runOnce(() -> toggleArticulate());
-    }
-
-    public Command sendStop() {
-        return Commands.runOnce(() -> stop());
-    }
-
-    public Command sendIntakeSpinIn() {
-        return Commands.runOnce(() -> runIntake(IntakeConstants.kGroundIntakeMotorSpeed));
-    }
-
-    public Command sendIntakeSpinOut() {
-        return Commands.runOnce(() -> runIntake(-IntakeConstants.kIntakeOutMotorSpeed));
-    }
 
 
     public IntakeSubsystem() {
