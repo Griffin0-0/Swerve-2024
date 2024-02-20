@@ -6,6 +6,7 @@ package frc.robot.commands.functions;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 
@@ -13,10 +14,12 @@ public class ShootCmd extends Command {
 
   IntakeSubsystem intakeSubsystem;
   ShooterSubsystem shooterSubsystem;
+  LEDSubsystem ledSubsystem;
 
-  public ShootCmd(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem) {
+  public ShootCmd(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, LEDSubsystem ledSubsystem) {
     this.shooterSubsystem = shooterSubsystem;
     this.intakeSubsystem = intakeSubsystem;
+    this.ledSubsystem = ledSubsystem;
     addRequirements(shooterSubsystem, intakeSubsystem);
   }
 
@@ -24,6 +27,7 @@ public class ShootCmd extends Command {
   @Override
   public void initialize() {
     shooterSubsystem.spinOut();
+    ledSubsystem.setShoot();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

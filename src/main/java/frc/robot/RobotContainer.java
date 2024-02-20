@@ -19,8 +19,6 @@ import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.auto.FireAtSpeakerCmd;
 import frc.robot.commands.auto.IntakeFromGroundCmd;
 import frc.robot.commands.auto.MoveToPosCmd;
-import frc.robot.commands.auto.SimpleFireAtSpeakerCmd;
-import frc.robot.commands.auto.SimpleIntakeFromGroundCmd;
 import frc.robot.commands.functions.EmergencyStopMechanismsCmd;
 import frc.robot.commands.functions.ShootAmpCmd;
 import frc.robot.commands.functions.ShootCmd;
@@ -37,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 
 
@@ -46,6 +45,7 @@ public class RobotContainer {
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+  private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
   private final Joystick driverJoystick = new Joystick(OIConstants.kOperatorControllerPort);
   private final Joystick translateStick = new Joystick(OIConstants.kDriverTranslateStickPort);
@@ -87,22 +87,27 @@ public class RobotContainer {
     new JoystickButton(driverJoystick, OIConstants.kDriverToggleFlapButtonId).whileTrue(new ToggleFlapCmd(shooterSubsystem));
     new JoystickButton(driverJoystick, OIConstants.kDriverToggleGroundIntakeButtonId).whileTrue(new ToggleArticulateCmd(intakeSubsystem));
     new JoystickButton(driverJoystick, OIConstants.kDriverRunAmpButtonId).whileTrue(new ShootAmpCmd(shooterSubsystem, intakeSubsystem));
-    new JoystickButton(driverJoystick, OIConstants.kDriverRunShooterButtonId).whileTrue(new ShootCmd(shooterSubsystem, intakeSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverRunShooterButtonId).whileTrue(new ShootCmd(shooterSubsystem, intakeSubsystem, ledSubsystem));
   }
 
 
 
   public Command getAutonomousCommand() {
     Pose2d[] path1 = {
-      new Pose2d(1.5,7.1,new Rotation2d(0 * Math.PI / 180)),
+      new Pose2d(1.9,5.9,new Rotation2d(0 * Math.PI / 180)),
+      new Pose2d(1.9,4.9,new Rotation2d(0 * Math.PI / 180)),
+      new Pose2d(1.9,5.9,new Rotation2d(0 * Math.PI / 180)),
+      new Pose2d(1.9,5.9,new Rotation2d(45 * Math.PI / 180)),
+      new Pose2d(1.9,4.9,new Rotation2d(45 * Math.PI / 180)),
+      new Pose2d(1.9,4.9,new Rotation2d(0 * Math.PI / 180)),
     };
 
     return new SequentialCommandGroup(
           new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", false)),
+          // new MoveToPosCmd(swerveSubsystem, path1, true, true), //90 * Math.PI / 180
           new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-          new MoveToPosCmd(swerveSubsystem, path1, false),
-          new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(2.85, 5.48)),
-          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+          new IntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(4.5, 5.45)),
+          new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
           new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", true)),
           new InstantCommand(() -> swerveSubsystem.stopModules()));
   }
