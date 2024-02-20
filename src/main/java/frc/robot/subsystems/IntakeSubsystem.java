@@ -28,6 +28,9 @@ public class IntakeSubsystem extends SubsystemBase {
     private final RelativeEncoder articulateEncoder;
     private final GenericEntry trapezoid;
 
+    public boolean intakeOut = false;
+
+
     public IntakeSubsystem() {
         intakeMotor = new CANSparkMax(IntakeConstants.kIntakeMotorId, MotorType.kBrushless);
 
@@ -62,6 +65,20 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void runIntake(double speed) {
         intakeMotor.set(speed);
+    }
+
+    public void toggleIntake() {
+        if (intakeOut) {
+            intakeUp();
+            intakeOut = false;
+        } else if (!intakeOut) {
+            intakeDown();
+            intakeOut = true;
+        }
+    }
+
+    public boolean isDown() {
+        return (intakeOut && getPosition() < -30);
     }
 
     public void spinIn() {

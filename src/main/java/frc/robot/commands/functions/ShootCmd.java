@@ -35,8 +35,6 @@ public class ShootCmd extends Command {
   public void execute() {
     if (shooterSubsystem.getRollerSpeed() > 0.9) {
       intakeSubsystem.spinOut();
-    } else {
-      intakeSubsystem.stopIntake();
     }
   }
 
