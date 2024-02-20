@@ -4,6 +4,7 @@
 
 package frc.robot.commands.functions;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 
@@ -23,15 +24,6 @@ public class ToggleArticulateCmd extends Command {
   @Override
   public void initialize() {
     intakeSubsystem.toggleIntake();
-  }
-
-  @Override
-  public void execute() {
-    if (intakeSubsystem.isDown()) {
-      intakeSubsystem.spinIn();
-    } else {
-      intakeSubsystem.stopIntake();
-    }
   }
 
 

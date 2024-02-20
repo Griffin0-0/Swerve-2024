@@ -26,9 +26,10 @@ public class IntakeSubsystem extends SubsystemBase {
     private final CANSparkMax articulateMotor;
     private final SparkPIDController articulatePID;
     private final RelativeEncoder articulateEncoder;
-    private final GenericEntry trapezoid;
+    private final GenericEntry trapezoid, isOut;
 
     public boolean intakeOut = false;
+    public boolean switchTemp = false;
 
 
     public IntakeSubsystem() {
@@ -52,6 +53,10 @@ public class IntakeSubsystem extends SubsystemBase {
             .add("Trapezoid", 0.0)
             .withWidget(BuiltInWidgets.kGraph)
             .getEntry();
+
+        isOut = Shuffleboard.getTab("Driver")
+        .add("Is Out", false)
+        .getEntry();
 
         articulateEncoder.setPosition(0);
     }
@@ -78,7 +83,12 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public boolean isDown() {
-        return (intakeOut && getPosition() < -30);
+        if (intakeOut) {
+            if (getPosition() < -30) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void spinIn() {
@@ -96,6 +106,15 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         trapezoid.setDouble(articulateEncoder.getPosition());
+        isOut.setBoolean(intakeOut);
+
+        if (isDown()) {
+            spinIn();
+            switchTemp = true;
+        } else if (switchTemp) {
+            stopIntake();
+            switchTemp = false;
+        }
     }
 
     public void stop() {

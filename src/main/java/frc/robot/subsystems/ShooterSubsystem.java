@@ -43,7 +43,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
     public double getRollerSpeed() {
-        return (shooterMotor_1.getAppliedOutput() + shooterMotor_2.getAppliedOutput()) / 2;
+        return (Math.abs(shooterMotor_1.getAppliedOutput()) + Math.abs(shooterMotor_2.getAppliedOutput())) / 2;
     }
 
     public double getRollerGoal() {
