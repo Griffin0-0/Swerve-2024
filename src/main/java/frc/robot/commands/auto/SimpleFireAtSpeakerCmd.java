@@ -5,61 +5,89 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class MoveToPosCmd extends Command {
-
+public class SimpleFireAtSpeakerCmd extends Command {
     private final SwerveSubsystem swerveSubsystem;
+    private final ShooterSubsystem shooterSubsystem;
+    private final IntakeSubsystem intakeSubsystem;
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
-    private Pose2d[] targetPath;
-    private boolean repeatPath;
-    private Pose2d targetPose;
     private int tick = 0;
-    private int currentPosInList = 0;
+    private int currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks; 
+    private Pose2d[] blueSpeakerPositions = {
+                                            new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0)),
+                                            new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0)),
+                                            new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0))
+                                            };
+    private Pose2d[] redSpeakerPositions = {
+                                            new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0)),
+                                            new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0)),
+                                            new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0))
+                                            };
 
-    public MoveToPosCmd(SwerveSubsystem swerveSubsystem, Pose2d[] targetPath, boolean repeatPath) {
+    private Pose2d[] speakerPositions;
+    private Pose2d targetPose;
+    private boolean isDone = false;
+
+    public SimpleFireAtSpeakerCmd(SwerveSubsystem swerveSubsystem, ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem) {
         this.swerveSubsystem = swerveSubsystem;
+        this.shooterSubsystem = shooterSubsystem;
+        this.intakeSubsystem = intakeSubsystem;
         this.xLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAngularAccelerationUnitsPerSecond);
-        this.targetPath = targetPath;
-        this.repeatPath = repeatPath;
         addRequirements(swerveSubsystem);
+
+        if (swerveSubsystem.isAllianceBlue) {
+            this.speakerPositions = blueSpeakerPositions;
+        } else {
+            this.speakerPositions = redSpeakerPositions;
+        }
+        
+        // Find closest shooting point and set as targetPose
+        double minDistance = Double.MAX_VALUE;
+        for (Pose2d speakerPos : speakerPositions) {
+            double distance = Math.sqrt(Math.pow(speakerPos.getX() - swerveSubsystem.getPose().getX(), 2) + Math.pow(speakerPos.getY() - swerveSubsystem.getPose().getY(), 2));
+            if (distance < minDistance) {
+                minDistance = distance;
+                this.targetPose = speakerPos;
+            }
+        }
+
+        // Spin up shooter
+        this.shooterSubsystem.spinOut();
     }
 
     @Override
     public void execute() {
         tick++;
-        SmartDashboard.putNumber("Auto Ticks", tick);
+        SmartDashboard.putNumber("Speaker Ticks", tick);
 
-        // If the current position in the list is less than the length of the targetPath, then move swerve to targetPose
-        if (currentPosInList < targetPath.length) {
-
-            targetPose = targetPath[currentPosInList];
-
-            if (moveSwerve()) {
-
-                // If swerve reached targetPose, go to next pos in list
-                currentPosInList++;
-                SmartDashboard.putNumber("CurrentPos", currentPosInList);
-
-            }
-
-        } else if (repeatPath) {
-            // If repeatPath is true, then reset the current position in the list to 0
-            currentPosInList = 0;
+        // If close to targetPos, shoot
+        if (moveSwerve()) {
+            intakeSubsystem.runIntake(-IntakeConstants.kIntakeOutMotorSpeed);
+            currentShootTick--;
+        } else {
+            intakeSubsystem.stop();
         }
+
+        // If shooter is done shooting, stop shooter and exit command
+        if (currentShootTick <= 0) {
+            shooterSubsystem.shooterStop();
+            isDone = true;
+        }
+
     }
 
-    // Moves swerve to targetPose. Returns true when it reaches the position
     public boolean moveSwerve() {
-
-        // Calculate the error between current position and targetPos
         double xError = targetPose.getX() - swerveSubsystem.getPose().getX();
         double yError = targetPose.getY() - swerveSubsystem.getPose().getY();
         double turnError = (targetPose.getRotation().minus(swerveSubsystem.getRotation2d())).getRadians();
@@ -73,12 +101,10 @@ public class MoveToPosCmd extends Command {
         double ySpeed = Math.sin(angle) * speed;
         double turnSpeed = (Math.abs(turnError * 60 * Math.sqrt(Math.abs(turnError * 60)) * -0.005) < AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond) ? turnError * 60 * Math.sqrt(Math.abs(turnError * 60)) * -0.005 : AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond * Math.signum(turnError);
 
-        // Limit xSpeed, ySpeed, and turnSpeed to min speeds
         xSpeed = Math.abs(xSpeed) > AutoConstants.kAutoMinSpeed ? xSpeed : 0.0;
         ySpeed = Math.abs(ySpeed) > AutoConstants.kAutoMinSpeed ? ySpeed : 0.0;
         turnSpeed = Math.abs(turnSpeed) > AutoConstants.kAutoMinTurnSpeedRadians ? turnSpeed : 0.0;
 
-        // Limit xSpeed, ySpeed, and turnSpeed to max acceleration
         xSpeed = xLimiter.calculate(xSpeed) * AutoConstants.kAutoMaxSpeedMetersPerSecond;
         ySpeed = yLimiter.calculate(ySpeed) * AutoConstants.kAutoMaxSpeedMetersPerSecond;
         turnSpeed = turningLimiter.calculate(turnSpeed) * AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond;
@@ -86,27 +112,19 @@ public class MoveToPosCmd extends Command {
         SmartDashboard.putNumber("xSpeed", xSpeed);
         SmartDashboard.putNumber("ySpeed", ySpeed);
         SmartDashboard.putNumber("turnSpeed", turnSpeed);
-
-        // Set the module states to move swerve to targetPose with field orientation
+        
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveSubsystem.getRotation2d());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
-        
-        SmartDashboard.putNumber("MoveToPos Thing", Math.sqrt(xError * xError + yError * yError));
-        // If swerve is close to targetPose, then return true
+
         if (Math.sqrt(xError * xError + yError * yError) < AutoConstants.kAutoToleranceMeters && Math.abs(turnError * 180 / Math.PI) < AutoConstants.kAutoToleranceDegrees) {
-            return true; // Check if you can remove stop and start ticks now
+            return true;
         }
 
-        // If swerve is not close to targetPose, then return false
         return false;
     }
 
     public boolean isFinished() {
-        // If current position in list is greater than or equal to the length of the targetPath and repeatPath is false, then return true and exit command
-        if (currentPosInList >= targetPath.length && !repeatPath) {
-            return true;
-        }
-        return false;
+        return isDone;
     }
 }

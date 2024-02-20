@@ -19,6 +19,8 @@ import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.auto.FireAtSpeakerCmd;
 import frc.robot.commands.auto.IntakeFromGroundCmd;
 import frc.robot.commands.auto.MoveToPosCmd;
+import frc.robot.commands.auto.SimpleFireAtSpeakerCmd;
+import frc.robot.commands.auto.SimpleIntakeFromGroundCmd;
 import frc.robot.commands.functions.EmergencyStopMechanismsCmd;
 import frc.robot.commands.functions.ShootAmpCmd;
 import frc.robot.commands.functions.ShootCmd;
@@ -97,11 +99,10 @@ public class RobotContainer {
 
     return new SequentialCommandGroup(
           new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", false)),
-          // new MoveToPosCmd(swerveSubsystem, path1, true, true), //90 * Math.PI / 180
           new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-          new MoveToPosCmd(swerveSubsystem, path1, true, false), //90 * Math.PI / 180
-          new IntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(2.85, 5.48)),
-          new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+          new MoveToPosCmd(swerveSubsystem, path1, false),
+          new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(2.85, 5.48)),
+          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
           new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", true)),
           new InstantCommand(() -> swerveSubsystem.stopModules()));
   }
