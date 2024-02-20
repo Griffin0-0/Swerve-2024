@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -14,6 +15,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -40,16 +42,26 @@ import frc.robot.subsystems.ClimberSubsystem;
 
 public class RobotContainer {
 
-  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+  private final SendableChooser<Command> autoChooser;
+
+  private final SwerveSubsystem swerveSubsystem;
+  private final ShooterSubsystem shooterSubsystem;
+  private final IntakeSubsystem intakeSubsystem;
+  private final ClimberSubsystem climberSubsystem;
 
   private final Joystick driverJoystick = new Joystick(OIConstants.kOperatorControllerPort);
   private final Joystick translateStick = new Joystick(OIConstants.kDriverTranslateStickPort);
   private final Joystick rotateStick = new Joystick(OIConstants.kDriverRotateStickPort);
 
   public RobotContainer() {
+
+    climberSubsystem = new ClimberSubsystem();
+    intakeSubsystem = new IntakeSubsystem();
+    shooterSubsystem = new ShooterSubsystem();
+    swerveSubsystem = new SwerveSubsystem();
+
+    NamedCommands.registerCommand("useIntake", new ToggleArticulateCmd(intakeSubsystem));
+    NamedCommands.registerCommand("runShooter", new ShootCmd(shooterSubsystem, intakeSubsystem));
 
     swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
       swerveSubsystem,
@@ -70,13 +82,12 @@ public class RobotContainer {
     //             () -> !driverJoystick.getRawButton(OIConstants.kDriverFieldOrientedButtonId)));
 
 
-                
-    NamedCommands.registerCommand("useIntake", new ShootCmd(shooterSubsystem, intakeSubsystem));
     // NamedCommands.registerCommand("retractIntake", swerve.autoBalanceCommand());
     // NamedCommands.registerCommand("runShooter", swerve.autoBalanceCommand());
     // NamedCommands.registerCommand("stopShooter", swerve.autoBalanceCommand());
 
     configureBindings();
+    autoChooser = AutoBuilder.buildAutoChooser("Straight");
   }
 
   private void configureBindings() {
@@ -96,6 +107,6 @@ public class RobotContainer {
 
 
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("Left 4 Notes");
+    return new PathPlannerAuto("2 Note Auto");
   }
 }
