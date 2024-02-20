@@ -28,7 +28,7 @@ public class IntakeFromGroundCmd extends Command {
     private Pose2d targetPose;
     private Translation2d targetTranslation;
     private Boolean isDone = false;
-    private double collectionDistance = 0;
+    private double collectionDistance = 0.2;
 
     public IntakeFromGroundCmd(SwerveSubsystem swerveSubsystem, IntakeSubsystem intakeSubsystem, Translation2d targetTranslation) {
         this.swerveSubsystem = swerveSubsystem;
@@ -92,7 +92,7 @@ public class IntakeFromGroundCmd extends Command {
 
         // Calculate the angle and speed to move swerve to targetPose
         double angle = Math.atan2(yError, xError);
-        double speed = (xError * xError + yError * yError) * 15 * (1 / AutoConstants.kAutoMaxSpeedMetersPerSecond) * (1 / AutoConstants.kAutoMaxSpeedMetersPerSecond) * (1 / AutoConstants.kAutoMaxSpeedMetersPerSecond) > AutoConstants.kAutoMaxSpeedMetersPerSecond ? AutoConstants.kAutoMaxSpeedMetersPerSecond : (xError * xError + yError * yError) * 7;
+        double speed = (xError * xError + yError * yError) * 15 * (1 / AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond) * (1 / AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond) * (1 / AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond) > AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond ? AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond : (xError * xError + yError * yError) * 7;
 
         // Calculate xSpeed, ySpeed, and turnSpeed
         double xSpeed = Math.cos(angle) * speed;
@@ -104,8 +104,8 @@ public class IntakeFromGroundCmd extends Command {
         ySpeed = Math.abs(ySpeed) > AutoConstants.kAutoMinSpeed ? ySpeed : 0.0;
         turnSpeed = Math.abs(turnSpeed) > AutoConstants.kAutoMinTurnSpeedRadians ? turnSpeed : 0.0;
 
-        xSpeed = xLimiter.calculate(xSpeed) * AutoConstants.kAutoMaxSpeedMetersPerSecond;
-        ySpeed = yLimiter.calculate(ySpeed) * AutoConstants.kAutoMaxSpeedMetersPerSecond;
+        xSpeed = xLimiter.calculate(xSpeed) * AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond;
+        ySpeed = yLimiter.calculate(ySpeed) * AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond;
         turnSpeed = turningLimiter.calculate(turnSpeed) * AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond;
 
         SmartDashboard.putNumber("xSpeed", xSpeed);

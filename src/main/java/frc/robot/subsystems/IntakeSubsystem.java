@@ -44,7 +44,7 @@ public class IntakeSubsystem extends SubsystemBase {
         articulateEncoder.setPosition(0);
 
         articulatePID.setOutputRange(-IntakeConstants.kIntakeArticulateSpeed, IntakeConstants.kIntakeArticulateSpeed);
-        articulatePID.setP(0.5);
+        articulatePID.setP(0.6);
         articulatePID.setI(0);
         articulatePID.setD(0);
 
