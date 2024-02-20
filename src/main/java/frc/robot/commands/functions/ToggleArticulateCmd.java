@@ -5,6 +5,7 @@
 package frc.robot.commands.functions;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 
 
@@ -12,6 +13,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class ToggleArticulateCmd extends Command {
 
   IntakeSubsystem intakeSubsystem;
+  public boolean intakeOut = false;
 
   public ToggleArticulateCmd(IntakeSubsystem intakeSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
@@ -22,7 +24,22 @@ public class ToggleArticulateCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakeSubsystem.toggleArticulate();
+    if (intakeOut) {
+      intakeSubsystem.intakeUp();
+      intakeOut = false;
+    } else if (!intakeOut) {
+      intakeSubsystem.intakeDown();
+      intakeOut = true;
+    }
+  }
+
+  @Override
+  public void execute() {
+    if (intakeOut && (intakeSubsystem.getPosition() < -30)) {
+      intakeSubsystem.spinIn();
+    } else {
+      intakeSubsystem.stopIntake();
+    }
   }
 
 
