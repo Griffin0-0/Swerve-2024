@@ -4,22 +4,35 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.subsystems.Limelight;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
+import com.pathplanner.lib.util.ReplanningConfig;
+
+
 
 public class SwerveSubsystem extends SubsystemBase {
     
@@ -59,58 +72,35 @@ public class SwerveSubsystem extends SubsystemBase {
         DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad,
         DriveConstants.kModuleCANCoderReversed);
 
-    private final AHRS gyro = new AHRS(SPI.Port.kMXP);
-    public final LimeLight limeLight = new LimeLight();
-    public Pose2d pose;
-    public Pose2d limeLightPose;
-    public boolean isAllianceBlue;
-    public int tick = 0;
-    public double[] headingBuffer = new double[10];
-    public Translation2d[] translationBuffer = new Translation2d[5];
-    boolean goodHeadingBuffer = false;
-    boolean goodTranslationBuffer = false;
-    public boolean fieldOriented = false;
-    
 
-    public SwerveModule[] swerveModules = {frontLeft, frontRight, backLeft, backRight};
 
-    public final SwerveDriveOdometry kOdometry = new SwerveDriveOdometry(
-            Constants.DriveConstants.kDriveKinematics, getRotation2d(),
-            new SwerveModulePosition[] {
-              backLeft.getPosition(),
-              backRight.getPosition(),
-              frontLeft.getPosition(),
-              frontRight.getPosition()
-            }, new Pose2d(0, 0, new Rotation2d()));
+    private final AHRS gyro = new AHRS(SPI.Port.kMXP);  
+    Limelight limelight;
+
+
+    public final SwerveDrivePoseEstimator odometry = new SwerveDrivePoseEstimator(
+        DriveConstants.kDriveKinematics,
+        getRotation2d(),
+        getModulePositions(),
+        new Pose2d(0, 0, new Rotation2d(0))
+    );
+
+    public SwerveModulePosition[] getModulePositions() {
+        SwerveModulePosition[] positions = new SwerveModulePosition[4];
+        positions[0] = backLeft.getPosition();
+        positions[1] = backRight.getPosition();
+        positions[2] = frontLeft.getPosition();
+        positions[3] = frontRight.getPosition();
+        return positions;
+    }
+
 
     public SwerveSubsystem() {
-        // UNCOMMENT THIS CODE FOR COMPETITION: v
 
-        // if (DriverStation.getAlliance().get() == Alliance.Red) {
-        //     SmartDashboard.putBoolean("Alliance:", false);
-        //     this.isAllianceBlue = false;
-        // } else if (DriverStation.getAlliance().get() == Alliance.Blue) {
-        //     SmartDashboard.putBoolean("Alliance:", true);
-        //     this.isAllianceBlue = true;
-        // }
-
-        // ^
-
-        // COMMENT THIS CODE FOR COMPETITION: v
-
-        Alliance test = Alliance.Blue;
-
-        if (test == Alliance.Red) {
-            SmartDashboard.putBoolean("Alliance:", false);
-            this.isAllianceBlue = false;
-        } else if (test == Alliance.Blue) {
-            SmartDashboard.putBoolean("Alliance:", true);
-            this.isAllianceBlue = true;
-        }
-
-        // ^
-
-        this.tick = 0;
+        frontLeft.resetEncoders();
+        frontRight.resetEncoders();
+        backLeft.resetEncoders();
+        backRight.resetEncoders();
 
         new Thread(() -> {
             try {
@@ -120,6 +110,35 @@ public class SwerveSubsystem extends SubsystemBase {
             } catch (Exception e) {
             }
         }).start();
+
+
+        // Configure AutoBuilder last
+        AutoBuilder.configureHolonomic(
+                () -> odometry.getEstimatedPosition(), // Robot pose supplier
+                this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+                this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                this::setAutoChassisSpeed, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+                        new PIDConstants(0.5, 0.0, 0.0), // Translation PID Constants
+                        new PIDConstants(0.5, 0.0, 0.0), // Rotation PID Constants
+                        1, // Max Module Speed (m/s)
+                        0.1, // Drive base radius in meters. Distance from robot center to furthest module.
+                        new ReplanningConfig() // Default path replanning config. See the API for the options here
+                ),
+                () -> {
+                    // Boolean supplier that controls when the path will be mirrored for the red alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                },
+                this // Reference to this subsystem to set requirements
+        );
+
     }
 
     public Command zeroHeading() {
@@ -127,128 +146,45 @@ public class SwerveSubsystem extends SubsystemBase {
         return Commands.runOnce(() -> gyro.reset()); // Returns a command to be used on button press
     }
 
-    public Command coordinate() {
-        System.out.println("new button worked");
-        return Commands.runOnce(() -> coordinateFunction());
+    public ChassisSpeeds getChassisSpeeds() {
+        return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates());
+    }
+
+    public void setAutoChassisSpeed(ChassisSpeeds speed) {
+        SwerveModuleState states[] = Constants.DriveConstants.kDriveKinematics.toSwerveModuleStates(speed);
+        setModuleStates(states);
     }
 
     public double getHeading() {
         return Math.IEEEremainder(DriveConstants.kGyroReversed ? gyro.getAngle() * -1 : gyro.getAngle(), 360);
     }
 
-    public Pose2d getPose() {
-        return kOdometry.getPoseMeters();
-    }
-
     public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(getHeading());
     }
 
-    public void resetOdometry(Pose2d pose) {
-        kOdometry.resetPosition(getRotation2d(), new SwerveModulePosition[] {
-            backLeft.getPosition(),
-            backRight.getPosition(),
-            frontLeft.getPosition(),
-            frontRight.getPosition()
-          }, pose);
+    public Pose2d getPose() {
+        return odometry.getEstimatedPosition();
     }
+
+    public void resetOdometry(Pose2d pose) {
+        odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
+    }
+
 
     @Override
     public void periodic() {
-        tick++;
+        odometry.update(
+            getRotation2d(), 
+            getModulePositions()
+        );
 
-        SmartDashboard.putNumber("heading", getHeading());
-
-        //Get pose from limelight
-        limeLightPose = limeLight.runLimeLight(isAllianceBlue);
-
-        // If limelight sees targets, then update odometry translation
-        if (limeLight.seesMultipleTargets()) {
-
-            int tickConstrainedTranslation = tick % 5;
-
-            if (tickConstrainedTranslation == 0) {
-                goodTranslationBuffer = true;
-            }
-
-            translationBuffer[tickConstrainedTranslation] = limeLightPose.getTranslation();
-
-            if (tickConstrainedTranslation == 4 && goodTranslationBuffer) {
-                double sumX = 0;
-                double sumY = 0;
-
-                for (int i = 0; i < 5; i++) {
-                    sumX += translationBuffer[i].getX();
-                    sumY += translationBuffer[i].getY();
-                }
-
-                new Translation2d();
-                Translation2d averagedTranslation = new Translation2d(sumX / 5, sumY / 5);
-
-                // Update odometry with limelight pose
-                resetOdometry(new Pose2d(averagedTranslation, getRotation2d()));
-            }
-
-            // If limelight sees multiple targets, then update odometry rotation with an average of the last 10 headings
-            int tickConstrainedHeading = tick % 10;
-
-            if (tickConstrainedHeading == 0) {
-                goodHeadingBuffer = true;
-            }
-
-            headingBuffer[tickConstrainedHeading] = limeLightPose.getRotation().getDegrees();
-
-            
-
-            if (tickConstrainedHeading == 9 && goodHeadingBuffer) {
-
-                double sum = 0;
-
-                for (int i = 0; i < 10; i++) {
-                    sum += headingBuffer[i];
-                }
-
-                new Rotation2d();
-                Rotation2d averagedHeading = Rotation2d.fromDegrees(sum / 10);
-                // averagedHeading.minus(Rotation2d.fromDegrees(180));
-
-                gyro.reset();
-
-                // Field orient based on Limelight
-                gyro.setAngleAdjustment(-averagedHeading.getDegrees());
-
-                fieldOriented = true;
-            }
-        } else {
-            goodHeadingBuffer = false;
-            goodTranslationBuffer = false;
+        if (limelight.getLimeLightTV()) {
+            odometry.addVisionMeasurement(
+                limelight.getRoboPose(),
+                Timer.getFPGATimestamp() - (limelight.getRoboPoseLatency() / 1000)
+            );
         }
-
-        SmartDashboard.putString("Limelight Pose", limeLightPose.toString());
-        SmartDashboard.putBoolean("Limelight Sees Targets", limeLight.seesTargets());
-        SmartDashboard.putBoolean("Limelight Sees Multiple Targets", limeLight.seesMultipleTargets());
-
-        // Update odometry with swerve module positions
-        pose = kOdometry.update(getRotation2d(),
-            new SwerveModulePosition[] {
-                backLeft.getPosition(),
-                backRight.getPosition(),
-                frontLeft.getPosition(),
-                frontRight.getPosition()
-            });
-
-        SmartDashboard.putNumber("X", pose.getX());
-        SmartDashboard.putNumber("Y", pose.getY());
-        SmartDashboard.putString("Pose", getPose().toString());
-        SmartDashboard.putNumber("Odometry Rotation", pose.getRotation().getDegrees());
-    }
-    
-    public void coordinateFunction() {
-        resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
-        backLeft.resetEncoders();
-        backRight.resetEncoders();
-        frontLeft.resetEncoders();
-        frontRight.resetEncoders();
     }
 
     public void stopModules() {
@@ -264,5 +200,15 @@ public class SwerveSubsystem extends SubsystemBase {
         backRight.setDesiredState(desiredStates[1]);
         frontLeft.setDesiredState(desiredStates[2]);
         frontRight.setDesiredState(desiredStates[3]);
+    }
+
+    public SwerveModuleState[] getModuleStates() {
+        SwerveModuleState[] newModuleStates = {
+        backLeft.getModuleState(),
+        backRight.getModuleState(),
+        frontLeft.getModuleState(),
+        frontRight.getModuleState()
+        };
+        return newModuleStates;
     }
 }

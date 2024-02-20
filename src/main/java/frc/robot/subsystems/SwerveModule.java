@@ -108,6 +108,10 @@ public class SwerveModule extends SubsystemBase{
         );
     }
 
+    public SwerveModuleState getModuleState() {
+        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
+    }
+
     public void stop() {
         driveMotor.set(0);
         turningMotor.set(0);

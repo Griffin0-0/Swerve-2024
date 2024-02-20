@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,9 +19,6 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.SwerveJoystickCmd;
-import frc.robot.commands.auto.FireAtSpeakerCmd;
-import frc.robot.commands.auto.IntakeFromGroundCmd;
-import frc.robot.commands.auto.MoveToPosCmd;
 import frc.robot.commands.functions.EmergencyStopMechanismsCmd;
 import frc.robot.commands.functions.ShootAmpCmd;
 import frc.robot.commands.functions.ShootCmd;
@@ -71,12 +71,17 @@ public class RobotContainer {
 
 
                 
+    NamedCommands.registerCommand("useIntake", new ShootCmd(shooterSubsystem, intakeSubsystem));
+    // NamedCommands.registerCommand("retractIntake", swerve.autoBalanceCommand());
+    // NamedCommands.registerCommand("runShooter", swerve.autoBalanceCommand());
+    // NamedCommands.registerCommand("stopShooter", swerve.autoBalanceCommand());
+
     configureBindings();
   }
 
   private void configureBindings() {
     new JoystickButton(driverJoystick, OIConstants.kDriverResetGyroButtonId).onTrue(swerveSubsystem.zeroHeading());
-    new JoystickButton(driverJoystick, OIConstants.kDriverCoordinateButtonId).onTrue(swerveSubsystem.coordinate());
+    // new JoystickButton(driverJoystick, OIConstants.kDriverCoordinateButtonId).onTrue(swerveSubsystem.coordinate());
     new JoystickButton(driverJoystick, OIConstants.kDriverStopButtonId).onTrue(new EmergencyStopMechanismsCmd(shooterSubsystem, intakeSubsystem, climberSubsystem));
     new JoystickButton(driverJoystick, OIConstants.kDriverToggleClimberButtonId).onTrue(new ToggleClimberCmd(climberSubsystem));
     new JoystickButton(driverJoystick, OIConstants.kDriverSourceIntakeButtonId).whileTrue(new SourceIntakeCmd(shooterSubsystem, intakeSubsystem));
@@ -91,22 +96,6 @@ public class RobotContainer {
 
 
   public Command getAutonomousCommand() {
-    Pose2d[] path1 = {
-      new Pose2d(1.9,5.9,new Rotation2d(0 * Math.PI / 180)),
-      new Pose2d(1.9,4.9,new Rotation2d(0 * Math.PI / 180)),
-      new Pose2d(1.9,5.9,new Rotation2d(0 * Math.PI / 180)),
-      new Pose2d(1.9,5.9,new Rotation2d(45 * Math.PI / 180)),
-      new Pose2d(1.9,4.9,new Rotation2d(45 * Math.PI / 180)),
-      new Pose2d(1.9,4.9,new Rotation2d(0 * Math.PI / 180)),
-    };
-
-    return new SequentialCommandGroup(
-          new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", false)),
-          // new MoveToPosCmd(swerveSubsystem, path1, true, true), //90 * Math.PI / 180
-          // new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-          new IntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(4.5, 5.48)),
-          new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-          new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", true)),
-          new InstantCommand(() -> swerveSubsystem.stopModules()));
+    return new PathPlannerAuto("Left 4 Notes");
   }
 }
