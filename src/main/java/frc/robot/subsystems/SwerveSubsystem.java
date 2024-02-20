@@ -95,12 +95,14 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
 
-    public SwerveSubsystem() {
+    public SwerveSubsystem(Limelight Limelight) {
 
         frontLeft.resetEncoders();
         frontRight.resetEncoders();
         backLeft.resetEncoders();
         backRight.resetEncoders();
+
+        limelight = Limelight;
 
         new Thread(() -> {
             try {
@@ -122,7 +124,7 @@ public class SwerveSubsystem extends SubsystemBase {
                         new PIDConstants(0.5, 0.0, 0.0), // Translation PID Constants
                         new PIDConstants(0.5, 0.0, 0.0), // Rotation PID Constants
                         1, // Max Module Speed (m/s)
-                        0.1, // Drive base radius in meters. Distance from robot center to furthest module.
+                        0.5, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here
                 ),
                 () -> {

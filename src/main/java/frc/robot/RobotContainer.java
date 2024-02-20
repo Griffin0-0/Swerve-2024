@@ -37,17 +37,19 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ClimberSubsystem;
 
 
 public class RobotContainer {
 
-  // private final SendableChooser<Command> autoChooser;
+  private final SendableChooser<Command> autoChooser;
 
   private final SwerveSubsystem swerveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final IntakeSubsystem intakeSubsystem;
   private final ClimberSubsystem climberSubsystem;
+  private final Limelight limelight;
 
   private final Joystick driverJoystick = new Joystick(OIConstants.kOperatorControllerPort);
   private final Joystick translateStick = new Joystick(OIConstants.kDriverTranslateStickPort);
@@ -58,7 +60,8 @@ public class RobotContainer {
     climberSubsystem = new ClimberSubsystem();
     intakeSubsystem = new IntakeSubsystem();
     shooterSubsystem = new ShooterSubsystem();
-    swerveSubsystem = new SwerveSubsystem();
+    limelight = new Limelight();
+    swerveSubsystem = new SwerveSubsystem(limelight);
 
     NamedCommands.registerCommand("useIntake", new ToggleArticulateCmd(intakeSubsystem));
     NamedCommands.registerCommand("runShooter", new ShootCmd(shooterSubsystem, intakeSubsystem));
@@ -87,7 +90,7 @@ public class RobotContainer {
     // NamedCommands.registerCommand("stopShooter", swerve.autoBalanceCommand());
 
     configureBindings();
-    // autoChooser = AutoBuilder.buildAutoChooser("Straight");
+    autoChooser = AutoBuilder.buildAutoChooser("Straight");
   }
 
   private void configureBindings() {
