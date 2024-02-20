@@ -42,7 +42,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 
 public class RobotContainer {
 
-  private final SendableChooser<Command> autoChooser;
+  // private final SendableChooser<Command> autoChooser;
 
   private final SwerveSubsystem swerveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
@@ -87,7 +87,7 @@ public class RobotContainer {
     // NamedCommands.registerCommand("stopShooter", swerve.autoBalanceCommand());
 
     configureBindings();
-    autoChooser = AutoBuilder.buildAutoChooser("Straight");
+    // autoChooser = AutoBuilder.buildAutoChooser("Straight");
   }
 
   private void configureBindings() {
