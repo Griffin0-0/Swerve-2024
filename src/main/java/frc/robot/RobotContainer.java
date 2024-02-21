@@ -64,7 +64,6 @@ public class RobotContainer {
       () -> -translateStick.getRawAxis(OIConstants.kDriverYAxis),
       () -> -translateStick.getRawAxis(OIConstants.kDriverXAxis),
       () -> rotateStick.getRawAxis(0),
-      () -> !driverJoystick.getRawButton(OIConstants.kDriverCoordinateButtonId),
       () -> translateStick.getRawButton(1),
       () -> rotateStick.getRawButton(1)));
 
