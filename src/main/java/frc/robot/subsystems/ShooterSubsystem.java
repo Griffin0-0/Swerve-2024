@@ -80,15 +80,16 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterMotor_1.set(speed);
         shooterMotor_2.set(-speed);
 
-        if (currentFlywheelState ==0) {
-            limiterSetting = 0;
-        } else if (currentFlywheelState == 1) {
-            limiterSetting = ShooterConstants.kShooterFlywheelSpeed;
-        } else if (currentFlywheelState == 2) {
-            limiterSetting = ShooterConstants.kShooterAmpSpeed;
-        } else if (currentFlywheelState == 3) {
-            limiterSetting = -ShooterConstants.kShooterIntakeSpeed;
-        }
+        // if (currentFlywheelState ==0) {
+        //     limiterSetting = 0;
+        // } else if (currentFlywheelState == 1) {
+        //     limiterSetting = ShooterConstants.kShooterFlywheelSpeed;
+        // } else if (currentFlywheelState == 2) {
+        //     limiterSetting = ShooterConstants.kShooterAmpSpeed;
+        // } else if (currentFlywheelState == 3) {
+        //     limiterSetting = -ShooterConstants.kShooterIntakeSpeed;
+        // }
+        // TO BE TESTED WEDNESDAY
 
         SmartDashboard.putNumber("Shooter Limiter Setting", limiterSetting);
         SmartDashboard.putNumber("Shooter Speed", speed);
