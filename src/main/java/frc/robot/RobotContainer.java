@@ -19,6 +19,7 @@ import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.auto.MoveToPosCmd;
 import frc.robot.commands.auto.SimpleFireAtSpeakerCmd;
 import frc.robot.commands.auto.SimpleIntakeFromGroundCmd;
+import frc.robot.commands.auto.WaitForTimeCmd;
 import frc.robot.commands.functions.EmergencyStopMechanismsCmd;
 import frc.robot.commands.functions.ShootAmpCmd;
 import frc.robot.commands.functions.ShootCmd;
@@ -30,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.subsystems.SwerveSubsystem;
@@ -106,6 +108,7 @@ public class RobotContainer {
           new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", false)),
           // new InstantCommand(() -> shooterSubsystem.stop()),
           // new MoveToPosCmd(swerveSubsystem, path1, true, true), //90 * Math.PI / 180
+          new WaitCommand(5),
           new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
           new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 5.45)),
           new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
@@ -113,6 +116,3 @@ public class RobotContainer {
           new InstantCommand(() -> swerveSubsystem.stopModules()));
   }
 }
-
-// EXTRA TO-DO:
-// MAKE LIMELIGHT UPDATE FROM SINGLE APRIL TAG IF CLOSE ENOUGH
