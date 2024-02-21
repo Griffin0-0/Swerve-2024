@@ -40,6 +40,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
         servo_1 = new Servo(ShooterConstants.kShooterFlapServoId_1);
         servo_2 = new Servo(ShooterConstants.kShooterFlapServoId_2);
+
+        this.flapUp();
     }
 
 
