@@ -1,80 +1,47 @@
 package frc.robot.commands.auto;
+
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.SwerveSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class IntakeFromSourceCmd extends Command {
+public class MoveToPosForLimelightCmd extends Command {
+
     private final SwerveSubsystem swerveSubsystem;
-    private final ShooterSubsystem shooterSubsystem;
-    private final IntakeSubsystem intakeSubsystem;
+    private final LimeLight limelight;
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
-    private int currentStopTick;
-    private int startTick = -AutoConstants.kAutoStartCheckTicks;
-    private int intookCheckTick = AutoConstants.kAutoSourceIntakeCheckTicks;
     private Pose2d targetPose;
     private int tick = 0;
-    private Boolean isDone = false;
+    private boolean isDone = false;
 
-    private Pose2d intakeSourcePos;
-    private Pose2d BlueIntakeSourcePos = new Pose2d(0,0, Rotation2d.fromDegrees(0));
-    private Pose2d RedIntakeSourcePos = new Pose2d(0,0, Rotation2d.fromDegrees(0));
-    
-    public IntakeFromSourceCmd(SwerveSubsystem swerveSubsystem, ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem) {
+    public MoveToPosForLimelightCmd(SwerveSubsystem swerveSubsystem, LimeLight limelight, Pose2d targetPose) {
         this.swerveSubsystem = swerveSubsystem;
-        this.shooterSubsystem = shooterSubsystem;
-        this.intakeSubsystem = intakeSubsystem;
+        this.limelight = limelight;
         this.xLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAngularAccelerationUnitsPerSecond);
-
-        if (!swerveSubsystem.isAllianceBlue) { // REMOVE NOT BEFORE COMPETITION
-            this.intakeSourcePos = BlueIntakeSourcePos;
-        } else {
-            this.intakeSourcePos = RedIntakeSourcePos;
-        }
-
+        this.targetPose = targetPose;
         addRequirements(swerveSubsystem);
     }
 
     @Override
     public void execute() {
         tick++;
-        SmartDashboard.putNumber("Amp Ticks", tick);
+        SmartDashboard.putNumber("Auto Ticks", tick);
 
-        shooterSubsystem.spinIn();
-        shooterSubsystem.flapUp();
-
-        targetPose = intakeSourcePos;
-        
         if (moveSwerve()) {
-            intakeSubsystem.runIntake(IntakeConstants.kIntakeOutMotorSpeed);
-            intookCheckTick--;
-        } else {
-            intakeSubsystem.stopIntake();
-        }
-
-        if (intookCheckTick <= 0) {
-            shooterSubsystem.stop();
-            intakeSubsystem.stop();
-            shooterSubsystem.flapDown();
             isDone = true;
         }
     }
 
     // Moves swerve to targetPose. Returns true when it reaches the position
     public boolean moveSwerve() {
-        startTick++;
-        SmartDashboard.putNumber("startTick", startTick);
 
         // Calculate the error between current position and targetPos
         double xError = targetPose.getX() - swerveSubsystem.getPose().getX();
@@ -88,7 +55,7 @@ public class IntakeFromSourceCmd extends Command {
         // Calculate xSpeed, ySpeed, and turnSpeed
         double xSpeed = Math.cos(angle) * speed;
         double ySpeed = Math.sin(angle) * speed;
-        double turnSpeed = (Math.abs(turnError * Math.sqrt(Math.abs(turnError * 40)) * -0.005) < AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond) ? turnError * Math.sqrt(Math.abs(turnError * 40)) * -0.005 : AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond * Math.signum(turnError);
+        double turnSpeed = (Math.abs(turnError * 60 * Math.sqrt(Math.abs(turnError * 60)) * -0.005) < AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond) ? turnError * 60 * Math.sqrt(Math.abs(turnError * 60)) * -0.005 : AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond * Math.signum(turnError);
 
         // Limit xSpeed, ySpeed, and turnSpeed to min speeds
         xSpeed = Math.abs(xSpeed) > AutoConstants.kAutoMinSpeed ? xSpeed : 0.0;
@@ -109,6 +76,7 @@ public class IntakeFromSourceCmd extends Command {
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
         
+        SmartDashboard.putNumber("MoveToPos Thing", Math.sqrt(xError * xError + yError * yError));
         // If swerve is close to targetPose, then return true
         if (Math.sqrt(xError * xError + yError * yError) < AutoConstants.kAutoToleranceMeters && Math.abs(turnError * 180 / Math.PI) < AutoConstants.kAutoToleranceDegrees) {
             return true; // Check if you can remove stop and start ticks now
@@ -119,6 +87,7 @@ public class IntakeFromSourceCmd extends Command {
     }
 
     public boolean isFinished() {
-        return isDone;
+        // If current position in list is greater than or equal to the length of the targetPath and repeatPath is false, then return true and exit command
+        return limelight.seesMultipleTargets() || isDone;
     }
 }

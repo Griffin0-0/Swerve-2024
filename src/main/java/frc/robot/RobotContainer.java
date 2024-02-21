@@ -16,8 +16,6 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.SwerveJoystickCmd;
-import frc.robot.commands.auto.FireAtSpeakerCmd;
-import frc.robot.commands.auto.IntakeFromGroundCmd;
 import frc.robot.commands.auto.MoveToPosCmd;
 import frc.robot.commands.auto.SimpleFireAtSpeakerCmd;
 import frc.robot.commands.auto.SimpleIntakeFromGroundCmd;
@@ -115,3 +113,6 @@ public class RobotContainer {
           new InstantCommand(() -> swerveSubsystem.stopModules()));
   }
 }
+
+// EXTRA TO-DO:
+// MAKE LIMELIGHT UPDATE FROM SINGLE APRIL TAG IF CLOSE ENOUGH

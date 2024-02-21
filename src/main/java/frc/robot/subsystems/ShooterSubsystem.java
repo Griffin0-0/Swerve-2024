@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,6 +28,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public boolean flapState = false; // up = true, down = false
     public boolean allowedShoot = false;
     public int tick = 0;
+    public int currentFlywheelState = 0;
 
 
 
@@ -34,7 +36,7 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterMotor_1 = new CANSparkMax(ShooterConstants.kShooterSpinMotorId_1, MotorType.kBrushless);
         shooterMotor_2 = new CANSparkMax(ShooterConstants.kShooterSpinMotorId_2, MotorType.kBrushless);
 
-        shooterLimiter = new SlewRateLimiter(0.75);
+        shooterLimiter = new SlewRateLimiter(1);
 
         servo_1 = new Servo(ShooterConstants.kShooterFlapServoId_1);
         servo_2 = new Servo(ShooterConstants.kShooterFlapServoId_2);
@@ -52,10 +54,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void spinIn() {
         limiterSetting = -ShooterConstants.kShooterIntakeSpeed;
+        currentFlywheelState = 3;
     }
 
     public void spinOut() {
         limiterSetting = ShooterConstants.kShooterFlywheelSpeed;
+        currentFlywheelState = 1;
     }
 
     public void setRollerSpeed(double speed) {
@@ -64,6 +68,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void ampSpinOut() {
         limiterSetting = ShooterConstants.kShooterAmpSpeed;
+        currentFlywheelState = 2;
     }
 
 
@@ -74,6 +79,21 @@ public class ShooterSubsystem extends SubsystemBase {
         double speed = shooterLimiter.calculate(limiterSetting);
         shooterMotor_1.set(speed);
         shooterMotor_2.set(-speed);
+
+        if (currentFlywheelState ==0) {
+            limiterSetting = 0;
+        } else if (currentFlywheelState == 1) {
+            limiterSetting = ShooterConstants.kShooterFlywheelSpeed;
+        } else if (currentFlywheelState == 2) {
+            limiterSetting = ShooterConstants.kShooterAmpSpeed;
+        } else if (currentFlywheelState == 3) {
+            limiterSetting = -ShooterConstants.kShooterIntakeSpeed;
+        }
+
+        SmartDashboard.putNumber("Shooter Limiter Setting", limiterSetting);
+        SmartDashboard.putNumber("Shooter Speed", speed);
+        SmartDashboard.putNumber("Current Flywheel State", currentFlywheelState);
+
     }
 
 
@@ -103,10 +123,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void shooterStop() {
         limiterSetting = 0;
+        currentFlywheelState = 0;
     }
 
     public void stop() {
         limiterSetting = 0;
+        currentFlywheelState = 0;
         shooterMotor_1.set(0);
         shooterMotor_2.set(0);
     }
