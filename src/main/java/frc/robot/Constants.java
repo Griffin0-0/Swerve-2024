@@ -162,7 +162,7 @@ public class Constants {
 
         public static final int kAutoSpeakerShotCheckTicks = 200;
 
-        public static final int kAutoGroundIntakeCheckTicks = 300;
+        public static final int kAutoGroundIntakeCheckTicks = 200;
 
         // Tolerances
         public static final double kAutoToleranceMeters = 0.09;

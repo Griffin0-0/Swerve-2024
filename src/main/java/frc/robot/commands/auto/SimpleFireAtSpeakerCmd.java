@@ -23,9 +23,9 @@ public class SimpleFireAtSpeakerCmd extends Command {
     private int tick = 0;
     private int currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks; 
     private Pose2d[] blueSpeakerPositions = {
-                                            new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0)),
-                                            new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0)),
-                                            new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0))
+                                            new Pose2d(1.9,5.48,Rotation2d.fromDegrees(0)),
+                                            new Pose2d(1.5,6.35,Rotation2d.fromDegrees(26)),
+                                            new Pose2d(1.5,4.71,Rotation2d.fromDegrees(-26))
                                             };
     private Pose2d[] redSpeakerPositions = {
                                             new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0)),
@@ -84,6 +84,8 @@ public class SimpleFireAtSpeakerCmd extends Command {
             shooterSubsystem.shooterStop();
             isDone = true;
         }
+
+        SmartDashboard.putBoolean("Intake is Down", intakeSubsystem.isDown());
 
     }
 
