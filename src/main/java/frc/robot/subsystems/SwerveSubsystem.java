@@ -191,6 +191,11 @@ public class SwerveSubsystem extends SubsystemBase {
                 // Update odometry with limelight pose
                 resetOdometry(new Pose2d(averagedTranslation, getRotation2d()));
             }
+        } else {
+            goodTranslationBuffer = false;
+        }
+
+        if (limeLight.seesMultipleTargets()) {
 
             // If limelight sees multiple targets, then update odometry rotation with an average of the last 10 headings
             int tickConstrainedHeading = tick % 10;
@@ -224,7 +229,6 @@ public class SwerveSubsystem extends SubsystemBase {
             }
         } else {
             goodHeadingBuffer = false;
-            goodTranslationBuffer = false;
         }
 
         SmartDashboard.putString("Limelight Pose", limeLightPose.toString());

@@ -23,9 +23,9 @@ public class SimpleFireAtSpeakerCmd extends Command {
     private int tick = 0;
     private int currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks; 
     private Pose2d[] blueSpeakerPositions = {
-                                            new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0)),
-                                            new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0)),
-                                            new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0))
+                                            new Pose2d(1.9,5.48,Rotation2d.fromDegrees(0)),
+                                            new Pose2d(1.5,6.35,Rotation2d.fromDegrees(26)),
+                                            new Pose2d(1.5,4.71,Rotation2d.fromDegrees(-26))
                                             };
     private Pose2d[] redSpeakerPositions = {
                                             new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0)),
@@ -51,19 +51,20 @@ public class SimpleFireAtSpeakerCmd extends Command {
         } else {
             this.speakerPositions = redSpeakerPositions;
         }
-        
+    }
+
+    @Override
+    public void initialize() {
+        shooterSubsystem.speakerSpinOut();
         // Find closest shooting point and set as targetPose
         double minDistance = Double.MAX_VALUE;
         for (Pose2d speakerPos : speakerPositions) {
             double distance = Math.sqrt(Math.pow(speakerPos.getX() - swerveSubsystem.getPose().getX(), 2) + Math.pow(speakerPos.getY() - swerveSubsystem.getPose().getY(), 2));
             if (distance < minDistance) {
                 minDistance = distance;
-                this.targetPose = speakerPos;
+                targetPose = speakerPos;
             }
         }
-
-        // Spin up shooter
-        this.shooterSubsystem.spinOut();
     }
 
     @Override
@@ -73,6 +74,7 @@ public class SimpleFireAtSpeakerCmd extends Command {
 
         // If close to targetPos, shoot
         if (moveSwerve()) {
+            shooterSubsystem.flapDown();
             intakeSubsystem.runIntake(-IntakeConstants.kIntakeOutMotorSpeed);
             currentShootTick--;
         } else {
@@ -81,9 +83,12 @@ public class SimpleFireAtSpeakerCmd extends Command {
 
         // If shooter is done shooting, stop shooter and exit command
         if (currentShootTick <= 0) {
+            shooterSubsystem.flapUp();
             shooterSubsystem.shooterStop();
             isDone = true;
         }
+
+        SmartDashboard.putBoolean("Intake is Down", intakeSubsystem.isDown());
 
     }
 

@@ -37,6 +37,7 @@ public class DepositToAmpCmd extends Command {
         this.xLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAngularAccelerationUnitsPerSecond);
+        addRequirements(swerveSubsystem);
 
         if (swerveSubsystem.isAllianceBlue) {
             this.ampDepositPos = blueAmpDepositPos;
@@ -44,17 +45,15 @@ public class DepositToAmpCmd extends Command {
             this.ampDepositPos = redAmpDepositPos;
         }
 
-        addRequirements(swerveSubsystem);
+        shooterSubsystem.ampSpinOut();
+
+        targetPose = ampDepositPos;
     }
 
     @Override
     public void execute() {
         tick++;
         SmartDashboard.putNumber("Amp Ticks", tick);
-
-        shooterSubsystem.ampSpinOut();
-
-        targetPose = ampDepositPos;
         
         if (moveSwerve()) {
             intakeSubsystem.runIntake(-IntakeConstants.kIntakeOutMotorSpeed);

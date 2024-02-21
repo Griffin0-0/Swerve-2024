@@ -48,5 +48,17 @@ public class LimeLight {
 
         return node.get("Results").get("Fiducial").size() > 1;
     }
+
+    public boolean seesOneGoodTarget() {
+        final String json = table.getEntry("json").getString(null);
+
+        try {node = new ObjectMapper().readTree(json);} catch (JsonProcessingException e) {e.printStackTrace();};
+
+        boolean goodTrack = (table.getEntry("ta").getDouble(0) > 5000);
+
+        SmartDashboard.putNumber("ta", table.getEntry("ta").getDouble(0));
+
+        return node.get("Results").get("Fiducial").size() == 1 && goodTrack;
+    }
     
 }

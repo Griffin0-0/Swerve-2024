@@ -18,9 +18,10 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.SwerveJoystickCmd;
-import frc.robot.commands.auto.FireAtSpeakerCmd;
-import frc.robot.commands.auto.IntakeFromGroundCmd;
 import frc.robot.commands.auto.MoveToPosCmd;
+import frc.robot.commands.auto.SimpleFireAtSpeakerCmd;
+import frc.robot.commands.auto.SimpleIntakeFromGroundCmd;
+import frc.robot.commands.auto.WaitForTimeCmd;
 import frc.robot.commands.functions.EmergencyStopMechanismsCmd;
 import frc.robot.commands.functions.ShootAmpCmd;
 import frc.robot.commands.functions.ShootCmd;
@@ -32,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.subsystems.SwerveSubsystem;
@@ -108,10 +110,11 @@ public class RobotContainer {
 
     return new SequentialCommandGroup(
           new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", false)),
+          // new InstantCommand(() -> shooterSubsystem.stop()),
           // new MoveToPosCmd(swerveSubsystem, path1, true, true), //90 * Math.PI / 180
-          new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-          new IntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(4.5, 5.45)),
-          new FireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+          new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 5.45)),
+          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
           new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", true)),
           new InstantCommand(() -> swerveSubsystem.stopModules()));
   }

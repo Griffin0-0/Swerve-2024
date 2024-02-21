@@ -23,8 +23,9 @@ public class SimpleIntakeFromGroundCmd extends Command {
     private Pose2d targetPose;
     private Translation2d targetTranslation;
     private Boolean isDone = false;
-    private double collectionDistance = 1.5;
+    private double collectionDistance = 2;
     private boolean reachedFirstPoint = false;
+    private double currentSpeedLimit = AutoConstants.kAutoMaxSpeedMetersPerSecond;
 
     public SimpleIntakeFromGroundCmd(SwerveSubsystem swerveSubsystem, IntakeSubsystem intakeSubsystem, Translation2d targetTranslation) {
         this.swerveSubsystem = swerveSubsystem;
@@ -34,11 +35,14 @@ public class SimpleIntakeFromGroundCmd extends Command {
         this.yLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAngularAccelerationUnitsPerSecond);
         addRequirements(swerveSubsystem);
-
+        }
+        
+    @Override
+    public void initialize() {
         Pose2d approachPoint = new Pose2d(targetTranslation.getX() - collectionDistance, targetTranslation.getY(), Rotation2d.fromDegrees(0));
 
-        this.targetPose = approachPoint;
-        }
+        targetPose = approachPoint;
+    }
 
     @Override
     public void execute() {
@@ -51,13 +55,18 @@ public class SimpleIntakeFromGroundCmd extends Command {
         if (swerveMovedCondition && reachedFirstPoint) {
             // If swerve reached targetPose, start collecting note
             collectedCheckTick--;
-        } else if (swerveMovedCondition) {
+        } else if (swerveMovedCondition && !reachedFirstPoint) {
             reachedFirstPoint = true;
-            targetPose = new Pose2d(targetTranslation.getX(), targetTranslation.getY(), Rotation2d.fromDegrees(0));
+            targetPose = new Pose2d(targetTranslation.getX() - 0.5, targetTranslation.getY(), Rotation2d.fromDegrees(0));
+            currentSpeedLimit = AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond;
         }
 
+        SmartDashboard.putBoolean("Reached First Point", reachedFirstPoint);
+
+        SmartDashboard.putString("targetPos ground", targetPose.toString());
+
         // Once made sure swerve has collected note from ground, exit command
-        if (collectedCheckTick <= AutoConstants.kAutoGroundIntakeCheckTicks / 4) {
+        if (collectedCheckTick < AutoConstants.kAutoGroundIntakeCheckTicks) {
             intakeSubsystem.stopIntake();
             intakeSubsystem.intakeUp();
         } else {
@@ -80,7 +89,7 @@ public class SimpleIntakeFromGroundCmd extends Command {
 
         // Calculate the angle and speed to move swerve to targetPose
         double angle = Math.atan2(yError, xError);
-        double speed = (xError * xError + yError * yError) * 15 * (1 / AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond) * (1 / AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond) * (1 / AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond) > AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond ? AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond : (xError * xError + yError * yError) * 7;
+        double speed = (xError * xError + yError * yError) * 15 * (1 / currentSpeedLimit) * (1 / currentSpeedLimit) * (1 / currentSpeedLimit) > currentSpeedLimit ? currentSpeedLimit : (xError * xError + yError * yError) * 7;
 
         // Calculate xSpeed, ySpeed, and turnSpeed
         double xSpeed = Math.cos(angle) * speed;
@@ -92,8 +101,8 @@ public class SimpleIntakeFromGroundCmd extends Command {
         ySpeed = Math.abs(ySpeed) > AutoConstants.kAutoMinSpeed ? ySpeed : 0.0;
         turnSpeed = Math.abs(turnSpeed) > AutoConstants.kAutoMinTurnSpeedRadians ? turnSpeed : 0.0;
 
-        xSpeed = xLimiter.calculate(xSpeed) * AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond;
-        ySpeed = yLimiter.calculate(ySpeed) * AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond;
+        xSpeed = xLimiter.calculate(xSpeed) * currentSpeedLimit;
+        ySpeed = yLimiter.calculate(ySpeed) * currentSpeedLimit;
         turnSpeed = turningLimiter.calculate(turnSpeed) * AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond;
 
         SmartDashboard.putNumber("xSpeed", xSpeed);
@@ -107,7 +116,7 @@ public class SimpleIntakeFromGroundCmd extends Command {
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
 
-        if (Math.sqrt(xError * xError + yError * yError) < AutoConstants.kAutoToleranceMeters && Math.abs(turnError * 180 / Math.PI) < AutoConstants.kAutoToleranceDegrees) {
+        if (Math.sqrt(xError * xError + yError * yError) < 0.12 && Math.abs(turnError * 180 / Math.PI) < AutoConstants.kAutoToleranceDegrees) {
             return true;
         }
 

@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -34,10 +35,12 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterMotor_1 = new CANSparkMax(ShooterConstants.kShooterSpinMotorId_1, MotorType.kBrushless);
         shooterMotor_2 = new CANSparkMax(ShooterConstants.kShooterSpinMotorId_2, MotorType.kBrushless);
 
-        shooterLimiter = new SlewRateLimiter(0.75);
+        shooterLimiter = new SlewRateLimiter(1);
 
         servo_1 = new Servo(ShooterConstants.kShooterFlapServoId_1);
         servo_2 = new Servo(ShooterConstants.kShooterFlapServoId_2);
+
+        this.flapUp();
     }
 
 
@@ -54,7 +57,7 @@ public class ShooterSubsystem extends SubsystemBase {
         limiterSetting = -ShooterConstants.kShooterIntakeSpeed;
     }
 
-    public void spinOut() {
+    public void speakerSpinOut() {
         limiterSetting = ShooterConstants.kShooterFlywheelSpeed;
     }
 
@@ -74,6 +77,10 @@ public class ShooterSubsystem extends SubsystemBase {
         double speed = shooterLimiter.calculate(limiterSetting);
         shooterMotor_1.set(speed);
         shooterMotor_2.set(-speed);
+
+        SmartDashboard.putNumber("Shooter Limiter Setting", limiterSetting);
+        SmartDashboard.putNumber("Shooter Speed", speed);
+
     }
 
 
