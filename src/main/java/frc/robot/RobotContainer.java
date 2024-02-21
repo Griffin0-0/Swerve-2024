@@ -90,7 +90,7 @@ public class RobotContainer {
     // NamedCommands.registerCommand("stopShooter", swerve.autoBalanceCommand());
 
     configureBindings();
-    autoChooser = AutoBuilder.buildAutoChooser("Straight");
+    autoChooser = AutoBuilder.buildAutoChooser("2 Note Auto");
   }
 
   private void configureBindings() {

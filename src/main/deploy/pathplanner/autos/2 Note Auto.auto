@@ -12,39 +12,15 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "runShooter"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "useIntake"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Close Note"
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "To Speaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "runShooter"
           }
         }
       ]

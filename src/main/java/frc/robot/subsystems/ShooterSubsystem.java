@@ -29,7 +29,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public int tick = 0;
 
 
-
     public ShooterSubsystem() {
         shooterMotor_1 = new CANSparkMax(ShooterConstants.kShooterSpinMotorId_1, MotorType.kBrushless);
         shooterMotor_2 = new CANSparkMax(ShooterConstants.kShooterSpinMotorId_2, MotorType.kBrushless);
