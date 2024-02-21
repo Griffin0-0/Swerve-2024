@@ -51,19 +51,20 @@ public class SimpleFireAtSpeakerCmd extends Command {
         } else {
             this.speakerPositions = redSpeakerPositions;
         }
-        
+    }
+
+    @Override
+    public void initialize() {
+        shooterSubsystem.speakerSpinOut();
         // Find closest shooting point and set as targetPose
         double minDistance = Double.MAX_VALUE;
         for (Pose2d speakerPos : speakerPositions) {
             double distance = Math.sqrt(Math.pow(speakerPos.getX() - swerveSubsystem.getPose().getX(), 2) + Math.pow(speakerPos.getY() - swerveSubsystem.getPose().getY(), 2));
             if (distance < minDistance) {
                 minDistance = distance;
-                this.targetPose = speakerPos;
+                targetPose = speakerPos;
             }
         }
-
-        // Spin up shooter
-        this.shooterSubsystem.spinOut();
     }
 
     @Override

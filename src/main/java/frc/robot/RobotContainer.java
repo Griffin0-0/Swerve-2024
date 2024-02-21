@@ -108,7 +108,6 @@ public class RobotContainer {
           new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", false)),
           // new InstantCommand(() -> shooterSubsystem.stop()),
           // new MoveToPosCmd(swerveSubsystem, path1, true, true), //90 * Math.PI / 180
-          new WaitCommand(5),
           new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
           new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 5.45)),
           new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),

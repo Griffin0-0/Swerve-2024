@@ -35,11 +35,14 @@ public class SimpleIntakeFromGroundCmd extends Command {
         this.yLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAngularAccelerationUnitsPerSecond);
         addRequirements(swerveSubsystem);
-
+        }
+        
+    @Override
+    public void initialize() {
         Pose2d approachPoint = new Pose2d(targetTranslation.getX() - collectionDistance, targetTranslation.getY(), Rotation2d.fromDegrees(0));
 
-        this.targetPose = approachPoint;
-        }
+        targetPose = approachPoint;
+    }
 
     @Override
     public void execute() {
@@ -54,7 +57,7 @@ public class SimpleIntakeFromGroundCmd extends Command {
             collectedCheckTick--;
         } else if (swerveMovedCondition && !reachedFirstPoint) {
             reachedFirstPoint = true;
-            targetPose = new Pose2d(targetTranslation.getX(), targetTranslation.getY(), Rotation2d.fromDegrees(0));
+            targetPose = new Pose2d(targetTranslation.getX() - 0.5, targetTranslation.getY(), Rotation2d.fromDegrees(0));
             currentSpeedLimit = AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond;
         }
 

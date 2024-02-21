@@ -26,7 +26,7 @@ public class ShootCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.spinOut();
+    shooterSubsystem.speakerSpinOut();
     ledSubsystem.setShoot();
   }
 

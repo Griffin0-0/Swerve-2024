@@ -28,7 +28,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public boolean flapState = false; // up = true, down = false
     public boolean allowedShoot = false;
     public int tick = 0;
-    public int currentFlywheelState = 0;
 
 
 
@@ -56,12 +55,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void spinIn() {
         limiterSetting = -ShooterConstants.kShooterIntakeSpeed;
-        currentFlywheelState = 3;
     }
 
-    public void spinOut() {
+    public void speakerSpinOut() {
         limiterSetting = ShooterConstants.kShooterFlywheelSpeed;
-        currentFlywheelState = 1;
     }
 
     public void setRollerSpeed(double speed) {
@@ -70,7 +67,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void ampSpinOut() {
         limiterSetting = ShooterConstants.kShooterAmpSpeed;
-        currentFlywheelState = 2;
     }
 
 
@@ -82,20 +78,8 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterMotor_1.set(speed);
         shooterMotor_2.set(-speed);
 
-        // if (currentFlywheelState ==0) {
-        //     limiterSetting = 0;
-        // } else if (currentFlywheelState == 1) {
-        //     limiterSetting = ShooterConstants.kShooterFlywheelSpeed;
-        // } else if (currentFlywheelState == 2) {
-        //     limiterSetting = ShooterConstants.kShooterAmpSpeed;
-        // } else if (currentFlywheelState == 3) {
-        //     limiterSetting = -ShooterConstants.kShooterIntakeSpeed;
-        // }
-        // TO BE TESTED WEDNESDAY
-
         SmartDashboard.putNumber("Shooter Limiter Setting", limiterSetting);
         SmartDashboard.putNumber("Shooter Speed", speed);
-        SmartDashboard.putNumber("Current Flywheel State", currentFlywheelState);
 
     }
 
@@ -126,12 +110,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void shooterStop() {
         limiterSetting = 0;
-        currentFlywheelState = 0;
     }
 
     public void stop() {
         limiterSetting = 0;
-        currentFlywheelState = 0;
         shooterMotor_1.set(0);
         shooterMotor_2.set(0);
     }
