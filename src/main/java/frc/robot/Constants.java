@@ -99,7 +99,7 @@ public class Constants {
 
         // Buttons
         public static final int kDriverResetGyroButtonId = 2;
-        public static final int kDriverCoordinateButtonId = 3;
+        public static final int kDriverFireSpeakerButtonId = 3;
         public static final int kDriverToggleClimberButtonId = 4;
         public static final int kDriverStopButtonId = 10;
         public static final int kDriverSourceIntakeButtonId = 1;
