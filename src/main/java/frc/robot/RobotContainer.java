@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -53,6 +55,8 @@ public class RobotContainer {
   private final Joystick translateStick = new Joystick(OIConstants.kDriverTranslateStickPort);
   private final Joystick rotateStick = new Joystick(OIConstants.kDriverRotateStickPort);
 
+  UsbCamera intakeCamera;
+
   public RobotContainer() {
 
     swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
@@ -73,7 +77,7 @@ public class RobotContainer {
     //             () -> driverJoystick.getRawButton(OIConstants.kDriverShootButtonId),
     //             () -> !driverJoystick.getRawButton(OIConstants.kDriverFieldOrientedButtonId)));
 
-
+    intakeCamera = CameraServer.startAutomaticCapture(0);
                 
     configureBindings();
   }
