@@ -6,22 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+// import edu.wpi.first.math.geometry.Pose2d; // For MoveToPosCmd
+// import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.SwerveJoystickCmd;
-import frc.robot.commands.auto.MoveToPosCmd;
 import frc.robot.commands.auto.SimpleFireAtSpeakerCmd;
 import frc.robot.commands.auto.SimpleIntakeFromGroundCmd;
-import frc.robot.commands.auto.WaitForTimeCmd;
 import frc.robot.commands.functions.EmergencyStopMechanismsCmd;
 import frc.robot.commands.functions.ShootAmpCmd;
 import frc.robot.commands.functions.ShootCmd;
@@ -30,10 +22,8 @@ import frc.robot.commands.functions.ToggleArticulateCmd;
 import frc.robot.commands.functions.ToggleClimberCmd;
 import frc.robot.commands.functions.ToggleFlapCmd;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.subsystems.SwerveSubsystem;
@@ -64,7 +54,6 @@ public class RobotContainer {
       () -> -translateStick.getRawAxis(OIConstants.kDriverYAxis),
       () -> -translateStick.getRawAxis(OIConstants.kDriverXAxis),
       () -> rotateStick.getRawAxis(0),
-      () -> !driverJoystick.getRawButton(OIConstants.kDriverCoordinateButtonId),
       () -> translateStick.getRawButton(1),
       () -> rotateStick.getRawButton(1)));
 
@@ -84,7 +73,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     new JoystickButton(driverJoystick, OIConstants.kDriverResetGyroButtonId).onTrue(swerveSubsystem.zeroHeading());
-    new JoystickButton(driverJoystick, OIConstants.kDriverFireSpeakerButtonId).whileTrue(new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverFireSpeakerButtonId).whileTrue(new SequentialCommandGroup(new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem)));
+    
     new JoystickButton(driverJoystick, OIConstants.kDriverStopButtonId).onTrue(new EmergencyStopMechanismsCmd(shooterSubsystem, intakeSubsystem, climberSubsystem));
     new JoystickButton(driverJoystick, OIConstants.kDriverToggleClimberButtonId).onTrue(new ToggleClimberCmd(climberSubsystem));
     new JoystickButton(driverJoystick, OIConstants.kDriverSourceIntakeButtonId).whileTrue(new SourceIntakeCmd(shooterSubsystem, intakeSubsystem));
@@ -100,23 +90,22 @@ public class RobotContainer {
 
 
   public Command getAutonomousCommand() {
-    Pose2d[] path1 = {
-      new Pose2d(1.9,5.9,new Rotation2d(0 * Math.PI / 180)),
-      new Pose2d(1.9,4.9,new Rotation2d(0 * Math.PI / 180)),
-      new Pose2d(1.9,5.9,new Rotation2d(0 * Math.PI / 180)),
-      new Pose2d(1.9,5.9,new Rotation2d(45 * Math.PI / 180)),
-      new Pose2d(1.9,4.9,new Rotation2d(45 * Math.PI / 180)),
-      new Pose2d(1.9,4.9,new Rotation2d(0 * Math.PI / 180)),
-    };
+    // Pose2d[] path1 = { // To create a path for MoveToPosCmd
+    // };
 
     return new SequentialCommandGroup(
-          new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", false)),
-          // new InstantCommand(() -> shooterSubsystem.stop()),
-          // new MoveToPosCmd(swerveSubsystem, path1, true, true), //90 * Math.PI / 180
+          new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 5.45)),
           new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
           new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 5.45)),
           new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-          new InstantCommand(() -> SmartDashboard.putBoolean("Done Auto", true)),
+          new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 5.45)),
+          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+          new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 5.45)),
+          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+          new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 5.45)),
+          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
           new InstantCommand(() -> swerveSubsystem.stopModules()));
   }
 }
+
+//Import waitCommand for waiting

@@ -9,7 +9,6 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.SwerveSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class MoveToPosForLimelightCmd extends Command {
 
@@ -17,7 +16,6 @@ public class MoveToPosForLimelightCmd extends Command {
     private final LimeLight limelight;
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
     private Pose2d targetPose;
-    private int tick = 0;
     private boolean isDone = false;
 
     public MoveToPosForLimelightCmd(SwerveSubsystem swerveSubsystem, LimeLight limelight, Pose2d targetPose) {
@@ -32,9 +30,6 @@ public class MoveToPosForLimelightCmd extends Command {
 
     @Override
     public void execute() {
-        tick++;
-        SmartDashboard.putNumber("Auto Ticks", tick);
-
         if (moveSwerve()) {
             isDone = true;
         }
@@ -67,16 +62,11 @@ public class MoveToPosForLimelightCmd extends Command {
         ySpeed = yLimiter.calculate(ySpeed) * AutoConstants.kAutoMaxSpeedMetersPerSecond;
         turnSpeed = turningLimiter.calculate(turnSpeed) * AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond;
 
-        SmartDashboard.putNumber("xSpeed", xSpeed);
-        SmartDashboard.putNumber("ySpeed", ySpeed);
-        SmartDashboard.putNumber("turnSpeed", turnSpeed);
-
         // Set the module states to move swerve to targetPose with field orientation
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveSubsystem.getRotation2d());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
-        
-        SmartDashboard.putNumber("MoveToPos Thing", Math.sqrt(xError * xError + yError * yError));
+
         // If swerve is close to targetPose, then return true
         if (Math.sqrt(xError * xError + yError * yError) < AutoConstants.kAutoToleranceMeters && Math.abs(turnError * 180 / Math.PI) < AutoConstants.kAutoToleranceDegrees) {
             return true; // Check if you can remove stop and start ticks now

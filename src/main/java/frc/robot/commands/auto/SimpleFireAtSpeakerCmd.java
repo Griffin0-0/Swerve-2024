@@ -13,14 +13,12 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SimpleFireAtSpeakerCmd extends Command {
     private final SwerveSubsystem swerveSubsystem;
     private final ShooterSubsystem shooterSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
-    private int tick = 0;
     private int currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks; 
     private Pose2d[] blueSpeakerPositions = {
                                             new Pose2d(1.9,5.48,Rotation2d.fromDegrees(0)),
@@ -56,6 +54,7 @@ public class SimpleFireAtSpeakerCmd extends Command {
     @Override
     public void initialize() {
         shooterSubsystem.speakerSpinOut();
+        intakeSubsystem.intakeUp();
         // Find closest shooting point and set as targetPose
         double minDistance = Double.MAX_VALUE;
         for (Pose2d speakerPos : speakerPositions) {
@@ -69,8 +68,6 @@ public class SimpleFireAtSpeakerCmd extends Command {
 
     @Override
     public void execute() {
-        tick++;
-        SmartDashboard.putNumber("Speaker Ticks", tick);
 
         // If close to targetPos, shoot
         if (moveSwerve()) {
@@ -87,8 +84,6 @@ public class SimpleFireAtSpeakerCmd extends Command {
             shooterSubsystem.shooterStop();
             isDone = true;
         }
-
-        SmartDashboard.putBoolean("Intake is Down", intakeSubsystem.isDown());
 
     }
 
@@ -113,10 +108,6 @@ public class SimpleFireAtSpeakerCmd extends Command {
         xSpeed = xLimiter.calculate(xSpeed) * AutoConstants.kAutoMaxSpeedMetersPerSecond;
         ySpeed = yLimiter.calculate(ySpeed) * AutoConstants.kAutoMaxSpeedMetersPerSecond;
         turnSpeed = turningLimiter.calculate(turnSpeed) * AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond;
-
-        SmartDashboard.putNumber("xSpeed", xSpeed);
-        SmartDashboard.putNumber("ySpeed", ySpeed);
-        SmartDashboard.putNumber("turnSpeed", turnSpeed);
         
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveSubsystem.getRotation2d());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -131,5 +122,12 @@ public class SimpleFireAtSpeakerCmd extends Command {
 
     public boolean isFinished() {
         return isDone;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        shooterSubsystem.stop();
+        intakeSubsystem.stop();
+        shooterSubsystem.flapUp();
     }
 }

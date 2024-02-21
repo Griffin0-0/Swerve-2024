@@ -12,13 +12,11 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SimpleIntakeFromGroundCmd extends Command {
     private final SwerveSubsystem swerveSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
-    private int tick = 0;
     private int collectedCheckTick = AutoConstants.kAutoGroundIntakeCheckTicks;
     private Pose2d targetPose;
     private Translation2d targetTranslation;
@@ -46,12 +44,8 @@ public class SimpleIntakeFromGroundCmd extends Command {
 
     @Override
     public void execute() {
-        tick++;
-        SmartDashboard.putNumber("Ground Ticks", tick);
-
-        SmartDashboard.putString("ground Target Position", targetPose.toString());
-        
         boolean swerveMovedCondition = moveSwerve();
+        
         if (swerveMovedCondition && reachedFirstPoint) {
             // If swerve reached targetPose, start collecting note
             collectedCheckTick--;
@@ -60,10 +54,6 @@ public class SimpleIntakeFromGroundCmd extends Command {
             targetPose = new Pose2d(targetTranslation.getX() - 0.5, targetTranslation.getY(), Rotation2d.fromDegrees(0));
             currentSpeedLimit = AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond;
         }
-
-        SmartDashboard.putBoolean("Reached First Point", reachedFirstPoint);
-
-        SmartDashboard.putString("targetPos ground", targetPose.toString());
 
         // Once made sure swerve has collected note from ground, exit command
         if (collectedCheckTick < AutoConstants.kAutoGroundIntakeCheckTicks) {
@@ -85,8 +75,6 @@ public class SimpleIntakeFromGroundCmd extends Command {
         double yError = targetPose.getY() - swerveSubsystem.getPose().getY();
         double turnError = (targetPose.getRotation().minus(swerveSubsystem.getRotation2d())).getRadians();
 
-        SmartDashboard.putNumber("TurnError Ground Intake", turnError * 180 / Math.PI);
-
         // Calculate the angle and speed to move swerve to targetPose
         double angle = Math.atan2(yError, xError);
         double speed = (xError * xError + yError * yError) * 15 * (1 / currentSpeedLimit) * (1 / currentSpeedLimit) * (1 / currentSpeedLimit) > currentSpeedLimit ? currentSpeedLimit : (xError * xError + yError * yError) * 7;
@@ -104,13 +92,6 @@ public class SimpleIntakeFromGroundCmd extends Command {
         xSpeed = xLimiter.calculate(xSpeed) * currentSpeedLimit;
         ySpeed = yLimiter.calculate(ySpeed) * currentSpeedLimit;
         turnSpeed = turningLimiter.calculate(turnSpeed) * AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond;
-
-        SmartDashboard.putNumber("xSpeed", xSpeed);
-        SmartDashboard.putNumber("ySpeed", ySpeed);
-        SmartDashboard.putNumber("turnSpeed", turnSpeed);
-
-        // xSpeed = 0;
-        // ySpeed = 0;
         
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveSubsystem.getRotation2d());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);

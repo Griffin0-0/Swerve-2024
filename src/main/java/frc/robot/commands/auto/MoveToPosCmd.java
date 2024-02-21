@@ -5,12 +5,9 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.SwerveSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class MoveToPosCmd extends Command {
 
@@ -19,7 +16,6 @@ public class MoveToPosCmd extends Command {
     private Pose2d[] targetPath;
     private boolean repeatPath;
     private Pose2d targetPose;
-    private int tick = 0;
     private int currentPosInList = 0;
 
     public MoveToPosCmd(SwerveSubsystem swerveSubsystem, Pose2d[] targetPath, boolean repeatPath) {
@@ -34,8 +30,6 @@ public class MoveToPosCmd extends Command {
 
     @Override
     public void execute() {
-        tick++;
-        SmartDashboard.putNumber("Auto Ticks", tick);
 
         // If the current position in the list is less than the length of the targetPath, then move swerve to targetPose
         if (currentPosInList < targetPath.length) {
@@ -46,7 +40,6 @@ public class MoveToPosCmd extends Command {
 
                 // If swerve reached targetPose, go to next pos in list
                 currentPosInList++;
-                SmartDashboard.putNumber("CurrentPos", currentPosInList);
 
             }
 
@@ -83,16 +76,11 @@ public class MoveToPosCmd extends Command {
         ySpeed = yLimiter.calculate(ySpeed) * AutoConstants.kAutoMaxSpeedMetersPerSecond;
         turnSpeed = turningLimiter.calculate(turnSpeed) * AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond;
 
-        SmartDashboard.putNumber("xSpeed", xSpeed);
-        SmartDashboard.putNumber("ySpeed", ySpeed);
-        SmartDashboard.putNumber("turnSpeed", turnSpeed);
-
         // Set the module states to move swerve to targetPose with field orientation
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveSubsystem.getRotation2d());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
         
-        SmartDashboard.putNumber("MoveToPos Thing", Math.sqrt(xError * xError + yError * yError));
         // If swerve is close to targetPose, then return true
         if (Math.sqrt(xError * xError + yError * yError) < AutoConstants.kAutoToleranceMeters && Math.abs(turnError * 180 / Math.PI) < AutoConstants.kAutoToleranceDegrees) {
             return true; // Check if you can remove stop and start ticks now

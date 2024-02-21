@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -19,11 +18,8 @@ public class DepositToAmpCmd extends Command {
     private final ShooterSubsystem shooterSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
-    private int currentStopTick;
-    private int startTick = -AutoConstants.kAutoStartCheckTicks;
     private int depositCheckTick = AutoConstants.kAutoDepositCheckTicks;
     private Pose2d targetPose;
-    private int tick = 0;
     private Boolean isDone = false;
 
     private Pose2d ampDepositPos;
@@ -52,8 +48,6 @@ public class DepositToAmpCmd extends Command {
 
     @Override
     public void execute() {
-        tick++;
-        SmartDashboard.putNumber("Amp Ticks", tick);
         
         if (moveSwerve()) {
             intakeSubsystem.runIntake(-IntakeConstants.kIntakeOutMotorSpeed);
@@ -72,9 +66,7 @@ public class DepositToAmpCmd extends Command {
 
     // Moves swerve to targetPose. Returns true when it reaches the position
     public boolean moveSwerve() {
-        startTick++;
-        SmartDashboard.putNumber("startTick", startTick);
-
+        
         // Calculate the error between current position and targetPos
         double xError = targetPose.getX() - swerveSubsystem.getPose().getX();
         double yError = targetPose.getY() - swerveSubsystem.getPose().getY();
@@ -99,9 +91,6 @@ public class DepositToAmpCmd extends Command {
         ySpeed = yLimiter.calculate(ySpeed) * AutoConstants.kAutoMaxSpeedMetersPerSecond;
         turnSpeed = turningLimiter.calculate(turnSpeed) * AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond;
 
-        SmartDashboard.putNumber("xSpeed", xSpeed);
-        SmartDashboard.putNumber("ySpeed", ySpeed);
-        SmartDashboard.putNumber("turnSpeed", turnSpeed);
 
         // Set the module states to move swerve to targetPose with field orientation
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveSubsystem.getRotation2d());
