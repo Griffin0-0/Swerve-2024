@@ -154,9 +154,6 @@ public class Constants {
         //Min Speed
         public static final double kAutoMinSpeed = 0.02;
         public static final double kAutoMinTurnSpeedRadians = 0.05;
-
-        public static final int kAutoStoppedCheckTicks = 20; // Ticks it waits to make sure swerve has come to a complete stop before moving to next point 20
-        public static final int kAutoStartCheckTicks = 7; // Ticks it waits after beginning to move to another point before starting to count the stop check ticks 7
     
         public static final int kAutoAmpStoppedCheckTicks = 30; // Ticks it waits to make sure swerve has come to a complete stop before depositing note to amp 20
 
@@ -169,7 +166,5 @@ public class Constants {
         public static final double kAutoToleranceDegrees = 5.0;
 
         public static  final int kAutoDepositCheckTicks = 300;
-
-        public static final int kAutoSourceIntakeCheckTicks = 200;
     }
 }

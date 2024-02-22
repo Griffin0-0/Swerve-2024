@@ -40,7 +40,10 @@ public class DepositToAmpCmd extends Command {
         } else {
             this.ampDepositPos = redAmpDepositPos;
         }
+    }
 
+    @Override
+    public void initialize() {
         shooterSubsystem.ampSpinOut();
 
         targetPose = ampDepositPos;
