@@ -26,9 +26,9 @@ public class SimpleFireAtSpeakerCmd extends Command {
                                             new Pose2d(1.5,4.71,Rotation2d.fromDegrees(-26))
                                             };
     private Pose2d[] redSpeakerPositions = {
-                                            new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0)),
-                                            new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0)),
-                                            new Pose2d(0.1,5.48,Rotation2d.fromDegrees(0))
+                                            new Pose2d(1.9,5.48,Rotation2d.fromDegrees(0)),
+                                            new Pose2d(1.5,5.48,Rotation2d.fromDegrees(0)),
+                                            new Pose2d(1.5,5.48,Rotation2d.fromDegrees(0))
                                             };
 
     private Pose2d[] speakerPositions;
@@ -56,6 +56,8 @@ public class SimpleFireAtSpeakerCmd extends Command {
         shooterSubsystem.speakerSpinOut();
         intakeSubsystem.intakeUp();
         shooterSubsystem.flapDown();
+        isDone = false;
+        currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks; 
         // Find closest shooting point and set as targetPose
         double minDistance = Double.MAX_VALUE;
         for (Pose2d speakerPos : speakerPositions) {
