@@ -52,7 +52,7 @@ public class LimeLight {
 
         try {node = new ObjectMapper().readTree(json);} catch (JsonProcessingException e) {e.printStackTrace();};
 
-        boolean goodTrack = (table.getEntry("ta").getDouble(0) > 5000);
+        boolean goodTrack = (table.getEntry("ta").getDouble(0) > 0.75);
 
         SmartDashboard.putNumber("ta", table.getEntry("ta").getDouble(0));
 
