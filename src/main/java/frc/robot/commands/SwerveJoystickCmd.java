@@ -16,17 +16,18 @@ public class SwerveJoystickCmd extends Command {
 
     private final SwerveSubsystem swerveSubsystem;
     private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
-    private final Supplier<Boolean> isBoost, isSlow;
+    private final Supplier<Boolean> isRobotRelative, isBoost, isSlow;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
     public SwerveJoystickCmd(SwerveSubsystem swerveSubsystem,
             Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
-            Supplier<Boolean> isBoost, Supplier<Boolean> isSlow) {
+            Supplier<Boolean> isRobotRelative, Supplier<Boolean> isBoost, Supplier<Boolean> isSlow) {
                 
         this.swerveSubsystem = swerveSubsystem;
         this.xSpdFunction = xSpdFunction;
         this.ySpdFunction = ySpdFunction;
         this.turningSpdFunction = turningSpdFunction;
+        this.isRobotRelative = isRobotRelative;
         this.isBoost = isBoost;
         this.isSlow = isSlow;
         this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
@@ -70,9 +71,14 @@ public class SwerveJoystickCmd extends Command {
         // 5. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;
 
-        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-            xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
-
+        if (isRobotRelative.get()) {
+            // Relative to field
+            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
+        } else {
+            // Relative to robot
+            chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+        }
 
         // 6. Convert chassis speeds to individual module states
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);

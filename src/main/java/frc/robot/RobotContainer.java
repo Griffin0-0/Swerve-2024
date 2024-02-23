@@ -55,8 +55,9 @@ public class RobotContainer {
       () -> -translateStick.getRawAxis(OIConstants.kDriverYAxis),
       () -> -translateStick.getRawAxis(OIConstants.kDriverXAxis),
       () -> rotateStick.getRawAxis(0),
-      () -> translateStick.getRawButton(1),
-      () -> rotateStick.getRawButton(1)));
+      () -> translateStick.getRawButton(2),
+      () -> translateStick.getRawButton(1), // Trigger
+      () -> rotateStick.getRawButton(1))); // Trigger
 
     // swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
     //             swerveSubsystem,

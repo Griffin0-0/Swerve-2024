@@ -17,7 +17,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public boolean extended = false;
 
-    public final Compressor compressor;
+    // public final Compressor compressor;
 
 
     public ClimberSubsystem() {
@@ -26,8 +26,8 @@ public class ClimberSubsystem extends SubsystemBase {
         solenoid_2 = new DoubleSolenoid(PneumaticsModuleType.REVPH, 9, 8);
         solenoidReverse();
 
-        compressor = new Compressor(1, PneumaticsModuleType.REVPH);
-        compressor.enableAnalog(115, 120); 
+        // compressor = new Compressor(1, PneumaticsModuleType.REVPH);
+        // compressor.enableAnalog(115, 120); 
         }
 
     public void toggleExtention() {
