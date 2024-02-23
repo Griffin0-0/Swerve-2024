@@ -89,8 +89,8 @@ public class RobotContainer {
 
 
     // TRIGGERS
-    new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_sourceIntake).whileTrue(new ToggleFlapCmd(shooterSubsystem));
-    new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_toggleIntake).whileTrue(new SourceIntakeCmd(shooterSubsystem, intakeSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_sourceIntake).whileTrue(new SourceIntakeCmd(shooterSubsystem, intakeSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_toggleIntake).whileTrue(new ToggleArticulateCmd(intakeSubsystem));
     new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_ampOut).whileTrue(new ShootAmpCmd(intakeSubsystem));
     new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_shoot).whileTrue(new ShootCmd(shooterSubsystem, intakeSubsystem, ledSubsystem));
   }

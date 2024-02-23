@@ -8,8 +8,8 @@ public class LEDSubsystem extends SubsystemBase {
 
   Spark blinkinController;
 
-  private static double orange = 0.65;
-  private static double yellow = 0.69;
+  private static double red = 0.61;
+  private static double green = 0.77;
   private static double blue = 0.87;
   private static double black = 0.99;
   private static double white = 0.93;
@@ -26,11 +26,11 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public void setShoot() {
-    currentColor = black;
+    currentColor = green;
   }
 
   public void setIntake() {
-    currentColor = white;
+    currentColor = red;
   }
 
   public void setDefault() {
