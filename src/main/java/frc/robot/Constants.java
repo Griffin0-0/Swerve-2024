@@ -119,7 +119,7 @@ public class Constants {
 
         public static final double kShooterFlywheelSpeed = 1.0;
         public static final double kShooterIntakeSpeed = 0.25;
-        public static final double kShooterAmpSpeed = 0.15;
+        public static final double kShooterAmpSpeed = 0.20;
 
         public static final double kShooterFlapUpPos = 170;
         public static final double kShooterFlapAmpPos = 155;
@@ -131,7 +131,7 @@ public class Constants {
         public static final int kIntakeMotorId = 51;
         public static final int kIntakeArticulateMotorId = 54;
 
-        public static final double kGroundIntakeMotorSpeed = 0.7;
+        public static final double kGroundIntakeMotorSpeed = 0.5;
         public static final double kIntakeOutMotorSpeed = 0.5;
 
         public static final double kIntakeArticulateSpeed = 0.3;

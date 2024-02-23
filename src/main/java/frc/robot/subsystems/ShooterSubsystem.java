@@ -86,7 +86,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void flapDown() {
-        flapMove(30);
+        flapMove(40);
         flapState = false;
     }
 
