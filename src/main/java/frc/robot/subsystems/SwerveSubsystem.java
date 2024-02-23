@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -154,7 +155,7 @@ public class SwerveSubsystem extends SubsystemBase {
         limeLightPose = limeLight.runLimeLight(isAllianceBlue);
 
         // If limelight sees targets, then update odometry translation
-        if (limeLight.seesMultipleTargets()) {
+        if (limeLight.seesMultipleTargets() || limeLight.seesOneGoodTarget()) {
 
             int tickConstrainedTranslation = tick % 5;
 
@@ -227,6 +228,8 @@ public class SwerveSubsystem extends SubsystemBase {
                 frontLeft.getPosition(),
                 frontRight.getPosition()
             });
+
+        SmartDashboard.putString("Pose", pose.toString());
     }
     
     public void coordinateFunction() {

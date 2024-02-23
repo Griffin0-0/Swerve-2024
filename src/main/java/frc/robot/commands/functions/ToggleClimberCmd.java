@@ -10,16 +10,22 @@ import frc.robot.subsystems.ClimberSubsystem;
 public class ToggleClimberCmd extends Command {
 
   ClimberSubsystem climberSubsystem;
+  Boolean toExtend;
 
-  public ToggleClimberCmd(ClimberSubsystem climberSubsystem) {
+  public ToggleClimberCmd(ClimberSubsystem climberSubsystem, boolean toExtend) {
     this.climberSubsystem = climberSubsystem;
+    this.toExtend = toExtend;
     addRequirements(climberSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    climberSubsystem.toggleExtention();
+    if (toExtend) {
+      climberSubsystem.solenoidForward();
+    } else {
+      climberSubsystem.solenoidReverse();
+    }
   }
 
   // Returns true when the command should end.

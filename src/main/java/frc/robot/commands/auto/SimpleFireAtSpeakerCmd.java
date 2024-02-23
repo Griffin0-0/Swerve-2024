@@ -55,6 +55,7 @@ public class SimpleFireAtSpeakerCmd extends Command {
     public void initialize() {
         shooterSubsystem.speakerSpinOut();
         intakeSubsystem.intakeUp();
+        shooterSubsystem.flapDown();
         // Find closest shooting point and set as targetPose
         double minDistance = Double.MAX_VALUE;
         for (Pose2d speakerPos : speakerPositions) {
@@ -71,7 +72,6 @@ public class SimpleFireAtSpeakerCmd extends Command {
 
         // If close to targetPos, shoot
         if (moveSwerve()) {
-            shooterSubsystem.flapDown();
             intakeSubsystem.runIntake(-IntakeConstants.kIntakeOutMotorSpeed);
             currentShootTick--;
         } else {
@@ -80,7 +80,6 @@ public class SimpleFireAtSpeakerCmd extends Command {
 
         // If shooter is done shooting, stop shooter and exit command
         if (currentShootTick <= 0) {
-            shooterSubsystem.flapUp();
             shooterSubsystem.shooterStop();
             isDone = true;
         }

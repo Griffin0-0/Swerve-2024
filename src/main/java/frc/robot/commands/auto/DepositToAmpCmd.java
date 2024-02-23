@@ -5,7 +5,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -21,9 +23,10 @@ public class DepositToAmpCmd extends Command {
     private int depositCheckTick = AutoConstants.kAutoDepositCheckTicks;
     private Pose2d targetPose;
     private Boolean isDone = false;
+    private Boolean reachedFirstPoint = false;
 
     private Pose2d ampDepositPos;
-    private Pose2d blueAmpDepositPos = new Pose2d(0,0, Rotation2d.fromDegrees(0));
+    private Pose2d blueAmpDepositPos = new Pose2d(1.71,7.70, Rotation2d.fromDegrees(-90));
     private Pose2d redAmpDepositPos = new Pose2d(0,0, Rotation2d.fromDegrees(0));
     
     public DepositToAmpCmd(SwerveSubsystem swerveSubsystem, ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem) {
@@ -45,17 +48,28 @@ public class DepositToAmpCmd extends Command {
     @Override
     public void initialize() {
         shooterSubsystem.ampSpinOut();
+        shooterSubsystem.flapUp();
+        depositCheckTick = AutoConstants.kAutoDepositCheckTicks;
+        isDone = false;
+        reachedFirstPoint = false;
 
-        targetPose = ampDepositPos;
+        new Rotation2d();
+        targetPose = new Pose2d(ampDepositPos.getX() + 0.75, ampDepositPos.getY() - 0.75, Rotation2d.fromDegrees(-45));
     }
 
     @Override
     public void execute() {
+
+        SmartDashboard.putString("targetPose", targetPose.toString());
+
+        Boolean swerveAtPos = moveSwerve();
         
-        if (moveSwerve()) {
+        if (swerveAtPos && reachedFirstPoint) {
             intakeSubsystem.runIntake(-IntakeConstants.kIntakeOutMotorSpeed);
             depositCheckTick--;
-            // shooterSubsystem.vibrateFlap();
+        } else if (swerveAtPos) {
+            targetPose = ampDepositPos;
+            reachedFirstPoint = true;
         } else {
             intakeSubsystem.stopIntake();
         }
@@ -69,8 +83,6 @@ public class DepositToAmpCmd extends Command {
 
     // Moves swerve to targetPose. Returns true when it reaches the position
     public boolean moveSwerve() {
-        
-        // Calculate the error between current position and targetPos
         double xError = targetPose.getX() - swerveSubsystem.getPose().getX();
         double yError = targetPose.getY() - swerveSubsystem.getPose().getY();
         double turnError = (targetPose.getRotation().minus(swerveSubsystem.getRotation2d())).getRadians();
@@ -82,31 +94,31 @@ public class DepositToAmpCmd extends Command {
         // Calculate xSpeed, ySpeed, and turnSpeed
         double xSpeed = Math.cos(angle) * speed;
         double ySpeed = Math.sin(angle) * speed;
-        double turnSpeed = (Math.abs(turnError * Math.sqrt(Math.abs(turnError * 40)) * -0.005) < AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond) ? turnError * Math.sqrt(Math.abs(turnError * 40)) * -0.005 : AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond * Math.signum(turnError);
+        double turnSpeed = (Math.abs(turnError * 60 * Math.sqrt(Math.abs(turnError * 60)) * -0.005) < AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond) ? turnError * 60 * Math.sqrt(Math.abs(turnError * 60)) * -0.005 : AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond * Math.signum(turnError);
 
-        // Limit xSpeed, ySpeed, and turnSpeed to min speeds
         xSpeed = Math.abs(xSpeed) > AutoConstants.kAutoMinSpeed ? xSpeed : 0.0;
         ySpeed = Math.abs(ySpeed) > AutoConstants.kAutoMinSpeed ? ySpeed : 0.0;
         turnSpeed = Math.abs(turnSpeed) > AutoConstants.kAutoMinTurnSpeedRadians ? turnSpeed : 0.0;
 
-        // Limit xSpeed, ySpeed, and turnSpeed to max acceleration
         xSpeed = xLimiter.calculate(xSpeed) * AutoConstants.kAutoMaxSpeedMetersPerSecond;
         ySpeed = yLimiter.calculate(ySpeed) * AutoConstants.kAutoMaxSpeedMetersPerSecond;
         turnSpeed = turningLimiter.calculate(turnSpeed) * AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond;
-
-
-        // Set the module states to move swerve to targetPose with field orientation
+        
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveSubsystem.getRotation2d());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
-        
-        // If swerve is close to targetPose, then return true
+
         if (Math.sqrt(xError * xError + yError * yError) < AutoConstants.kAutoToleranceMeters && Math.abs(turnError * 180 / Math.PI) < AutoConstants.kAutoToleranceDegrees) {
-            return true; // Check if you can remove stop and start ticks now
+            return true;
         }
 
-        // If swerve is not close to targetPose, then return false
         return false;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        shooterSubsystem.stop();
+        intakeSubsystem.stop();
     }
 
     public boolean isFinished() {

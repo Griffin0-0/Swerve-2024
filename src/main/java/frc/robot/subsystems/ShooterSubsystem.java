@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
@@ -19,7 +20,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private final Servo servo_2;
 
     public double limiterSetting = 0;
-    public boolean flapState = false; // up = true, down = false
+    public int flapState = 0; // up = 1, down = 0, mid = 2
     public boolean allowedShoot = false;
     public int tick = 0;
 
@@ -34,7 +35,7 @@ public class ShooterSubsystem extends SubsystemBase {
         servo_1 = new Servo(ShooterConstants.kShooterFlapServoId_1);
         servo_2 = new Servo(ShooterConstants.kShooterFlapServoId_2);
 
-        this.flapUp();
+        this.flapDown();
     }
 
 
@@ -71,6 +72,9 @@ public class ShooterSubsystem extends SubsystemBase {
         double speed = shooterLimiter.calculate(limiterSetting);
         shooterMotor_1.set(speed);
         shooterMotor_2.set(-speed);
+
+        SmartDashboard.putNumber("Flap Angle", servo_1.getAngle());
+        SmartDashboard.putNumber("Flap State", flapState);
     }
 
 
@@ -80,20 +84,20 @@ public class ShooterSubsystem extends SubsystemBase {
         servo_2.setAngle(180 - pos);
     }
 
-    public void flapUp() {
-        flapMove(ShooterConstants.kShooterFlapUpPos);
-        flapState = true;
+    public void flapDown() {
+        flapMove(ShooterConstants.kShooterFlapMovingPos);
+        flapState = 0;
     }
 
-    public void flapDown() {
+    public void flapUp() {
         flapMove(30);
-        flapState = false;
+        flapState = 1;
     }
 
     public void toggleFlap() {
-        if (flapState) {
+        if (flapState == 1) {
             flapDown();
-        } else {
+        } else if (flapState == 0 || flapState == 2) {
             flapUp();
         }
     }
@@ -107,12 +111,4 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterMotor_1.set(0);
         shooterMotor_2.set(0);
     }
-
-    // public void vibrateFlap() {
-    //     if (tick % 10 < 5) {
-    //         flapMove(ShooterConstants.kShooterFlapAmpPos + 10);
-    //     } else {
-    //         flapMove(ShooterConstants.kShooterFlapAmpPos);
-    //     }
-    // }
 }
