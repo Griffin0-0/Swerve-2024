@@ -33,7 +33,7 @@ public class ShootCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (shooterSubsystem.getRollerSpeed() > 0.95) {
+    if (shooterSubsystem.getRollerSpeed() > 0.99) {
       intakeSubsystem.spinOut();
     }
   }
@@ -43,7 +43,7 @@ public class ShootCmd extends Command {
   public void end(boolean interrupted) {
     shooterSubsystem.shooterStop();
     intakeSubsystem.stopIntake();
-    ledSubsystem.setColor(0);
+    ledSubsystem.setDefault();
   }
 
   // Returns true when the command should end.
