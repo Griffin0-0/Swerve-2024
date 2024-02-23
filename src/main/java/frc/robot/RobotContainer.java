@@ -38,9 +38,9 @@ public class RobotContainer {
 
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private final LEDSubsystem ledSubsystem = new LEDSubsystem();
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(ledSubsystem);
 
   private final Joystick driverJoystick = new Joystick(OIConstants.kOperatorControllerPort);
   private final Joystick translateStick = new Joystick(OIConstants.kDriverTranslateStickPort);
