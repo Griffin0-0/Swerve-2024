@@ -47,7 +47,7 @@ public class DepositToAmpCmd extends Command {
     @Override
     public void initialize() {
         shooterSubsystem.ampSpinOut();
-        shooterSubsystem.flapUp();
+        shooterSubsystem.flapAmp();
         depositCheckTick = AutoConstants.kAutoDepositCheckTicks;
         isDone = false;
         reachedFirstPoint = false;
@@ -118,6 +118,7 @@ public class DepositToAmpCmd extends Command {
     public void end(boolean interrupted) {
         shooterSubsystem.stop();
         intakeSubsystem.stop();
+        shooterSubsystem.flapDefault();
     }
 
     public boolean isFinished() {

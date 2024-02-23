@@ -55,7 +55,7 @@ public class SimpleFireAtSpeakerCmd extends Command {
     public void initialize() {
         shooterSubsystem.speakerSpinOut();
         intakeSubsystem.intakeUp();
-        shooterSubsystem.flapDown();
+        shooterSubsystem.flapSpeaker();
         isDone = false;
         currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks; 
         // Find closest shooting point and set as targetPose
@@ -129,6 +129,6 @@ public class SimpleFireAtSpeakerCmd extends Command {
     public void end(boolean interrupted) {
         shooterSubsystem.stop();
         intakeSubsystem.stop();
-        shooterSubsystem.flapUp();
+        shooterSubsystem.flapDefault();
     }
 }

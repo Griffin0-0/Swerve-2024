@@ -19,7 +19,7 @@ public class ToggleFlapCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.toggleFlap();
+    shooterSubsystem.cycleFlap();
   }
 
   // Returns true when the command should end.

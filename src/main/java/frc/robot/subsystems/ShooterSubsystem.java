@@ -35,7 +35,7 @@ public class ShooterSubsystem extends SubsystemBase {
         servo_1 = new Servo(ShooterConstants.kShooterFlapServoId_1);
         servo_2 = new Servo(ShooterConstants.kShooterFlapServoId_2);
 
-        this.flapDown();
+        this.flapDefault();
     }
 
 
@@ -84,21 +84,31 @@ public class ShooterSubsystem extends SubsystemBase {
         servo_2.setAngle(180 - pos);
     }
 
-    public void flapDown() {
-        flapMove(ShooterConstants.kShooterFlapMovingPos);
+    public void flapDefault() {
+        flapMove(ShooterConstants.kShooterFlapDefaultPos);
         flapState = 0;
     }
 
-    public void flapUp() {
-        flapMove(30);
+    public void flapAmp() {
+        flapMove(ShooterConstants.kShooterFlapAmpPos);
         flapState = 1;
     }
 
-    public void toggleFlap() {
-        if (flapState == 1) {
-            flapDown();
-        } else if (flapState == 0 || flapState == 2) {
-            flapUp();
+    public void flapSpeaker() {
+        flapMove(ShooterConstants.kShooterFlapSpeakerPos);
+        flapState = 2;
+    }
+
+    public void cycleFlap() {
+        if (flapState == 0) {
+            flapAmp();
+            flapState = 1;
+        } else if (flapState == 1) {
+            flapSpeaker();
+            flapState = 2;
+        } else if (flapState == 2) {
+            flapDefault();
+            flapState = 0;
         }
     }
 

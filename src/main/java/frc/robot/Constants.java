@@ -124,9 +124,9 @@ public class Constants {
         public static final double kShooterIntakeSpeed = 0.25;
         public static final double kShooterAmpSpeed = 0.2;
 
-        public static final double kShooterFlapUpPos = 170;
+        public static final double kShooterFlapSpeakerPos = 60;
 
-        public static final double kShooterFlapMovingPos = 60;
+        public static final double kShooterFlapDefaultPos = 170;
 
         public static final double kShooterFlapAmpPos = 155;
 
