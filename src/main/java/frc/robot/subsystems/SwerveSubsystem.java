@@ -6,11 +6,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -68,6 +71,8 @@ public class SwerveSubsystem extends SubsystemBase {
     boolean goodHeadingBuffer = false;
     boolean goodTranslationBuffer = false;
     public boolean fieldOriented = false;
+
+    private final GenericEntry sb_gyro;
     
 
     public SwerveModule[] swerveModules = {frontLeft, frontRight, backLeft, backRight};
@@ -114,6 +119,13 @@ public class SwerveSubsystem extends SubsystemBase {
             } catch (Exception e) {
             }
         }).start();
+
+
+
+        sb_gyro = Shuffleboard.getTab("Driver")
+            .add("Gyro", 0.0)
+            .withWidget(BuiltInWidgets.kGyro)
+            .getEntry();
     }
 
     public Command zeroHeading() {
@@ -230,6 +242,7 @@ public class SwerveSubsystem extends SubsystemBase {
             });
 
         SmartDashboard.putString("Pose", pose.toString());
+        sb_gyro.setDouble(getHeading());
     }
     
     public void coordinateFunction() {

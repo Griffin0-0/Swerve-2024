@@ -23,7 +23,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private final CANSparkMax articulateMotor;
     private final SparkPIDController articulatePID;
     private final RelativeEncoder articulateEncoder;
-    private final GenericEntry encoder;
+    private final GenericEntry devsb_encoder;
     private final LEDSubsystem ledSubsystem;
     private final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
 
@@ -47,7 +47,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
         articulateEncoder.setPosition(0);
 
-        encoder = Shuffleboard.getTab("Driver")
+        devsb_encoder = Shuffleboard.getTab("Driver")
             .add("Encoder Pos", 0.0)
             .getEntry();
 
@@ -109,7 +109,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        encoder.setDouble(getPosition());
+        devsb_encoder.setDouble(getPosition());
 
         if (isDown()) {
             spinIn();

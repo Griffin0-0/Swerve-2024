@@ -72,9 +72,6 @@ public class ShooterSubsystem extends SubsystemBase {
         double speed = shooterLimiter.calculate(limiterSetting);
         shooterMotor_1.set(speed);
         shooterMotor_2.set(-speed);
-
-        SmartDashboard.putNumber("Flap Angle", servo_1.getAngle());
-        SmartDashboard.putNumber("Flap State", flapState);
     }
 
 

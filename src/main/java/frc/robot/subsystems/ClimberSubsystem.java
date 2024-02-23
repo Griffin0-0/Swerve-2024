@@ -6,8 +6,10 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
-
 import edu.wpi.first.wpilibj.Compressor;
+
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.networktables.GenericEntry;
 
 
 public class ClimberSubsystem extends SubsystemBase {
@@ -16,6 +18,8 @@ public class ClimberSubsystem extends SubsystemBase {
     private final DoubleSolenoid solenoid_2;
 
     // public final Compressor compressor;
+
+    private final GenericEntry sb_pressure, devsb_pressure;
 
 
     public ClimberSubsystem() {
@@ -26,6 +30,14 @@ public class ClimberSubsystem extends SubsystemBase {
 
         // compressor = new Compressor(1, PneumaticsModuleType.REVPH);
         // compressor.enableAnalog(115, 120); 
+
+        sb_pressure = Shuffleboard.getTab("Driver")
+            .add("Compressor Pressure", 0.0)
+            .getEntry();
+
+        devsb_pressure = Shuffleboard.getTab("Developer")
+            .add("Compressor Pressure", 0.0)
+            .getEntry();
         }
 
     public void solenoidForward() {
@@ -37,4 +49,14 @@ public class ClimberSubsystem extends SubsystemBase {
         solenoid_1.set(kReverse);
         solenoid_2.set(kReverse);
     }
+
+    @Override
+    public void periodic() {
+        sb_pressure.setDouble(0); // Replace when running compressor
+        devsb_pressure.setDouble(0);
+    }
+
+    // public double getPressure() {
+    //     return compressor.getPressure();
+    // }
 }
