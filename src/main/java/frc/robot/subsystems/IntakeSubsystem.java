@@ -18,10 +18,12 @@ public class IntakeSubsystem extends SubsystemBase {
     private final CANSparkMax articulateMotor;
     private final SparkPIDController articulatePID;
     private final RelativeEncoder articulateEncoder;
+    private final GenericEntry encoder;
     private final LEDSubsystem ledSubsystem;
 
     public boolean intakeOut = false;
     public boolean switchTemp = false;
+    public double currentGoal = 0.0;
 
 
     public IntakeSubsystem(LEDSubsystem ledSubsystem) {
@@ -39,14 +41,21 @@ public class IntakeSubsystem extends SubsystemBase {
 
         articulateEncoder.setPosition(0);
 
+        encoder = Shuffleboard.getTab("Driver")
+            .add("Encoder Pos", 0.0)
+            .getEntry();
+
         this.ledSubsystem = ledSubsystem;
     }
 
     public void intakeDown() {
-        articulatePID.setReference(-34, ControlType.kPosition);
+        currentGoal = IntakeConstants.kIntakeDesiredPos_out;    
     }
     public void intakeUp() {
-        articulatePID.setReference(-0.5, ControlType.kPosition);
+        currentGoal = IntakeConstants.kIntakeDesiredPos_store;    
+    }
+    public void intakeAmp() {
+        currentGoal = IntakeConstants.kIntakeDesiredPos_amp;
     }
 
     public void runIntake(double speed) {
@@ -63,6 +72,10 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
+    public boolean atPoint() {
+        return (Math.abs(getPosition() - currentGoal) < 0.5);
+    }
+
     public boolean isDown() {
         if (intakeOut) {
             if (getPosition() < -30) {
@@ -73,11 +86,15 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void spinIn() {
-        runIntake(IntakeConstants.kGroundIntakeMotorSpeed);
+        runIntake(IntakeConstants.kIntakeMotorSpeed_ground);
     }
 
     public void spinOut() {
-        runIntake(-IntakeConstants.kIntakeOutMotorSpeed);
+        runIntake(IntakeConstants.kIntakeMotorSpeed_out);
+    }
+
+    public void spinAmp() {
+        runIntake(IntakeConstants.kIntakeMotorSpeed_amp);
     }
 
     public double getPosition() {
@@ -86,6 +103,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        encoder.setDouble(getPosition());
 
         if (isDown()) {
             spinIn();
@@ -96,6 +114,8 @@ public class IntakeSubsystem extends SubsystemBase {
             switchTemp = false;
             ledSubsystem.setDefault();
         }
+
+        articulatePID.setReference(currentGoal, ControlType.kPosition);
     }
 
     public void stop() {

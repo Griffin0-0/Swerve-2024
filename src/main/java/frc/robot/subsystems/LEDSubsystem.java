@@ -14,7 +14,7 @@ public class LEDSubsystem extends SubsystemBase {
   private static double black = 0.99;
   private static double white = 0.93;
 
-  private static double defaultColor = 0.87;
+  private static double defaultColor = blue;
   public double currentColor = 0.93;
 
   public LEDSubsystem() {
@@ -26,11 +26,11 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public void setShoot() {
-    currentColor = orange;
+    currentColor = black;
   }
 
   public void setIntake() {
-    currentColor = yellow;
+    currentColor = white;
   }
 
   public void setDefault() {

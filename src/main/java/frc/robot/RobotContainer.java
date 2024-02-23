@@ -74,22 +74,25 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    new JoystickButton(driverJoystick, OIConstants.kDriverResetGyroButtonId).onTrue(swerveSubsystem.zeroHeading());
-    new JoystickButton(driverJoystick, OIConstants.kDriverFireSpeakerButtonId).whileTrue(new SequentialCommandGroup(new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem)));
-    
-    new JoystickButton(driverJoystick, OIConstants.kDriverStopButtonId).onTrue(new EmergencyStopMechanismsCmd(shooterSubsystem, intakeSubsystem, climberSubsystem));
-    new JoystickButton(driverJoystick, OIConstants.kDriverToggleClimberButtonId).onTrue(new ToggleClimberCmd(climberSubsystem, true));
-    new JoystickButton(driverJoystick, 9).onTrue(new ToggleClimberCmd(climberSubsystem, false));
-    new JoystickButton(driverJoystick, OIConstants.kDriverSourceIntakeButtonId).whileTrue(new SourceIntakeCmd(shooterSubsystem, intakeSubsystem));
+    // BUTTONS
+    new JoystickButton(driverJoystick, OIConstants.kDriverButtonId_resetGyro).onTrue(swerveSubsystem.zeroHeading());
+    new JoystickButton(driverJoystick, OIConstants.kDriverButtonId_climberUp).onTrue(new ToggleClimberCmd(climberSubsystem, true));
+    new JoystickButton(driverJoystick, OIConstants.kDriverButtonId_climberDown).onTrue(new ToggleClimberCmd(climberSubsystem, false));
+    new JoystickButton(driverJoystick, OIConstants.kDriverButtonId_toggleFlap).whileTrue(new ToggleFlapCmd(shooterSubsystem));
 
-    new POVButton(driverJoystick, OIConstants.kDriverAmpDepositId).whileTrue(new DepositToAmpCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverButtonId_stop).onTrue(new EmergencyStopMechanismsCmd(shooterSubsystem, intakeSubsystem, climberSubsystem));
+
+
+    // POV
+    new POVButton(driverJoystick, OIConstants.kDriverPOVId_left).whileTrue(new DepositToAmpCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem));
+    new POVButton(driverJoystick, OIConstants.kDriverPOVId_down).whileTrue(new SequentialCommandGroup(new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem)));
 
 
     // TRIGGERS
-    new JoystickButton(driverJoystick, OIConstants.kDriverToggleFlapButtonId).whileTrue(new ToggleFlapCmd(shooterSubsystem));
-    new JoystickButton(driverJoystick, OIConstants.kDriverToggleGroundIntakeButtonId).whileTrue(new ToggleArticulateCmd(intakeSubsystem));
-    new JoystickButton(driverJoystick, OIConstants.kDriverRunAmpButtonId).whileTrue(new ShootAmpCmd(shooterSubsystem, intakeSubsystem));
-    new JoystickButton(driverJoystick, OIConstants.kDriverRunShooterButtonId).whileTrue(new ShootCmd(shooterSubsystem, intakeSubsystem, ledSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_sourceIntake).whileTrue(new ToggleFlapCmd(shooterSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_toggleIntake).whileTrue(new SourceIntakeCmd(shooterSubsystem, intakeSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_ampOut).whileTrue(new ShootAmpCmd(intakeSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_shoot).whileTrue(new ShootCmd(shooterSubsystem, intakeSubsystem, ledSubsystem));
   }
 
 

@@ -98,20 +98,23 @@ public class Constants {
         public static final int kDriverSnapBackButtonId = 15;
 
         // Buttons
-        public static final int kDriverResetGyroButtonId = 2; // B button
-        public static final int kDriverFireSpeakerButtonId = 3; //  button
-        public static final int kDriverToggleClimberButtonId = 4; // Y button
-        public static final int kDriverStopButtonId = 10; // "Start" button
-        public static final int kDriverSourceIntakeButtonId = 1; // X button
+        public static final int kDriverButtonId_climberDown = 1; // X button
+        public static final int kDriverButtonId_resetGyro = 2; // B button
+        public static final int kDriverButtonId_toggleFlap = 3; //  button
+        public static final int kDriverButtonId_climberUp = 4; // Y button
+        public static final int kDriverButtonId_stop = 10; // "Start" button
 
         // POV
-        public static final int kDriverAmpDepositId = 270;
+        public static final int kDriverPOVId_up = 0;
+        public static final int kDriverPOVId_right = 90;
+        public static final int kDriverPOVId_down = 180;
+        public static final int kDriverPOVId_left = 270;
 
         // Triggers
-        public static final int kDriverToggleFlapButtonId = 5; // Left bumper
-        public static final int kDriverToggleGroundIntakeButtonId = 6; // Right bumper
-        public static final int kDriverRunAmpButtonId = 7; // Left trigger
-        public static final int kDriverRunShooterButtonId = 8; // Right trigger
+        public static final int kDriverTriggerId_sourceIntake = 5; // Left bumper
+        public static final int kDriverTriggerId_toggleIntake = 6; // Right bumper
+        public static final int kDriverTriggerId_ampOut = 7; // Left trigger
+        public static final int kDriverTriggerId_shoot = 8; // Right trigger
     } 
 
     public static final class ShooterConstants {
@@ -122,13 +125,13 @@ public class Constants {
 
         public static final double kShooterFlywheelSpeed = 1.0;
         public static final double kShooterIntakeSpeed = 0.25;
-        public static final double kShooterAmpSpeed = 0.2;
+        public static final double kShooterAmpSpeed = 0.15;
 
-        public static final double kShooterFlapSpeakerPos = 60;
+        public static final double kShooterFlapSpeakerPos = 65;
 
-        public static final double kShooterFlapDefaultPos = 170;
+        public static final double kShooterFlapDefaultPos = 10;
 
-        public static final double kShooterFlapAmpPos = 155;
+        public static final double kShooterFlapAmpPos = 33;
 
         public static final double kShooterSpeedCap = 1.0;
     }
@@ -137,11 +140,17 @@ public class Constants {
         public static final int kIntakeMotorId = 51;
         public static final int kIntakeArticulateMotorId = 54;
 
-        public static final double kGroundIntakeMotorSpeed = 0.5;
-        public static final double kIntakeOutMotorSpeed = 0.5;
+        public static final double kIntakeMotorSpeed_ground = 0.5;
+        public static final double kIntakeMotorSpeed_in = 0.5;
+        public static final double kIntakeMotorSpeed_out = -0.3;
+        public static final double kIntakeMotorSpeed_amp = -1.0;
 
         public static final double kIntakeArticulateSpeed = 0.3;
         public static final double kIntakeArticulateAccelerationUnitsPerSecond = 3;
+
+        public static final double kIntakeDesiredPos_amp = -15;
+        public static final double kIntakeDesiredPos_store = -0;
+        public static final double kIntakeDesiredPos_out = -34;
     }
 
     public static final class AutoConstants {

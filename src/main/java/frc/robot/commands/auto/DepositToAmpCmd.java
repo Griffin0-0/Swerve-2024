@@ -64,7 +64,7 @@ public class DepositToAmpCmd extends Command {
         Boolean swerveAtPos = moveSwerve();
         
         if (swerveAtPos && reachedFirstPoint) {
-            intakeSubsystem.runIntake(-IntakeConstants.kIntakeOutMotorSpeed);
+            intakeSubsystem.runIntake(-IntakeConstants.kIntakeMotorSpeed_out);
             depositCheckTick--;
         } else if (swerveAtPos) {
             targetPose = ampDepositPos;

@@ -21,9 +21,9 @@ public class SimpleFireAtSpeakerCmd extends Command {
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
     private int currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks; 
     private Pose2d[] blueSpeakerPositions = {
-                                            new Pose2d(1.9,5.48,Rotation2d.fromDegrees(0)),
-                                            new Pose2d(1.5,6.35,Rotation2d.fromDegrees(26)),
-                                            new Pose2d(1.5,4.71,Rotation2d.fromDegrees(-26))
+                                            new Pose2d(2,5.48,Rotation2d.fromDegrees(0)),
+                                            new Pose2d(1.57,6.43,Rotation2d.fromDegrees(26)),
+                                            new Pose2d(1.57,4.55,Rotation2d.fromDegrees(-26))
                                             };
     private Pose2d[] redSpeakerPositions = {
                                             new Pose2d(1.9,5.48,Rotation2d.fromDegrees(0)),
@@ -73,8 +73,8 @@ public class SimpleFireAtSpeakerCmd extends Command {
     public void execute() {
 
         // If close to targetPos, shoot
-        if (moveSwerve()) {
-            intakeSubsystem.runIntake(-IntakeConstants.kIntakeOutMotorSpeed);
+        if (moveSwerve() && shooterSubsystem.getRollerSpeed() > 0.99) {
+            intakeSubsystem.runIntake(-IntakeConstants.kIntakeMotorSpeed_out);
             currentShootTick--;
         } else {
             intakeSubsystem.stop();
