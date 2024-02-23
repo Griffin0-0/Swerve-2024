@@ -9,8 +9,13 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.util.Color;
+
+import com.revrobotics.ColorSensorV3;
 
 public class IntakeSubsystem extends SubsystemBase {
 
@@ -20,6 +25,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private final RelativeEncoder articulateEncoder;
     private final GenericEntry encoder;
     private final LEDSubsystem ledSubsystem;
+    private final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
 
     public boolean intakeOut = false;
     public boolean switchTemp = false;
@@ -116,6 +122,16 @@ public class IntakeSubsystem extends SubsystemBase {
         }
 
         articulatePID.setReference(currentGoal, ControlType.kPosition);
+
+        Color detectedColor = colorSensor.getColor();
+        double IR = colorSensor.getIR();
+        int proximity = colorSensor.getProximity();
+
+        SmartDashboard.putNumber("Red", detectedColor.red);
+        SmartDashboard.putNumber("Blue", detectedColor.blue);
+        SmartDashboard.putNumber("Green", detectedColor.green);
+        SmartDashboard.putNumber("IR", IR);
+        SmartDashboard.putNumber("Proximity", proximity);
     }
 
     public void stop() {
