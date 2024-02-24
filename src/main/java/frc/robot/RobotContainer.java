@@ -9,7 +9,11 @@ import edu.wpi.first.cscore.UsbCamera;
 // import edu.wpi.first.math.geometry.Pose2d; // For MoveToPosCmd
 // import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.auto.DepositToAmpCmd;
@@ -46,6 +50,7 @@ public class RobotContainer {
   private final Joystick translateStick = new Joystick(OIConstants.kDriverTranslateStickPort);
   private final Joystick rotateStick = new Joystick(OIConstants.kDriverRotateStickPort);
 
+  private final ComplexWidget sb_camera;
   UsbCamera intakeCamera;
 
   public RobotContainer() {
@@ -69,6 +74,12 @@ public class RobotContainer {
     //             () -> !driverJoystick.getRawButton(OIConstants.kDriverFieldOrientedButtonId)));
 
     intakeCamera = CameraServer.startAutomaticCapture(0);
+
+    sb_camera = Shuffleboard.getTab("Driver")
+      .add("Camera", intakeCamera)
+      .withWidget(BuiltInWidgets.kCameraStream)
+      .withPosition(3, 0)
+      .withSize(5, 6);
                 
     configureBindings();
   }
@@ -91,7 +102,7 @@ public class RobotContainer {
     // TRIGGERS
     new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_sourceIntake).whileTrue(new SourceIntakeCmd(shooterSubsystem, intakeSubsystem));
     new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_toggleIntake).whileTrue(new ToggleArticulateCmd(intakeSubsystem));
-    new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_ampOut).whileTrue(new ShootAmpCmd(intakeSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_ampOut).whileTrue(new ShootAmpCmd(intakeSubsystem, ledSubsystem));
     new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_shoot).whileTrue(new ShootCmd(shooterSubsystem, intakeSubsystem, ledSubsystem));
   }
 

@@ -7,14 +7,16 @@ package frc.robot.commands.functions;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 
 
 
 public class ShootAmpCmd extends Command {
 
   IntakeSubsystem intakeSubsystem;
+  LEDSubsystem ledSubsystem;
 
-  public ShootAmpCmd(IntakeSubsystem intakeSubsystem) {
+  public ShootAmpCmd(IntakeSubsystem intakeSubsystem, LEDSubsystem ledSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
     addRequirements(intakeSubsystem);
   }
@@ -23,6 +25,7 @@ public class ShootAmpCmd extends Command {
   @Override
   public void initialize() {
     intakeSubsystem.intakeAmp();
+    ledSubsystem.setAmp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,6 +41,7 @@ public class ShootAmpCmd extends Command {
   public void end(boolean interrupted) {
     intakeSubsystem.stopIntake();
     intakeSubsystem.intakeUp();
+    ledSubsystem.setDefault();
   }
 
   // Returns true when the command should end.

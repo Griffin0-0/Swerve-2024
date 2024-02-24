@@ -136,15 +136,11 @@ public class IntakeSubsystem extends SubsystemBase {
         double greenDifference = noteColor.green - detectedColor.green;
         double blueDifference = noteColor.blue - detectedColor.blue;
 
-        SmartDashboard.putNumber("Difference Red", redDifference);
-        SmartDashboard.putNumber("Difference Green", greenDifference);
-        SmartDashboard.putNumber("Difference Blue", blueDifference);
-
         noteConfirmed = (Math.abs(redDifference) < tolerance) && (Math.abs(greenDifference) < tolerance) && (Math.abs(blueDifference) < tolerance);
-        SmartDashboard.putBoolean("Note Confirmed", noteConfirmed);
 
         if (noteConfirmed && isDown()) {
             intakeUp();
+            intakeOut = false;
         }
     }
 
