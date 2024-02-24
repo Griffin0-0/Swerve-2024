@@ -49,19 +49,24 @@ public class IntakeSubsystem extends SubsystemBase {
 
         devsb_encoder = Shuffleboard.getTab("Driver")
             .add("Encoder Pos", 0.0)
+            .withPosition(0, 1)
+            .withSize(3, 1)
             .getEntry();
 
         this.ledSubsystem = ledSubsystem;
     }
 
     public void intakeDown() {
-        currentGoal = IntakeConstants.kIntakeDesiredPos_out;    
+        // currentGoal = IntakeConstants.kIntakeDesiredPos_out;
+        articulatePID.setReference(IntakeConstants.kIntakeDesiredPos_out, ControlType.kPosition);   
     }
     public void intakeUp() {
-        currentGoal = IntakeConstants.kIntakeDesiredPos_store;    
+        // currentGoal = IntakeConstants.kIntakeDesiredPos_store;
+        articulatePID.setReference(IntakeConstants.kIntakeDesiredPos_store, ControlType.kPosition);
     }
     public void intakeAmp() {
-        currentGoal = IntakeConstants.kIntakeDesiredPos_amp;
+        // currentGoal = IntakeConstants.kIntakeDesiredPos_amp;
+        articulatePID.setReference(IntakeConstants.kIntakeDesiredPos_amp, ControlType.kPosition);
     }
 
     public void runIntake(double speed) {
@@ -78,8 +83,8 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
-    public boolean atPoint() {
-        return (Math.abs(getPosition() - currentGoal) < 0.5);
+    public boolean atPoint(double point) {
+        return (Math.abs(getPosition() - point) < 0.5);
     }
 
     public boolean isDown() {
@@ -120,8 +125,6 @@ public class IntakeSubsystem extends SubsystemBase {
             switchTemp = false;
             ledSubsystem.setDefault();
         }
-
-        articulatePID.setReference(currentGoal, ControlType.kPosition);
 
         Color detectedColor = colorSensor.getColor();
         double IR = colorSensor.getIR();

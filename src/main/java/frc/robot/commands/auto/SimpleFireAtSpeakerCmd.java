@@ -74,7 +74,7 @@ public class SimpleFireAtSpeakerCmd extends Command {
 
         // If close to targetPos, shoot
         if (moveSwerve() && shooterSubsystem.getRollerSpeed() > 0.99) {
-            intakeSubsystem.runIntake(-IntakeConstants.kIntakeMotorSpeed_out);
+            intakeSubsystem.runIntake(IntakeConstants.kIntakeMotorSpeed_out);
             currentShootTick--;
         } else {
             intakeSubsystem.stop();

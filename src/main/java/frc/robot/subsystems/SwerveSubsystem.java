@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -10,6 +12,8 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -72,7 +76,7 @@ public class SwerveSubsystem extends SubsystemBase {
     boolean goodTranslationBuffer = false;
     public boolean fieldOriented = false;
 
-    private final GenericEntry sb_gyro;
+    private final GenericEntry sb_gyro, sb_voltage, sb_time;
     
 
     public SwerveModule[] swerveModules = {frontLeft, frontRight, backLeft, backRight};
@@ -125,6 +129,23 @@ public class SwerveSubsystem extends SubsystemBase {
         sb_gyro = Shuffleboard.getTab("Driver")
             .add("Gyro", 0.0)
             .withWidget(BuiltInWidgets.kGyro)
+            .withPosition(0, 2)
+            .withSize(3, 3)
+            .getEntry();
+
+        sb_voltage = Shuffleboard.getTab("Driver")
+            .add("Voltage", 0.0)
+            .withWidget(BuiltInWidgets.kVoltageView)
+            .withProperties(Map.of("Max", 12))
+            .withPosition(0, 5)
+            .withSize(3, 1)
+            .getEntry();
+
+        sb_time = Shuffleboard.getTab("Driver")
+            .add("Time", 0.0)
+            .withWidget(BuiltInWidgets.kTextView)
+            .withPosition(9, 3)
+            .withSize(2, 1)
             .getEntry();
     }
 
@@ -242,7 +263,9 @@ public class SwerveSubsystem extends SubsystemBase {
             });
 
         SmartDashboard.putString("Pose", pose.toString());
-        sb_gyro.setDouble(getHeading());
+        sb_gyro.setDouble(getHeading() - 180);
+        sb_voltage.setDouble(RobotController.getBatteryVoltage());
+        sb_time.setDouble(DriverStation.getMatchTime());
     }
     
     public void coordinateFunction() {
