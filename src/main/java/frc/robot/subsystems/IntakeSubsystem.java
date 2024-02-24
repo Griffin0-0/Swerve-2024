@@ -25,11 +25,15 @@ public class IntakeSubsystem extends SubsystemBase {
     private final RelativeEncoder articulateEncoder;
     private final GenericEntry devsb_encoder;
     private final LEDSubsystem ledSubsystem;
-    private final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+    
+    private final ColorSensorV3 m_colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+    private final Color noteColor = new Color(0.51, 0.36, 0.13);
+    private final double tolerance = 0.15;
 
     public boolean intakeOut = false;
     public boolean switchTemp = false;
     public double currentGoal = 0.0;
+    public boolean noteConfirmed = false;
 
 
     public IntakeSubsystem(LEDSubsystem ledSubsystem) {
@@ -126,15 +130,22 @@ public class IntakeSubsystem extends SubsystemBase {
             ledSubsystem.setDefault();
         }
 
-        Color detectedColor = colorSensor.getColor();
-        double IR = colorSensor.getIR();
-        int proximity = colorSensor.getProximity();
+        Color detectedColor = m_colorSensor.getColor();   
 
-        SmartDashboard.putNumber("Red", detectedColor.red);
-        SmartDashboard.putNumber("Blue", detectedColor.blue);
-        SmartDashboard.putNumber("Green", detectedColor.green);
-        SmartDashboard.putNumber("IR", IR);
-        SmartDashboard.putNumber("Proximity", proximity);
+        double redDifference = noteColor.red - detectedColor.red;
+        double greenDifference = noteColor.green - detectedColor.green;
+        double blueDifference = noteColor.blue - detectedColor.blue;
+
+        SmartDashboard.putNumber("Difference Red", redDifference);
+        SmartDashboard.putNumber("Difference Green", greenDifference);
+        SmartDashboard.putNumber("Difference Blue", blueDifference);
+
+        noteConfirmed = (Math.abs(redDifference) < tolerance) && (Math.abs(greenDifference) < tolerance) && (Math.abs(blueDifference) < tolerance);
+        SmartDashboard.putBoolean("Note Confirmed", noteConfirmed);
+
+        if (noteConfirmed) {
+            intakeUp();
+        }
     }
 
     public void stop() {
