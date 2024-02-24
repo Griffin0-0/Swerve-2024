@@ -66,6 +66,8 @@ public class SimpleIntakeFromGroundCmd extends Command {
         }
 
         if (collectedCheckTick <= 0 || (intakeSubsystem.noteConfirmed)) {
+            intakeSubsystem.stopIntake();
+            intakeSubsystem.intakeUp();
             isDone = true;
         }
 

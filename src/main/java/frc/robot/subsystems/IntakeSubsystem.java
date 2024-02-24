@@ -63,10 +63,12 @@ public class IntakeSubsystem extends SubsystemBase {
     public void intakeDown() {
         // currentGoal = IntakeConstants.kIntakeDesiredPos_out;
         articulatePID.setReference(IntakeConstants.kIntakeDesiredPos_out, ControlType.kPosition);   
+        intakeOut = true;
     }
     public void intakeUp() {
         // currentGoal = IntakeConstants.kIntakeDesiredPos_store;
         articulatePID.setReference(IntakeConstants.kIntakeDesiredPos_store, ControlType.kPosition);
+        intakeOut = false;
     }
     public void intakeAmp() {
         // currentGoal = IntakeConstants.kIntakeDesiredPos_amp;
@@ -80,10 +82,8 @@ public class IntakeSubsystem extends SubsystemBase {
     public void toggleIntake() {
         if (intakeOut) {
             intakeUp();
-            intakeOut = false;
         } else if (!intakeOut) {
             intakeDown();
-            intakeOut = true;
         }
     }
 
@@ -138,6 +138,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
         noteConfirmed = (Math.abs(redDifference) < tolerance) && (Math.abs(greenDifference) < tolerance) && (Math.abs(blueDifference) < tolerance);
 
+        SmartDashboard.putNumber("color red", detectedColor.red);
+        SmartDashboard.putBoolean("note comfirmed", noteConfirmed);
         if (noteConfirmed && isDown()) {
             intakeUp();
             intakeOut = false;
