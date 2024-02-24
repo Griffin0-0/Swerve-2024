@@ -24,6 +24,7 @@ public class SourceIntakeCmd extends Command {
   public void initialize() {
     shooterSubsystem.spinIn();
     intakeSubsystem.spinIn();
+    shooterSubsystem.flapAmp();
   }
 
   // Called once the command ends or is interrupted.
@@ -31,6 +32,7 @@ public class SourceIntakeCmd extends Command {
   public void end(boolean interrupted) {
     shooterSubsystem.shooterStop();
     intakeSubsystem.stopIntake();
+    shooterSubsystem.flapDefault();
   }
 
   // Returns true when the command should end.

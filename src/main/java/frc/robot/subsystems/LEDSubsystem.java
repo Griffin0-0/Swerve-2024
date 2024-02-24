@@ -14,7 +14,7 @@ public class LEDSubsystem extends SubsystemBase {
   private static double black = 0.99;
   private static double white = 0.93;
 
-  private static double defaultColor = red;
+  private static double defaultColor = blue;
   public double currentColor = 0.93;
 
   public LEDSubsystem() {

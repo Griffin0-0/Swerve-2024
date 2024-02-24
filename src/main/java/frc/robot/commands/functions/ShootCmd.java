@@ -28,6 +28,7 @@ public class ShootCmd extends Command {
   public void initialize() {
     shooterSubsystem.speakerSpinOut();
     ledSubsystem.setShoot();
+    shooterSubsystem.flapSpeaker();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,6 +45,7 @@ public class ShootCmd extends Command {
     shooterSubsystem.shooterStop();
     intakeSubsystem.stopIntake();
     ledSubsystem.setDefault();
+    shooterSubsystem.flapDefault();
   }
 
   // Returns true when the command should end.
