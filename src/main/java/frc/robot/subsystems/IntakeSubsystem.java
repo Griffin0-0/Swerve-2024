@@ -143,7 +143,7 @@ public class IntakeSubsystem extends SubsystemBase {
         noteConfirmed = (Math.abs(redDifference) < tolerance) && (Math.abs(greenDifference) < tolerance) && (Math.abs(blueDifference) < tolerance);
         SmartDashboard.putBoolean("Note Confirmed", noteConfirmed);
 
-        if (noteConfirmed) {
+        if (noteConfirmed && isDown()) {
             intakeUp();
         }
     }

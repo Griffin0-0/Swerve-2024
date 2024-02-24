@@ -73,7 +73,7 @@ public class SimpleFireAtSpeakerCmd extends Command {
     public void execute() {
 
         // If close to targetPos, shoot
-        if (moveSwerve() && shooterSubsystem.getRollerSpeed() > 0.99) {
+        if (moveSwerve() && shooterSubsystem.getRollerSpeed() > 0.99 && intakeSubsystem.noteConfirmed) {
             intakeSubsystem.runIntake(IntakeConstants.kIntakeMotorSpeed_out);
             currentShootTick--;
         } else {
@@ -81,7 +81,7 @@ public class SimpleFireAtSpeakerCmd extends Command {
         }
 
         // If shooter is done shooting, stop shooter and exit command
-        if (currentShootTick <= 0) {
+        if (shooterSubsystem.getRollerSpeed() > 0.99 && intakeSubsystem.noteConfirmed && currentShootTick <= 0) {
             shooterSubsystem.shooterStop();
             isDone = true;
         }
