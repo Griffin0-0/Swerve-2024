@@ -12,6 +12,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 public class SimpleIntakeFromGroundCmd extends Command {
     private final SwerveSubsystem swerveSubsystem;
@@ -49,14 +50,14 @@ public class SimpleIntakeFromGroundCmd extends Command {
         if (swerveMovedCondition && reachedFirstPoint) {
             // If swerve reached targetPose, start collecting note
             collectedCheckTick--;
-        } else if (swerveMovedCondition && !reachedFirstPoint) {
+        } else if (swerveMovedCondition && !reachedFirstPoint && intakeSubsystem.isDown()) {
             reachedFirstPoint = true;
             targetPose = new Pose2d(targetTranslation.getX() - 0.5, targetTranslation.getY(), Rotation2d.fromDegrees(0));
             currentSpeedLimit = AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond;
         }
 
         // Once made sure swerve has collected note from ground, exit command
-        if (collectedCheckTick < AutoConstants.kAutoGroundIntakeCheckTicks) {
+        if (collectedCheckTick < AutoConstants.kAutoGroundIntakeCheckTicks || intakeSubsystem.noteConfirmed) {
             intakeSubsystem.stopIntake();
             intakeSubsystem.intakeUp();
         } else {
@@ -64,7 +65,7 @@ public class SimpleIntakeFromGroundCmd extends Command {
             intakeSubsystem.intakeDown();
         }
 
-        if (collectedCheckTick <= 0) {
+        if (collectedCheckTick <= 0 || (intakeSubsystem.noteConfirmed)) {
             isDone = true;
         }
 
