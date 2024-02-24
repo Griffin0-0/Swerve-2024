@@ -172,7 +172,7 @@ public class Constants {
     
         public static final int kAutoAmpStoppedCheckTicks = 30; // Ticks it waits to make sure swerve has come to a complete stop before depositing note to amp 20
 
-        public static final int kAutoSpeakerShotCheckTicks = 70;
+        public static final int kAutoSpeakerShotCheckTicks = 20;
 
         public static final int kAutoGroundIntakeCheckTicks = 100;
 

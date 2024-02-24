@@ -21,9 +21,9 @@ public class SimpleFireAtSpeakerCmd extends Command {
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
     private int currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks; 
     private Pose2d[] blueSpeakerPositions = {
-                                            new Pose2d(2,5.48,Rotation2d.fromDegrees(0)),
-                                            new Pose2d(1.57,6.43,Rotation2d.fromDegrees(26)),
-                                            new Pose2d(1.57,4.55,Rotation2d.fromDegrees(-26))
+                                            new Pose2d(2.17,5.48,Rotation2d.fromDegrees(0)),
+                                            new Pose2d(1.6,6.50,Rotation2d.fromDegrees(26)),
+                                            new Pose2d(1.6,4.46,Rotation2d.fromDegrees(-26))
                                             };
     private Pose2d[] redSpeakerPositions = {
                                             new Pose2d(1.9,5.48,Rotation2d.fromDegrees(0)),
@@ -73,17 +73,18 @@ public class SimpleFireAtSpeakerCmd extends Command {
     public void execute() {
 
         // If close to targetPos, shoot
-        if (moveSwerve() && shooterSubsystem.getRollerSpeed() > 0.99 && intakeSubsystem.noteConfirmed) {
+        if (moveSwerve() && shooterSubsystem.getRollerSpeed() > 0.99) {
             intakeSubsystem.runIntake(IntakeConstants.kIntakeMotorSpeed_out);
-            currentShootTick--;
         } else {
             intakeSubsystem.stop();
         }
 
         // If shooter is done shooting, stop shooter and exit command
-        if (shooterSubsystem.getRollerSpeed() > 0.99 && intakeSubsystem.noteConfirmed && currentShootTick <= 0) {
+        if (shooterSubsystem.getRollerSpeed() > 0.99 && !intakeSubsystem.noteConfirmed && currentShootTick <= 0) {
             shooterSubsystem.shooterStop();
             isDone = true;
+        } else if (shooterSubsystem.getRollerSpeed() > 0.99 && !intakeSubsystem.noteConfirmed && currentShootTick > 0) {
+            currentShootTick--;
         }
 
     }
