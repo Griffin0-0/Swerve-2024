@@ -129,9 +129,9 @@ public class Constants {
 
         public static final double kShooterFlapSpeakerPos = 65;
 
-        public static final double kShooterFlapDefaultPos = 10;
+        public static final double kShooterFlapDefaultPos = 0;
 
-        public static final double kShooterFlapAmpPos = 33;
+        public static final double kShooterFlapAmpPos = 40;
 
         public static final double kShooterSpeedCap = 1.0;
     }
@@ -140,7 +140,7 @@ public class Constants {
         public static final int kIntakeMotorId = 51;
         public static final int kIntakeArticulateMotorId = 54;
 
-        public static final double kIntakeMotorSpeed_ground = 0.5;
+        public static final double kIntakeMotorSpeed_ground = 0.75;
         public static final double kIntakeMotorSpeed_in = 0.5;
         public static final double kIntakeMotorSpeed_out = -0.3;
         public static final double kIntakeMotorSpeed_amp = -1.0;
@@ -149,8 +149,8 @@ public class Constants {
         public static final double kIntakeArticulateAccelerationUnitsPerSecond = 3;
 
         public static final double kIntakeDesiredPos_amp = -15;
-        public static final double kIntakeDesiredPos_store = -0;
-        public static final double kIntakeDesiredPos_out = -34;
+        public static final double kIntakeDesiredPos_store = 0;
+        public static final double kIntakeDesiredPos_out = -44.5;
     }
 
     public static final class AutoConstants {

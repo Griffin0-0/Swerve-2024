@@ -41,13 +41,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
         articulateMotor = new CANSparkMax(IntakeConstants.kIntakeArticulateMotorId, MotorType.kBrushless);
         articulatePID = articulateMotor.getPIDController();
-        articulateEncoder = articulateMotor.getEncoder();
+        articulateEncoder = articulateMotor.getAlternateEncoder(100);
+        articulatePID.setFeedbackDevice(articulateEncoder);
         articulateEncoder.setPosition(0);
 
         articulatePID.setOutputRange(-IntakeConstants.kIntakeArticulateSpeed, IntakeConstants.kIntakeArticulateSpeed);
-        articulatePID.setP(0.6);
-        articulatePID.setI(0);
-        articulatePID.setD(0);
+        articulateMotor.setSmartCurrentLimit(40);
+        articulatePID.setP(0.6); // Increase until oscillation
+        articulatePID.setI(0); // Always leave zero 
+        articulatePID.setD(0); // Once oscillation, increase to dampen
 
         articulateEncoder.setPosition(0);
 
@@ -88,7 +90,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public boolean atPoint(double point) {
-        return (Math.abs(getPosition() - point) < 0.5);
+        return (Math.abs(getPosition() - point) < 2);
     }
 
     public boolean isDown() {

@@ -21,9 +21,9 @@ public class SimpleFireAtSpeakerCmd extends Command {
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
     private int currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks; 
     private Pose2d[] blueSpeakerPositions = {
-                                            new Pose2d(2.22,5.48,Rotation2d.fromDegrees(0)),
-                                            new Pose2d(1.8,6.55,Rotation2d.fromDegrees(26)),
-                                            new Pose2d(1.8,4.41,Rotation2d.fromDegrees(-26))
+                                            new Pose2d(2.3,5.48,Rotation2d.fromDegrees(0)),
+                                            new Pose2d(1.85,6.55,Rotation2d.fromDegrees(26)),
+                                            new Pose2d(1.85,4.41,Rotation2d.fromDegrees(-26))
                                             };
     private Pose2d[] redSpeakerPositions = {
                                             new Pose2d(1.9,5.48,Rotation2d.fromDegrees(0)),
