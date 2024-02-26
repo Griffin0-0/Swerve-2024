@@ -25,7 +25,7 @@ public class DepositToAmpCmd extends Command {
     private Boolean reachedFirstPoint = false;
 
     private Pose2d ampDepositPos;
-    private Pose2d blueAmpDepositPos = new Pose2d(1.71,7.70, Rotation2d.fromDegrees(-90));
+    private Pose2d blueAmpDepositPos = new Pose2d(1.5,7.70, Rotation2d.fromDegrees(90));
     private Pose2d redAmpDepositPos = new Pose2d(0,0, Rotation2d.fromDegrees(0));
     
     public DepositToAmpCmd(SwerveSubsystem swerveSubsystem, ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem) {
@@ -46,14 +46,12 @@ public class DepositToAmpCmd extends Command {
 
     @Override
     public void initialize() {
-        shooterSubsystem.ampSpinOut();
-        shooterSubsystem.flapAmp();
         depositCheckTick = AutoConstants.kAutoDepositCheckTicks;
         isDone = false;
         reachedFirstPoint = false;
 
         new Rotation2d();
-        targetPose = new Pose2d(ampDepositPos.getX() + 0.75, ampDepositPos.getY() - 0.75, Rotation2d.fromDegrees(-45));
+        targetPose = new Pose2d(ampDepositPos.getX() + 0.75, ampDepositPos.getY() - 0.75, Rotation2d.fromDegrees(45));
     }
 
     @Override
@@ -64,7 +62,7 @@ public class DepositToAmpCmd extends Command {
         Boolean swerveAtPos = moveSwerve();
         
         if (swerveAtPos && reachedFirstPoint) {
-            intakeSubsystem.runIntake(IntakeConstants.kIntakeMotorSpeed_out);
+            intakeSubsystem.intakeAmp();
             depositCheckTick--;
         } else if (swerveAtPos) {
             targetPose = ampDepositPos;
@@ -74,7 +72,6 @@ public class DepositToAmpCmd extends Command {
         }
 
         if (depositCheckTick <= 0) {
-            shooterSubsystem.stop();
             intakeSubsystem.stop();
             isDone = true;
         }
@@ -116,9 +113,8 @@ public class DepositToAmpCmd extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        shooterSubsystem.stop();
-        intakeSubsystem.stop();
-        shooterSubsystem.flapDefault();
+        intakeSubsystem.stopIntake();
+        intakeSubsystem.intakeUp();
     }
 
     public boolean isFinished() {

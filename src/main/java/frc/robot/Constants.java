@@ -64,7 +64,9 @@ public class Constants {
 
         // Robot speeds
         public static final double kPhysicalMaxSpeedMetersPerSecond = 3.6; // PHYSICAL max speed of the modules (safety cap) 3.6
-        public static final double kTeleDriveMaxSpeedMetersPerSecond = 1.25; // Max speed set for teleop
+        public static final double kTeleDriveMaxSpeedMetersPerSecond = 1.7; // Max speed set for teleop
+        public static final double kTeleBoostDriveMaxSpeedMetersPerSecond = 2.5; // Max speed set for boost teleop
+        public static final double kTeleSlowDriveMaxSpeedMetersPerSecond = 0.75; // Max speed set for slow teleop
 
         // Robot turning speeds
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
@@ -73,10 +75,6 @@ public class Constants {
         // Robot acceleration
         public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
         public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
-
-        // Robot speed modifiers
-        public static final double kTeleopBoostModifier = 1.5;
-        public static final double kTeleopSlowModifier = 0.5;
     }
 
     public static final class OIConstants {
@@ -140,15 +138,16 @@ public class Constants {
         public static final int kIntakeMotorId = 51;
         public static final int kIntakeArticulateMotorId = 54;
 
-        public static final double kIntakeMotorSpeed_ground = 0.75;
-        public static final double kIntakeMotorSpeed_in = 0.5;
+        public static final double kIntakeMotorSpeed_ground = 0.6;
+        public static final double kIntakeMotorSpeed_source = 0.4;
+        public static final double kIntakeMotorSpeed_in = 0.25;
         public static final double kIntakeMotorSpeed_out = -0.3;
-        public static final double kIntakeMotorSpeed_amp = -1.0;
+        public static final double kIntakeMotorSpeed_amp = -0.65;
 
         public static final double kIntakeArticulateSpeed = 0.3;
         public static final double kIntakeArticulateAccelerationUnitsPerSecond = 3;
 
-        public static final double kIntakeDesiredPos_amp = -15;
+        public static final double kIntakeDesiredPos_amp = -20.5;
         public static final double kIntakeDesiredPos_store = 0;
         public static final double kIntakeDesiredPos_out = -44.5;
     }
@@ -181,5 +180,6 @@ public class Constants {
         public static final double kAutoToleranceDegrees = 5.0;
 
         public static  final int kAutoDepositCheckTicks = 300;
+        public static final int kAutoSourceColorCheckTick = 70;
     }
 }

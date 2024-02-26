@@ -65,10 +65,10 @@ public class SimpleIntakeFromGroundCmd extends Command {
             intakeSubsystem.intakeDown();
         }
 
-        if ((collectedCheckTick <= 0 || (intakeSubsystem.noteConfirmed) && !intakeSubsystem.atPoint(IntakeConstants.kIntakeDesiredPos_store))) {
+        if ((collectedCheckTick <= 0 || (intakeSubsystem.noteConfirmed) && !intakeSubsystem.atPoint(IntakeConstants.kIntakeDesiredPos_store, 2))) {
             intakeSubsystem.stopIntake();
             intakeSubsystem.intakeUp();
-        } else if ((collectedCheckTick <= 0 || (intakeSubsystem.noteConfirmed) && intakeSubsystem.atPoint(IntakeConstants.kIntakeDesiredPos_store))) {
+        } else if ((collectedCheckTick <= 0 || (intakeSubsystem.noteConfirmed) && intakeSubsystem.atPoint(IntakeConstants.kIntakeDesiredPos_store, 2))) {
             isDone = true;
         }
 

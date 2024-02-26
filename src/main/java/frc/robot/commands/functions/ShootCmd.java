@@ -28,7 +28,7 @@ public class ShootCmd extends Command {
   public void initialize() {
     shooterSubsystem.speakerSpinOut();
     ledSubsystem.setShoot();
-    shooterSubsystem.flapSpeaker();
+    shooterSubsystem.flapAmp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

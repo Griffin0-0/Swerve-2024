@@ -50,23 +50,21 @@ public class SwerveJoystickCmd extends Command {
         turningSpeed = Math.abs(turningSpeed) > OIConstants.kDeadband ? turningSpeed : 0.0;
 
         // 3. Make the driving smoother
-        xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
-        ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+        if (isBoost.get()) {
+            xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleBoostDriveMaxSpeedMetersPerSecond;
+            ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleBoostDriveMaxSpeedMetersPerSecond;
+        } else if (isSlow.get()) {
+            xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleSlowDriveMaxSpeedMetersPerSecond;
+            ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleSlowDriveMaxSpeedMetersPerSecond;
+        } else {
+            xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+            ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+        }
+        
         
 
         turningSpeed = turningLimiter.calculate(turningSpeed)
                 * DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
-
-
-        // 4. Apply speed modifiers
-        if (isBoost.get()){
-            xSpeed = xSpeed * DriveConstants.kTeleopBoostModifier;
-            ySpeed = ySpeed * DriveConstants.kTeleopBoostModifier;
-        }
-        if (isSlow.get()) {
-            xSpeed = xSpeed * DriveConstants.kTeleopSlowModifier;
-            ySpeed = ySpeed * DriveConstants.kTeleopSlowModifier;
-        }
 
         // 5. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;

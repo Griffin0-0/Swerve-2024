@@ -26,11 +26,11 @@ public class IntakeSubsystem extends SubsystemBase {
     private final GenericEntry devsb_encoder;
     private final LEDSubsystem ledSubsystem;
     
-    private final ColorSensorV3 m_colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+    private final ColorSensorV3 m_colorSensor = new ColorSensorV3(I2C.Port.kMXP);
     private final Color noteColor = new Color(0.51, 0.36, 0.13);
-    private final double tolerance = 0.15;
+    private final double tolerance = 0.17;
 
-    public boolean intakeOut = false;
+    public String intakeState = "store";
     public boolean switchTemp = false;
     public double currentGoal = 0.0;
     public boolean noteConfirmed = false;
@@ -46,10 +46,10 @@ public class IntakeSubsystem extends SubsystemBase {
         articulateEncoder.setPosition(0);
 
         articulatePID.setOutputRange(-IntakeConstants.kIntakeArticulateSpeed, IntakeConstants.kIntakeArticulateSpeed);
-        articulateMotor.setSmartCurrentLimit(40);
-        articulatePID.setP(0.6); // Increase until oscillation
+        articulateMotor.setSmartCurrentLimit(30);
+        articulatePID.setP(0.1); // Increase until oscillation
         articulatePID.setI(0); // Always leave zero 
-        articulatePID.setD(0); // Once oscillation, increase to dampen
+        articulatePID.setD(1.0); // Once oscillation, increase to dampen
 
         articulateEncoder.setPosition(0);
 
@@ -65,16 +65,17 @@ public class IntakeSubsystem extends SubsystemBase {
     public void intakeDown() {
         // currentGoal = IntakeConstants.kIntakeDesiredPos_out;
         articulatePID.setReference(IntakeConstants.kIntakeDesiredPos_out, ControlType.kPosition);   
-        intakeOut = true;
+        intakeState = "out";
     }
     public void intakeUp() {
         // currentGoal = IntakeConstants.kIntakeDesiredPos_store;
         articulatePID.setReference(IntakeConstants.kIntakeDesiredPos_store, ControlType.kPosition);
-        intakeOut = false;
+        intakeState = "store";
     }
     public void intakeAmp() {
         // currentGoal = IntakeConstants.kIntakeDesiredPos_amp;
         articulatePID.setReference(IntakeConstants.kIntakeDesiredPos_amp, ControlType.kPosition);
+        intakeState = "amp";
     }
 
     public void runIntake(double speed) {
@@ -82,20 +83,20 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void toggleIntake() {
-        if (intakeOut) {
+        if (intakeState == "out") {
             intakeUp();
-        } else if (!intakeOut) {
+        } else if (intakeState == "store") {
             intakeDown();
         }
     }
 
-    public boolean atPoint(double point) {
-        return (Math.abs(getPosition() - point) < 2);
+    public boolean atPoint(double point, double tolerance) {
+        return (Math.abs(getPosition() - point)) < tolerance;
     }
 
     public boolean isDown() {
-        if (intakeOut) {
-            if (getPosition() < -30) {
+        if (intakeState == "out") {
+            if (getPosition() < -40) {
                 return true;
             }
         }
@@ -104,6 +105,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void spinIn() {
         runIntake(IntakeConstants.kIntakeMotorSpeed_ground);
+    }
+
+    public void spinInSource() {
+        runIntake(IntakeConstants.kIntakeMotorSpeed_source);
     }
 
     public void spinOut() {
@@ -126,7 +131,7 @@ public class IntakeSubsystem extends SubsystemBase {
             spinIn();
             switchTemp = true;
             ledSubsystem.setIntake();
-        } else if (switchTemp) {
+        } else if (switchTemp && !isDown()) {
             stopIntake();
             switchTemp = false;
             ledSubsystem.setDefault();
@@ -142,9 +147,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("color red", detectedColor.red);
         SmartDashboard.putBoolean("note comfirmed", noteConfirmed);
+
         if (noteConfirmed && isDown()) {
             intakeUp();
-            intakeOut = false;
+        }
+
+        if (atPoint(IntakeConstants.kIntakeDesiredPos_amp, 0.5) && intakeState == "amp") {
+            spinAmp();
         }
     }
 

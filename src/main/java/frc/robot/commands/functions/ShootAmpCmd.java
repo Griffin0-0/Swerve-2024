@@ -18,6 +18,7 @@ public class ShootAmpCmd extends Command {
 
   public ShootAmpCmd(IntakeSubsystem intakeSubsystem, LEDSubsystem ledSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
+    this.ledSubsystem = ledSubsystem;
     addRequirements(intakeSubsystem);
   }
 
@@ -26,14 +27,6 @@ public class ShootAmpCmd extends Command {
   public void initialize() {
     intakeSubsystem.intakeAmp();
     ledSubsystem.setAmp();
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    if (intakeSubsystem.atPoint(IntakeConstants.kIntakeDesiredPos_amp)) {
-      intakeSubsystem.spinAmp();
-    }
   }
 
   // Called once the command ends or is interrupted.

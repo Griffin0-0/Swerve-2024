@@ -5,6 +5,7 @@
 package frc.robot.commands.functions;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -12,6 +13,8 @@ public class SourceIntakeCmd extends Command {
 
   ShooterSubsystem shooterSubsystem;
   IntakeSubsystem intakeSubsystem;
+  private int tickCheck = AutoConstants.kAutoSourceColorCheckTick;
+  private int tick= 0;
 
   public SourceIntakeCmd(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem) {
     this.shooterSubsystem = shooterSubsystem;
@@ -25,6 +28,14 @@ public class SourceIntakeCmd extends Command {
     shooterSubsystem.spinIn();
     intakeSubsystem.spinIn();
     shooterSubsystem.flapAmp();
+  }
+
+  @Override
+  public void execute() {
+    tick--;
+    if (intakeSubsystem.noteConfirmed && tick <= 0) {
+      intakeSubsystem.stopIntake();
+    }
   }
 
   // Called once the command ends or is interrupted.
