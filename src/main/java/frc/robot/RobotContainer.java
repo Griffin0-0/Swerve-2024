@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 // import edu.wpi.first.math.geometry.Pose2d; // For MoveToPosCmd
 // import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.auto.DepositToAmpCmd;
+import frc.robot.commands.auto.MoveToPosCmd;
 import frc.robot.commands.auto.SimpleFireAtSpeakerCmd;
 import frc.robot.commands.auto.SimpleIntakeFromGroundCmd;
 import frc.robot.commands.functions.EmergencyStopMechanismsCmd;
@@ -108,20 +111,61 @@ public class RobotContainer {
 
 
 
-  public Command getAutonomousCommand() {
-    // Pose2d[] path1 = { // To create a path for MoveToPosCmd
-    // };
 
-    return new SequentialCommandGroup(
-          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-          new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 5.45)),
-          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-          new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 6.85)),
-          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-          new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 4.05)),
-          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-          new InstantCommand(() -> swerveSubsystem.stopModules()));
+  public Command getAutonomousCommand() {
+      new Rotation2d();
+      Pose2d[] path1 = { // To create a path for MoveToPosCmd
+        new Pose2d(3.75,4.22, Rotation2d.fromDegrees(0)),
+      };
+
+      return new SequentialCommandGroup(
+            new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+            new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 0.92)),
+            new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+            new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 2.57)),
+            new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+            new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 4.22)),
+            new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+            new MoveToPosCmd(swerveSubsystem, path1, false));
   }
 }
 
 //Import waitCommand for waiting
+
+// AUTONOMOUS COMMANDS:
+
+// BLUE - 3 NOTE AUTO:
+// public Command getAutonomousCommand() {
+//     new Rotation2d();
+//     Pose2d[] path1 = { // To create a path for MoveToPosCmd
+//       new Pose2d(3.75,3.80, Rotation2d.fromDegrees(0)),
+//     };
+
+//     return new SequentialCommandGroup(
+//           new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+//           new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 7.10)),
+//           new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+//           new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 5.45)),
+//           new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+//           new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 3.80)),
+//           new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+//           new MoveToPosCmd(swerveSubsystem, path1, false));
+//   }
+
+// RED - 3 NOTE AUTO:
+// public Command getAutonomousCommand() {
+//       new Rotation2d();
+//       Pose2d[] path1 = { // To create a path for MoveToPosCmd
+//         new Pose2d(3.75,4.22, Rotation2d.fromDegrees(0)),
+//       };
+
+//       return new SequentialCommandGroup(
+//             new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+//             new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 0.92)),
+//             new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+//             new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 2.57)),
+//             new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+//             new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 4.22)),
+//             new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+//             new MoveToPosCmd(swerveSubsystem, path1, false));
+//   }
