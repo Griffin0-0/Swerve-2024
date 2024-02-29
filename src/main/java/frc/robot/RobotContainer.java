@@ -119,14 +119,7 @@ public class RobotContainer {
       };
 
       return new SequentialCommandGroup(
-            new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-            new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 0.92)),
-            new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-            new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 2.57)),
-            new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-            new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 4.22)),
-            new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-            new MoveToPosCmd(swerveSubsystem, path1, false));
+            new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3, 0)));
   }
 }
 
