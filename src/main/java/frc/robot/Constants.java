@@ -155,8 +155,8 @@ public class Constants {
     public static final class AutoConstants {
 
         //Speed
-        public static final double kAutoMaxSpeedMetersPerSecond = 1.25; // Max speed set for auto
-        public static final double kAutoGroundIntakingMaxSpeedMetersPerSecond = 1.25;
+        public static final double kAutoMaxSpeedMetersPerSecond = 2; // Max speed set for auto
+        public static final double kAutoGroundIntakingMaxSpeedMetersPerSecond = 1.5;
 
         //Accel
         public static final double kAutoMaxAccelerationUnitsPerSecond = 6;
@@ -169,11 +169,9 @@ public class Constants {
         public static final double kAutoMinSpeed = 0.02;
         public static final double kAutoMinTurnSpeedRadians = 0.05;
     
-        public static final int kAutoAmpStoppedCheckTicks = 30; // Ticks it waits to make sure swerve has come to a complete stop before depositing note to amp 20
-
+        //Tick things
         public static final int kAutoSpeakerShotCheckTicks = 20;
-
-        public static final int kAutoGroundIntakeCheckTicks = 100;
+        public static final int kAutoGroundIntakeCheckTicks = 7;
 
         // Tolerances
         public static final double kAutoToleranceMeters = 0.09;

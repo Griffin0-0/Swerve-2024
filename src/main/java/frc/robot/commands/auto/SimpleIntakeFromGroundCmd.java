@@ -23,7 +23,7 @@ public class SimpleIntakeFromGroundCmd extends Command {
     private Translation2d targetTranslation;
     private Boolean isDone = false;
     private double collectionDistance = 2;
-    private boolean reachedFirstPoint = false;
+    private int reachedFirstPoint = 0;
     private double currentSpeedLimit = AutoConstants.kAutoMaxSpeedMetersPerSecond;
 
     public SimpleIntakeFromGroundCmd(SwerveSubsystem swerveSubsystem, IntakeSubsystem intakeSubsystem, Translation2d targetTranslation) {
@@ -38,6 +38,8 @@ public class SimpleIntakeFromGroundCmd extends Command {
         
     @Override
     public void initialize() {
+        intakeSubsystem.intakeUp();
+        intakeSubsystem.stopIntake();
         Pose2d approachPoint = new Pose2d(targetTranslation.getX() - collectionDistance, targetTranslation.getY(), Rotation2d.fromDegrees(0));
 
         targetPose = approachPoint;
@@ -47,29 +49,28 @@ public class SimpleIntakeFromGroundCmd extends Command {
     public void execute() {
         boolean swerveMovedCondition = moveSwerve();
         
-        if (swerveMovedCondition && reachedFirstPoint) {
-            // If swerve reached targetPose, start collecting note
-            collectedCheckTick--;
-        } else if (swerveMovedCondition && !reachedFirstPoint && intakeSubsystem.isDown()) {
-            reachedFirstPoint = true;
-            targetPose = new Pose2d(targetTranslation.getX() - 0.5, targetTranslation.getY(), Rotation2d.fromDegrees(0));
-            currentSpeedLimit = AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond;
-        }
-
-        // Once made sure swerve has collected note from ground, exit command
-        if (collectedCheckTick < AutoConstants.kAutoGroundIntakeCheckTicks || intakeSubsystem.noteConfirmed) {
-            intakeSubsystem.stopIntake();
-            intakeSubsystem.intakeUp();
-        } else {
-            intakeSubsystem.runIntake(IntakeConstants.kIntakeMotorSpeed_ground);
+        // if swerve reached approach point, lower the intake
+        if (swerveMovedCondition && reachedFirstPoint == 0) {
+            reachedFirstPoint = 1;
             intakeSubsystem.intakeDown();
-        }
-
-        if ((collectedCheckTick <= 0 || (intakeSubsystem.noteConfirmed) && !intakeSubsystem.atPoint(IntakeConstants.kIntakeDesiredPos_store, 2))) {
+            intakeSubsystem.runIntake(IntakeConstants.kIntakeMotorSpeed_ground);
+        // if swerve reached approach point and intake is down, move to target point
+        } else if (swerveMovedCondition && reachedFirstPoint == 1 && intakeSubsystem.isDown()) {
+            targetPose = new Pose2d(targetTranslation.getX() - 0.4, targetTranslation.getY(), Rotation2d.fromDegrees(0));
+            currentSpeedLimit = AutoConstants.kAutoGroundIntakingMaxSpeedMetersPerSecond;
+            reachedFirstPoint = 2;
+        // if swerve reached target point or colour sensor detects note, stop intake and raise it
+        } else if ((swerveMovedCondition && reachedFirstPoint == 2) || (intakeSubsystem.noteConfirmed && collectedCheckTick <= 0)) {
             intakeSubsystem.stopIntake();
             intakeSubsystem.intakeUp();
-        } else if ((collectedCheckTick <= 0 || (intakeSubsystem.noteConfirmed) && intakeSubsystem.atPoint(IntakeConstants.kIntakeDesiredPos_store, 2))) {
+            reachedFirstPoint = 3;
+        // if swerve reached target point and intake is up, set isDone to true
+        } else if (reachedFirstPoint == 3 && intakeSubsystem.atPoint(IntakeConstants.kIntakeDesiredPos_store, 2)) {
             isDone = true;
+        }
+
+        if (intakeSubsystem.noteConfirmed) {
+            collectedCheckTick--;
         }
 
     }
