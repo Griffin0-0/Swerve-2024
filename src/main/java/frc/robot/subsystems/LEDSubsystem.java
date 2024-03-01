@@ -1,3 +1,4 @@
+
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,11 +24,7 @@ public class LEDSubsystem extends SubsystemBase {
   public LEDSubsystem() {
     blinkinController = new Spark(1);
 
-    if (DriverStation.getAlliance().get() == Alliance.Red) {
-      defaultColor = red;
-    } else if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      defaultColor = blue;
-    }
+    defaultColor = red;
   }
 
   public void setColor(double color) {
