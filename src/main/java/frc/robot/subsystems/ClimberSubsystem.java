@@ -17,7 +17,7 @@ public class ClimberSubsystem extends SubsystemBase {
     private final DoubleSolenoid solenoid_1;
     private final DoubleSolenoid solenoid_2;
 
-    // public final Compressor compressor;
+    public final Compressor compressor;
 
     private final GenericEntry sb_pressure, devsb_pressure;
 
@@ -28,8 +28,8 @@ public class ClimberSubsystem extends SubsystemBase {
         solenoid_2 = new DoubleSolenoid(PneumaticsModuleType.REVPH, 9, 8);
         solenoidReverse();
 
-        // compressor = new Compressor(1, PneumaticsModuleType.REVPH);
-        // compressor.enableAnalog(115, 120); 
+        compressor = new Compressor(1, PneumaticsModuleType.REVPH);
+        compressor.enableAnalog(115, 120); 
 
         sb_pressure = Shuffleboard.getTab("Driver")
             .add("Compressor Pressure", 0.0)

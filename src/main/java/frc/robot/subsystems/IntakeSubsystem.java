@@ -12,10 +12,9 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.util.Color;
 
-import com.revrobotics.ColorSensorV3;
+import com.revrobotics.*;
+import com.revrobotics.Rev2mDistanceSensor.Port;
 
 public class IntakeSubsystem extends SubsystemBase {
 
@@ -23,17 +22,16 @@ public class IntakeSubsystem extends SubsystemBase {
     private final CANSparkMax articulateMotor;
     private final SparkPIDController articulatePID;
     private final RelativeEncoder articulateEncoder;
-    private final GenericEntry devsb_encoder;
+    private final GenericEntry sb_encoder;
     private final LEDSubsystem ledSubsystem;
     
-    private final ColorSensorV3 m_colorSensor = new ColorSensorV3(I2C.Port.kMXP);
-    private final Color noteColor = new Color(0.51, 0.36, 0.13);
-    private final double tolerance = 0.17;
+    private final Rev2mDistanceSensor distanceSensor;
 
     public String intakeState = "store";
     public boolean switchTemp = false;
     public double currentGoal = 0.0;
     public boolean noteConfirmed = false;
+    public boolean useColourSensor = true;
 
 
     public IntakeSubsystem(LEDSubsystem ledSubsystem) {
@@ -49,14 +47,18 @@ public class IntakeSubsystem extends SubsystemBase {
         articulateMotor.setSmartCurrentLimit(30);
         articulatePID.setP(0.1); // Increase until oscillation
         articulatePID.setI(0); // Always leave zero 
-        articulatePID.setD(1.0); // Once oscillation, increase to dampen
+        articulatePID.setD(1.8); // Once oscillation, increase to dampen
 
         articulateEncoder.setPosition(0);
 
-        devsb_encoder = Shuffleboard.getTab("Driver")
+        distanceSensor = new Rev2mDistanceSensor(Port.kMXP);
+        distanceSensor.setAutomaticMode(true);
+
+
+        sb_encoder = Shuffleboard.getTab("Driver")
             .add("Encoder Pos", 0.0)
-            .withPosition(0, 1)
-            .withSize(3, 1)
+            .withPosition(8, 4)
+            .withSize(4, 1)
             .getEntry();
 
         this.ledSubsystem = ledSubsystem;
@@ -125,7 +127,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        devsb_encoder.setDouble(getPosition());
+        sb_encoder.setDouble(getPosition());
 
         if (isDown()) {
             spinIn();
@@ -137,16 +139,7 @@ public class IntakeSubsystem extends SubsystemBase {
             ledSubsystem.setDefault();
         }
 
-        Color detectedColor = m_colorSensor.getColor();   
-
-        double redDifference = noteColor.red - detectedColor.red;
-        double greenDifference = noteColor.green - detectedColor.green;
-        double blueDifference = noteColor.blue - detectedColor.blue;
-
-        noteConfirmed = (Math.abs(redDifference) < tolerance) && (Math.abs(greenDifference) < tolerance) && (Math.abs(blueDifference) < tolerance);
-
-        SmartDashboard.putNumber("color red", detectedColor.red);
-        SmartDashboard.putBoolean("note comfirmed", noteConfirmed);
+        noteConfirmed = (distanceSensor.getRange() < 10);
 
         if (noteConfirmed && isDown()) {
             intakeUp();

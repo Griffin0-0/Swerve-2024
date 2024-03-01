@@ -64,8 +64,8 @@ public class Constants {
 
         // Robot speeds
         public static final double kPhysicalMaxSpeedMetersPerSecond = 3.6; // PHYSICAL max speed of the modules (safety cap) 3.6
-        public static final double kTeleDriveMaxSpeedMetersPerSecond = 1.7; // Max speed set for teleop
-        public static final double kTeleBoostDriveMaxSpeedMetersPerSecond = 2.5; // Max speed set for boost teleop
+        public static final double kTeleDriveMaxSpeedMetersPerSecond = 2.25; // Max speed set for teleop
+        public static final double kTeleBoostDriveMaxSpeedMetersPerSecond = 3.0; // Max speed set for boost teleop
         public static final double kTeleSlowDriveMaxSpeedMetersPerSecond = 0.75; // Max speed set for slow teleop
 
         // Robot turning speeds
@@ -144,7 +144,7 @@ public class Constants {
         public static final double kIntakeMotorSpeed_out = -0.3;
         public static final double kIntakeMotorSpeed_amp = -0.65;
 
-        public static final double kIntakeArticulateSpeed = 0.3;
+        public static final double kIntakeArticulateSpeed = 0.4;
         public static final double kIntakeArticulateAccelerationUnitsPerSecond = 3;
 
         public static final double kIntakeDesiredPos_amp = -20.5;
@@ -155,8 +155,8 @@ public class Constants {
     public static final class AutoConstants {
 
         //Speed
-        public static final double kAutoMaxSpeedMetersPerSecond = 2; // Max speed set for auto
-        public static final double kAutoGroundIntakingMaxSpeedMetersPerSecond = 1.5;
+        public static final double kAutoMaxSpeedMetersPerSecond = 1.25; // Max speed set for auto
+        public static final double kAutoGroundIntakingMaxSpeedMetersPerSecond = 1.25;
 
         //Accel
         public static final double kAutoMaxAccelerationUnitsPerSecond = 6;

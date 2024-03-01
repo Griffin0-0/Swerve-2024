@@ -22,13 +22,15 @@ public class LEDSubsystem extends SubsystemBase {
 
   public LEDSubsystem() {
     blinkinController = new Spark(1);
-
-    if (DriverStation.getAlliance().get() == Alliance.Red) {
-      defaultColor = red;
-    } else if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      defaultColor = blue;
-    }
   }
+
+  // public void init() {
+  //   if (DriverStation.getAlliance().get() == Alliance.Red) {
+  //     defaultColor = red;
+  //   } else if (DriverStation.getAlliance().get() == Alliance.Blue) {
+  //     defaultColor = blue;
+  //   }
+  // }
 
   public void setColor(double color) {
     blinkinController.set(color);
