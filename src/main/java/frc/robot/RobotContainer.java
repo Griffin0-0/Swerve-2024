@@ -53,7 +53,6 @@ public class RobotContainer {
   private final Joystick translateStick = new Joystick(OIConstants.kDriverTranslateStickPort);
   private final Joystick rotateStick = new Joystick(OIConstants.kDriverRotateStickPort);
 
-  private final ComplexWidget sb_camera;
   UsbCamera intakeCamera;
 
   public RobotContainer() {
@@ -77,12 +76,6 @@ public class RobotContainer {
     //             () -> !driverJoystick.getRawButton(OIConstants.kDriverFieldOrientedButtonId)));
 
     intakeCamera = CameraServer.startAutomaticCapture(0);
-
-    sb_camera = Shuffleboard.getTab("Driver")
-      .add("Camera", intakeCamera)
-      .withWidget(BuiltInWidgets.kCameraStream)
-      .withPosition(3, 0)
-      .withSize(5, 6);
                 
     configureBindings();
   }
@@ -112,6 +105,7 @@ public class RobotContainer {
 
 
 
+  // BLUE - 3 NOTE AUTO:
   public Command getAutonomousCommand() {
     new Rotation2d();
     Pose2d[] path1 = { // To create a path for MoveToPosCmd
@@ -140,6 +134,7 @@ public class RobotContainer {
 //     };
 
 //     return new SequentialCommandGroup(
+//           new InstantCommand(() -> intakeSubsystem.setNoteColourToCurrent()),
 //           new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
 //           new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 7.10)),
 //           new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
@@ -158,6 +153,7 @@ public class RobotContainer {
 //       };
 
 //       return new SequentialCommandGroup(
+  //           new InstantCommand(() -> intakeSubsystem.setNoteColourToCurrent()),
 //             new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
 //             new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 4.22)),
 //             new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),

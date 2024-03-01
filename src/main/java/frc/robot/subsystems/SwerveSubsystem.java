@@ -76,7 +76,7 @@ public class SwerveSubsystem extends SubsystemBase {
     boolean goodTranslationBuffer = false;
     public boolean fieldOriented = false;
 
-    private final GenericEntry sb_gyro, sb_voltage, sb_time;
+    private final GenericEntry sb_gyro, sb_voltage, sb_time, sb_coord;
     
 
     public SwerveModule[] swerveModules = {frontLeft, frontRight, backLeft, backRight};
@@ -103,7 +103,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
         // COMMENT THIS CODE FOR COMPETITION: v
 
-        Alliance test = Alliance.Blue;
+        Alliance test = Alliance.Red;
 
         if (test == Alliance.Red) {
             this.isAllianceBlue = false;
@@ -135,17 +135,22 @@ public class SwerveSubsystem extends SubsystemBase {
 
         sb_voltage = Shuffleboard.getTab("Driver")
             .add("Voltage", 0.0)
-            .withWidget(BuiltInWidgets.kVoltageView)
-            .withProperties(Map.of("Max", 12))
-            .withPosition(0, 5)
-            .withSize(3, 1)
+            .withWidget(BuiltInWidgets.kGraph)
+            .withPosition(8, 0)
+            .withSize(4, 3)
             .getEntry();
 
         sb_time = Shuffleboard.getTab("Driver")
             .add("Time", 0.0)
             .withWidget(BuiltInWidgets.kTextView)
-            .withPosition(9, 3)
-            .withSize(2, 1)
+            .withPosition(0, 0)
+            .withSize(3, 1)
+            .getEntry();
+        
+        sb_coord = Shuffleboard.getTab("Driver")
+            .add("Coordinates", "")
+            .withPosition(8, 3)
+            .withSize(4, 1)
             .getEntry();
     }
 
@@ -263,9 +268,11 @@ public class SwerveSubsystem extends SubsystemBase {
             });
 
         SmartDashboard.putString("Pose", pose.toString());
+
         sb_gyro.setDouble(getHeading() - 180);
         sb_voltage.setDouble(RobotController.getBatteryVoltage());
         sb_time.setDouble(DriverStation.getMatchTime());
+        sb_coord.setString(getPose().toString());
     }
     
     public void coordinateFunction() {
