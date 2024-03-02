@@ -43,6 +43,10 @@ public class SimpleIntakeFromGroundCmd extends Command {
         Pose2d approachPoint = new Pose2d(targetTranslation.getX() - collectionDistance, targetTranslation.getY(), Rotation2d.fromDegrees(0));
 
         targetPose = approachPoint;
+
+        if (intakeSubsystem.noteConfirmed) {
+            isDone = true;
+        }
     }
 
     @Override

@@ -31,7 +31,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean switchTemp = false;
     public double currentGoal = 0.0;
     public boolean noteConfirmed = false;
-    public boolean useColourSensor = true;
+    public boolean useDistanceSensor = true;
 
 
     public IntakeSubsystem(LEDSubsystem ledSubsystem) {
@@ -139,7 +139,11 @@ public class IntakeSubsystem extends SubsystemBase {
             ledSubsystem.setDefault();
         }
 
-        noteConfirmed = (distanceSensor.getRange() < 10);
+        if (useDistanceSensor) {
+            noteConfirmed = (distanceSensor.getRange() < 10);
+        } else {
+            noteConfirmed = false;
+        }
 
         if (noteConfirmed && isDown()) {
             intakeUp();

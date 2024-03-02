@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.time.Instant;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -32,6 +34,7 @@ import frc.robot.commands.functions.ToggleFlapCmd;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -105,23 +108,18 @@ public class RobotContainer {
 
 
 
-  // BLUE - 3 NOTE AUTO:
   public Command getAutonomousCommand() {
     new Rotation2d();
     Pose2d[] path1 = { // To create a path for MoveToPosCmd
-      new Pose2d(3.75,3.80, Rotation2d.fromDegrees(0)),
+      new Pose2d(-3.5,0, Rotation2d.fromDegrees(0)),
     };
 
     return new SequentialCommandGroup(
-          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-          new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 5.45)),
-          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
-          new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 3.80)),
-          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+          new InstantCommand(() -> swerveSubsystem.gyro.reset()),
+          new ShootCmd(shooterSubsystem, intakeSubsystem, ledSubsystem),
           new MoveToPosCmd(swerveSubsystem, path1, false));
   }
 }
-
 //Import waitCommand for waiting
 
 // AUTONOMOUS COMMANDS:

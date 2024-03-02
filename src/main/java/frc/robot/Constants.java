@@ -66,7 +66,7 @@ public class Constants {
         public static final double kPhysicalMaxSpeedMetersPerSecond = 3.6; // PHYSICAL max speed of the modules (safety cap) 3.6
         public static final double kTeleDriveMaxSpeedMetersPerSecond = 2.25; // Max speed set for teleop
         public static final double kTeleBoostDriveMaxSpeedMetersPerSecond = 3.0; // Max speed set for boost teleop
-        public static final double kTeleSlowDriveMaxSpeedMetersPerSecond = 0.75; // Max speed set for slow teleop
+        public static final double kTeleSlowDriveMaxSpeedMetersPerSecond = 1.25; // Max speed set for slow teleop
 
         // Robot turning speeds
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
@@ -138,7 +138,7 @@ public class Constants {
         public static final int kIntakeMotorId = 51;
         public static final int kIntakeArticulateMotorId = 54;
 
-        public static final double kIntakeMotorSpeed_ground = 0.6;
+        public static final double kIntakeMotorSpeed_ground = 0.3;
         public static final double kIntakeMotorSpeed_source = 0.4;
         public static final double kIntakeMotorSpeed_in = 0.25;
         public static final double kIntakeMotorSpeed_out = -0.3;
@@ -170,7 +170,7 @@ public class Constants {
         public static final double kAutoMinTurnSpeedRadians = 0.05;
     
         //Tick things
-        public static final int kAutoSpeakerShotCheckTicks = 20;
+        public static final int kAutoSpeakerShotCheckTicks = 50;
         public static final int kAutoGroundIntakeCheckTicks = 7;
 
         // Tolerances
@@ -179,5 +179,6 @@ public class Constants {
 
         public static  final int kAutoDepositCheckTicks = 300;
         public static final int kAutoSourceColorCheckTick = 70;
+        public static int kAutoCloseSpeakerShotCheckTick = 400;
     }
 }
