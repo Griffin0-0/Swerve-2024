@@ -14,7 +14,6 @@ public class SourceIntakeCmd extends Command {
   ShooterSubsystem shooterSubsystem;
   IntakeSubsystem intakeSubsystem;
   private int tickCheck = AutoConstants.kAutoSourceColorCheckTick;
-  private int tick= 0;
 
   public SourceIntakeCmd(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem) {
     this.shooterSubsystem = shooterSubsystem;
@@ -28,12 +27,13 @@ public class SourceIntakeCmd extends Command {
     shooterSubsystem.spinIn();
     intakeSubsystem.spinIn();
     shooterSubsystem.flapAmp();
+    tickCheck = AutoConstants.kAutoSourceColorCheckTick;
   }
 
   @Override
   public void execute() {
-    tick--;
-    if (intakeSubsystem.noteConfirmed && tick <= 0) {
+    tickCheck--;
+    if (intakeSubsystem.noteConfirmed && tickCheck <= 0) {
       intakeSubsystem.stopIntake();
     }
   }
