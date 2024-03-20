@@ -138,7 +138,7 @@ public class Constants {
         public static final int kIntakeMotorId = 51;
         public static final int kIntakeArticulateMotorId = 54;
 
-        public static final double kIntakeMotorSpeed_ground = 0.3;
+        public static final double kIntakeMotorSpeed_ground = 0.5;
         public static final double kIntakeMotorSpeed_source = 0.4;
         public static final double kIntakeMotorSpeed_in = 0.25;
         public static final double kIntakeMotorSpeed_out = -0.3;
