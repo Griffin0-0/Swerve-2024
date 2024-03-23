@@ -65,7 +65,7 @@ public class SwerveSubsystem extends SubsystemBase {
         DriveConstants.kModuleCANCoderReversed);
 
     public final AHRS gyro = new AHRS(SPI.Port.kMXP);
-    // public final LimeLight limeLight = new LimeLight();
+    public final LimeLight limeLight = new LimeLight();
     public Pose2d pose;
     public Pose2d limeLightPose;
     public boolean isAllianceBlue;
@@ -190,74 +190,74 @@ public class SwerveSubsystem extends SubsystemBase {
         try {
         tick++;
 
-        // //Get pose from limelight
-        // limeLightPose = limeLight.runLimeLight(isAllianceBlue);
+        //Get pose from limelight
+        limeLightPose = limeLight.runLimeLight(isAllianceBlue);
 
-        // // If limelight sees targets, then update odometry translation
-        // if (limeLight.seesMultipleTargets() || limeLight.seesOneGoodTarget()) {
+        // If limelight sees targets, then update odometry translation
+        if (limeLight.seesMultipleTargets() || limeLight.seesOneGoodTarget()) {
 
-        //     int tickConstrainedTranslation = tick % 5;
+            int tickConstrainedTranslation = tick % 5;
 
-        //     if (tickConstrainedTranslation == 0) {
-        //         goodTranslationBuffer = true;
-        //     }
+            if (tickConstrainedTranslation == 0) {
+                goodTranslationBuffer = true;
+            }
 
-        //     translationBuffer[tickConstrainedTranslation] = limeLightPose.getTranslation();
+            translationBuffer[tickConstrainedTranslation] = limeLightPose.getTranslation();
 
-        //     if (tickConstrainedTranslation == 4 && goodTranslationBuffer) {
-        //         double sumX = 0;
-        //         double sumY = 0;
+            if (tickConstrainedTranslation == 4 && goodTranslationBuffer) {
+                double sumX = 0;
+                double sumY = 0;
 
-        //         for (int i = 0; i < 5; i++) {
-        //             sumX += translationBuffer[i].getX();
-        //             sumY += translationBuffer[i].getY();
-        //         }
+                for (int i = 0; i < 5; i++) {
+                    sumX += translationBuffer[i].getX();
+                    sumY += translationBuffer[i].getY();
+                }
 
-        //         new Translation2d();
-        //         Translation2d averagedTranslation = new Translation2d(sumX / 5, sumY / 5);
+                new Translation2d();
+                Translation2d averagedTranslation = new Translation2d(sumX / 5, sumY / 5);
 
-        //         // Update odometry with limelight pose
-        //         resetOdometry(new Pose2d(averagedTranslation, getRotation2d()));
-        //     }
-        // } else {
-        //     goodTranslationBuffer = false;
-        // }
+                // Update odometry with limelight pose
+                resetOdometry(new Pose2d(averagedTranslation, getRotation2d()));
+            }
+        } else {
+            goodTranslationBuffer = false;
+        }
 
-        // if (limeLight.seesMultipleTargets()) {
+        if (limeLight.seesMultipleTargets()) {
 
-        //     // If limelight sees multiple targets, then update odometry rotation with an average of the last 10 headings
-        //     int tickConstrainedHeading = tick % 10;
+            // If limelight sees multiple targets, then update odometry rotation with an average of the last 10 headings
+            int tickConstrainedHeading = tick % 10;
 
-        //     if (tickConstrainedHeading == 0) {
-        //         goodHeadingBuffer = true;
-        //     }
+            if (tickConstrainedHeading == 0) {
+                goodHeadingBuffer = true;
+            }
 
-        //     headingBuffer[tickConstrainedHeading] = limeLightPose.getRotation().getDegrees();
+            headingBuffer[tickConstrainedHeading] = limeLightPose.getRotation().getDegrees();
 
             
 
-        //     if (tickConstrainedHeading == 9 && goodHeadingBuffer) {
+            if (tickConstrainedHeading == 9 && goodHeadingBuffer) {
 
-        //         double sum = 0;
+                double sum = 0;
 
-        //         for (int i = 0; i < 10; i++) {
-        //             sum += headingBuffer[i];
-        //         }
+                for (int i = 0; i < 10; i++) {
+                    sum += headingBuffer[i];
+                }
 
-        //         new Rotation2d();
-        //         Rotation2d averagedHeading = Rotation2d.fromDegrees(sum / 10);
-        //         // averagedHeading.minus(Rotation2d.fromDegrees(180));
+                new Rotation2d();
+                Rotation2d averagedHeading = Rotation2d.fromDegrees(sum / 10);
+                // averagedHeading.minus(Rotation2d.fromDegrees(180));
 
-        //         gyro.reset();
+                gyro.reset();
 
-        //         // Field orient based on Limelight
-        //         gyro.setAngleAdjustment(-averagedHeading.getDegrees());
+                // Field orient based on Limelight
+                gyro.setAngleAdjustment(-averagedHeading.getDegrees());
 
-        //         fieldOriented = true;
-        //     }
-        // } else {
-        //     goodHeadingBuffer = false;
-        // }
+                fieldOriented = true;
+            }
+        } else {
+            goodHeadingBuffer = false;
+        }
 
         // Update odometry with swerve module positions
         pose = kOdometry.update(getRotation2d(),

@@ -36,15 +36,17 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public IntakeSubsystem(LEDSubsystem ledSubsystem) {
         intakeMotor = new CANSparkMax(IntakeConstants.kIntakeMotorId, MotorType.kBrushless);
-
         articulateMotor = new CANSparkMax(IntakeConstants.kIntakeArticulateMotorId, MotorType.kBrushless);
+
+        articulateMotor.setSmartCurrentLimit(30);
+        intakeMotor.setSmartCurrentLimit(30);
+
         articulatePID = articulateMotor.getPIDController();
         articulateEncoder = articulateMotor.getAlternateEncoder(100);
         articulatePID.setFeedbackDevice(articulateEncoder);
         articulateEncoder.setPosition(0);
 
         articulatePID.setOutputRange(-IntakeConstants.kIntakeArticulateSpeed, IntakeConstants.kIntakeArticulateSpeed);
-        articulateMotor.setSmartCurrentLimit(30);
         articulatePID.setP(0.1); // Increase until oscillation
         articulatePID.setI(0); // Always leave zero 
         articulatePID.setD(1.8); // Once oscillation, increase to dampen
@@ -140,14 +142,15 @@ public class IntakeSubsystem extends SubsystemBase {
         }
 
         if (useDistanceSensor) {
-            noteConfirmed = (distanceSensor.getRange() < 10);
+            noteConfirmed = (distanceSensor.getRange() < 10 && distanceSensor.getRange() > 0);
         } else {
             noteConfirmed = false;
         }
-
+        
         if (noteConfirmed && isDown()) {
             intakeUp();
         }
+        System.out.println(distanceSensor.getRange());
 
         if (atPoint(IntakeConstants.kIntakeDesiredPos_amp, 0.5) && intakeState == "amp") {
             spinAmp();

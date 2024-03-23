@@ -59,6 +59,6 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public double getPressure() {
-        return 0; // compressor.getPressure();
+        return compressor.getPressure();
     }
 }

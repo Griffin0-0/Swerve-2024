@@ -64,17 +64,17 @@ public class Constants {
 
         // Robot speeds
         public static final double kPhysicalMaxSpeedMetersPerSecond = 3.6; // PHYSICAL max speed of the modules (safety cap) 3.6
-        public static final double kTeleDriveMaxSpeedMetersPerSecond = 2.25; // Max speed set for teleop
-        public static final double kTeleBoostDriveMaxSpeedMetersPerSecond = 3.0; // Max speed set for boost teleop
+        public static final double kTeleDriveMaxSpeedMetersPerSecond = 2.7; // Max speed set for teleop
+        public static final double kTeleBoostDriveMaxSpeedMetersPerSecond = 3.2; // Max speed set for boost teleop
         public static final double kTeleSlowDriveMaxSpeedMetersPerSecond = 1.25; // Max speed set for slow teleop
 
         // Robot turning speeds
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
-        public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
+        public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 3;
 
         // Robot acceleration
-        public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
-        public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
+        public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 4;
+        public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 4;
     }
 
     public static final class OIConstants {
@@ -82,7 +82,7 @@ public class Constants {
         public static final int kOperatorControllerPort = 0;
         public static final int kDriverTranslateStickPort = 1;
         public static final int kDriverRotateStickPort = 2;
-        public static final double kDeadband = 0.05;
+        public static final double kDeadband = 0.1;
 
         // Joysticks
         public static final int kDriverYAxis = 1;
@@ -138,7 +138,7 @@ public class Constants {
         public static final int kIntakeMotorId = 51;
         public static final int kIntakeArticulateMotorId = 54;
 
-        public static final double kIntakeMotorSpeed_ground = 0.3;
+        public static final double kIntakeMotorSpeed_ground = 0.6;
         public static final double kIntakeMotorSpeed_source = 0.4;
         public static final double kIntakeMotorSpeed_in = 0.25;
         public static final double kIntakeMotorSpeed_out = -0.3;
