@@ -30,6 +30,9 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterMotor_1 = new CANSparkMax(ShooterConstants.kShooterSpinMotorId_1, MotorType.kBrushless);
         shooterMotor_2 = new CANSparkMax(ShooterConstants.kShooterSpinMotorId_2, MotorType.kBrushless);
 
+        shooterMotor_1.setSmartCurrentLimit(30);
+        shooterMotor_2.setSmartCurrentLimit(30);
+
         shooterLimiter = new SlewRateLimiter(1);
 
         servo_1 = new Servo(ShooterConstants.kShooterFlapServoId_1);

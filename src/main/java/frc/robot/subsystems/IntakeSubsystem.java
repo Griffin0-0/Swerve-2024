@@ -22,7 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private final CANSparkMax articulateMotor;
     private final SparkPIDController articulatePID;
     private final RelativeEncoder articulateEncoder;
-    private final GenericEntry sb_encoder;
+    private final GenericEntry sb_encoder, sb_distance;
     private final LEDSubsystem ledSubsystem;
     
     private final Rev2mDistanceSensor distanceSensor;
@@ -36,15 +36,17 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public IntakeSubsystem(LEDSubsystem ledSubsystem) {
         intakeMotor = new CANSparkMax(IntakeConstants.kIntakeMotorId, MotorType.kBrushless);
-
         articulateMotor = new CANSparkMax(IntakeConstants.kIntakeArticulateMotorId, MotorType.kBrushless);
+
+        articulateMotor.setSmartCurrentLimit(30);
+        intakeMotor.setSmartCurrentLimit(30);
+
         articulatePID = articulateMotor.getPIDController();
         articulateEncoder = articulateMotor.getAlternateEncoder(100);
         articulatePID.setFeedbackDevice(articulateEncoder);
         articulateEncoder.setPosition(0);
 
         articulatePID.setOutputRange(-IntakeConstants.kIntakeArticulateSpeed, IntakeConstants.kIntakeArticulateSpeed);
-        articulateMotor.setSmartCurrentLimit(30);
         articulatePID.setP(0.1); // Increase until oscillation
         articulatePID.setI(0); // Always leave zero 
         articulatePID.setD(1.8); // Once oscillation, increase to dampen
@@ -58,6 +60,12 @@ public class IntakeSubsystem extends SubsystemBase {
         sb_encoder = Shuffleboard.getTab("Driver")
             .add("Encoder Pos", 0.0)
             .withPosition(8, 4)
+            .withSize(4, 1)
+            .getEntry();
+
+        sb_distance = Shuffleboard.getTab("Driver")
+            .add("Detected Distance", 0.0)
+            .withPosition(8, 5)
             .withSize(4, 1)
             .getEntry();
 
@@ -128,6 +136,7 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         sb_encoder.setDouble(getPosition());
+        sb_distance.setDouble(distanceSensor.getRange());
 
         if (isDown()) {
             spinIn();
@@ -139,14 +148,12 @@ public class IntakeSubsystem extends SubsystemBase {
             ledSubsystem.setDefault();
         }
 
-        double distanceDetected = distanceSensor.getRange();
-        SmartDashboard.putNumber("Distance Detected", distanceDetected);
         if (useDistanceSensor) {
-            noteConfirmed = (distanceDetected < 10);
+            noteConfirmed = (distanceSensor.getRange() < 10 && distanceSensor.getRange() > 0);
         } else {
             noteConfirmed = false;
         }
-
+        
         if (noteConfirmed && isDown()) {
             intakeUp();
         }
