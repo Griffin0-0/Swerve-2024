@@ -22,7 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private final CANSparkMax articulateMotor;
     private final SparkPIDController articulatePID;
     private final RelativeEncoder articulateEncoder;
-    private final GenericEntry sb_encoder;
+    private final GenericEntry sb_encoder, sb_distance;
     private final LEDSubsystem ledSubsystem;
     
     private final Rev2mDistanceSensor distanceSensor;
@@ -60,6 +60,12 @@ public class IntakeSubsystem extends SubsystemBase {
         sb_encoder = Shuffleboard.getTab("Driver")
             .add("Encoder Pos", 0.0)
             .withPosition(8, 4)
+            .withSize(4, 1)
+            .getEntry();
+
+        sb_distance = Shuffleboard.getTab("Driver")
+            .add("Detected Distance", 0.0)
+            .withPosition(8, 5)
             .withSize(4, 1)
             .getEntry();
 
@@ -130,6 +136,7 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         sb_encoder.setDouble(getPosition());
+        sb_distance.setDouble(distanceSensor.getRange());
 
         if (isDown()) {
             spinIn();
@@ -141,8 +148,6 @@ public class IntakeSubsystem extends SubsystemBase {
             ledSubsystem.setDefault();
         }
 
-        double distanceDetected = distanceSensor.getRange();
-        SmartDashboard.putNumber("Distance Detected", distanceDetected);
         if (useDistanceSensor) {
             noteConfirmed = (distanceSensor.getRange() < 10 && distanceSensor.getRange() > 0);
         } else {
@@ -152,7 +157,6 @@ public class IntakeSubsystem extends SubsystemBase {
         if (noteConfirmed && isDown()) {
             intakeUp();
         }
-        System.out.println(distanceSensor.getRange());
 
         if (atPoint(IntakeConstants.kIntakeDesiredPos_amp, 0.5) && intakeState == "amp") {
             spinAmp();
