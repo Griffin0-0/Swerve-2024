@@ -138,10 +138,10 @@ public class Constants {
         public static final int kIntakeMotorId = 51;
         public static final int kIntakeArticulateMotorId = 54;
 
-        public static final double kIntakeMotorSpeed_ground = 0.5;
+        public static final double kIntakeMotorSpeed_ground = 0.7;
         public static final double kIntakeMotorSpeed_source = 0.4;
         public static final double kIntakeMotorSpeed_in = 0.25;
-        public static final double kIntakeMotorSpeed_out = -0.3;
+        public static final double kIntakeMotorSpeed_out = -0.5;
         public static final double kIntakeMotorSpeed_amp = -0.65;
 
         public static final double kIntakeArticulateSpeed = 0.4;
@@ -178,7 +178,7 @@ public class Constants {
         public static final double kAutoToleranceDegrees = 5.0;
 
         public static  final int kAutoDepositCheckTicks = 300;
-        public static final int kAutoSourceColorCheckTick = 70;
+        public static final int kAutoSourceColorCheckTick = 100;
         public static int kAutoCloseSpeakerShotCheckTick = 400;
     }
 }
