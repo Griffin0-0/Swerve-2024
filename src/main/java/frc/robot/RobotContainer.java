@@ -111,12 +111,17 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     new Rotation2d();
     Pose2d[] path1 = { // To create a path for MoveToPosCmd
-      new Pose2d(-3.5,0, Rotation2d.fromDegrees(0)),
+      new Pose2d(3.75,3.80, Rotation2d.fromDegrees(0)),
     };
-
+    
     return new SequentialCommandGroup(
-          new InstantCommand(() -> swerveSubsystem.gyro.reset()),
-          new ShootCmd(shooterSubsystem, intakeSubsystem, ledSubsystem),
+          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+          new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 7.10)),
+          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+          new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 5.45)),
+          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
+          new SimpleIntakeFromGroundCmd(swerveSubsystem, intakeSubsystem, new Translation2d(3.5, 3.80)),
+          new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem),
           new MoveToPosCmd(swerveSubsystem, path1, false));
   }
 }

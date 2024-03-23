@@ -141,6 +141,8 @@ public class IntakeSubsystem extends SubsystemBase {
             ledSubsystem.setDefault();
         }
 
+        double distanceDetected = distanceSensor.getRange();
+        SmartDashboard.putNumber("Distance Detected", distanceDetected);
         if (useDistanceSensor) {
             noteConfirmed = (distanceSensor.getRange() < 10 && distanceSensor.getRange() > 0);
         } else {
