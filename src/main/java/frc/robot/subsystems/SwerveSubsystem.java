@@ -103,7 +103,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
         // COMMENT THIS CODE FOR COMPETITION: v
 
-        Alliance test = Alliance.Blue;
+        Alliance test = Alliance.Red;
 
         if (test == Alliance.Red) {
             this.isAllianceBlue = false;

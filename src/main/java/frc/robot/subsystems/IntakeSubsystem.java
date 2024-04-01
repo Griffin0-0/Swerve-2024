@@ -39,7 +39,7 @@ public class IntakeSubsystem extends SubsystemBase {
         articulateMotor = new CANSparkMax(IntakeConstants.kIntakeArticulateMotorId, MotorType.kBrushless);
 
         articulateMotor.setSmartCurrentLimit(30);
-        intakeMotor.setSmartCurrentLimit(30);
+        intakeMotor.setSmartCurrentLimit(40);
 
         articulatePID = articulateMotor.getPIDController();
         articulateEncoder = articulateMotor.getAlternateEncoder(100);
