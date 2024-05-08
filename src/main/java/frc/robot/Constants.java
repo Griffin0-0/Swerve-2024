@@ -6,50 +6,50 @@ import edu.wpi.first.math.util.Units;
 public class Constants {
     
     public static final class ModuleConstants {
-        public static final double kWheelDiameterMeters = Units.inchesToMeters(4.0);
-        public static final double kDriveMotorGearRatio = 8.14 / 1.0; // Drive ratio of 8.14 : 1
-        public static final double kTurningMotorGearRatio = 1.0 / (150.0 / 7.0); // Turning ratio of (150 / 7) : 1
-        public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
-        public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
-        public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60.0;
-        public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60.0;
-        public static final double kPTurning = 0.5; // For PID
+        public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4.0);
+        public static final double DRIVE_MOTOR_GEAR_RATIO = 8.14 / 1.0; // Drive ratio of 8.14 : 1
+        public static final double TURNING_MOTOR_GEAR_RATIO = 1.0 / (150.0 / 7.0); // Turning ratio of (150 / 7) : 1
+        public static final double DRIVE_ENCODER_ROT_TO_METERS = DRIVE_MOTOR_GEAR_RATIO * Math.PI * WHEEL_DIAMETER_METERS;
+        public static final double TURNING_ENCODER_ROT_TO_RAD = TURNING_MOTOR_GEAR_RATIO * 2 * Math.PI;
+        public static final double DRIVE_ENCODER_RPM_TO_METERS_PER_SEC = DRIVE_ENCODER_ROT_TO_METERS / 60.0;
+        public static final double TURNING_ENCODER_RPM_TO_RAD_PER_SEC = TURNING_ENCODER_ROT_TO_RAD / 60.0;
+        public static final double P_TURNING = 0.5; // For PID
     }
 
     public static final class DriveConstants {
 
-        public static final double kTrackWidth = Units.inchesToMeters(29.5); // Distance between right and left wheels
-        public static final double kWheelBase = Units.inchesToMeters(29.5); // Distance between front and back wheels
+        public static final double TRACK_WIDTH = Units.inchesToMeters(29.5); // Distance between right and left wheels
+        public static final double WHEEL_BASE = Units.inchesToMeters(29.5); // Distance between front and back wheels
 
-        public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-                new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-                new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-                new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
-                new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
+        public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
+                new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2),
+                new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2),
+                new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2),
+                new Translation2d(-WHEEL_BASE / 2, TRACK_WIDTH / 2));
 
         // DRIVE Motor Ports
-        public static final int kFrontLeftDriveMotorPort = 10;
-        public static final int kBackLeftDriveMotorPort = 3;
-        public static final int kFrontRightDriveMotorPort = 6;
-        public static final int kBackRightDriveMotorPort = 8;
+        public static final int FRONT_LEFT_DRIVE_MOTOR_PORT = 10;
+        public static final int BACK_LEFT_DRIVE_MOTOR_PORT = 3;
+        public static final int FRONT_RIGHT_DRIVE_MOTOR_PORT = 6;
+        public static final int BACK_RIGHT_DRIVE_MOTOR_PORT = 8;
 
         // TURNING Motor Ports
-        public static final int kFrontLeftTurningMotorPort = 2;
-        public static final int kBackLeftTurningMotorPort = 4;
-        public static final int kFrontRightTurningMotorPort = 5;
-        public static final int kBackRightTurningMotorPort = 7;
+        public static final int FRONT_LEFT_TURNING_MOTOR_PORT = 2;
+        public static final int BACK_LEFT_TURNING_MOTOR_PORT = 4;
+        public static final int FRONT_RIGHT_TURNING_MOTOR_PORT = 5;
+        public static final int BACK_RIGHT_TURNING_MOTOR_PORT = 7;
 
         // CANCoder Ids
-        public static final int kFrontLeftCANCoderId = 22;
-        public static final int kBackLeftCANCoderId = 24;
-        public static final int kFrontRightCANCoderId = 23;
-        public static final int kBackRightCANCoderId = 21;
+        public static final int FRONT_LEFT_CAN_CODER_ID = 22;
+        public static final int BACK_LEFT_CAN_CODER_ID = 24;
+        public static final int FRONT_RIGHT_CAN_CODER_ID = 23;
+        public static final int BACK_RIGHT_CAN_CODER_ID = 21;
 
         // Invert booleans | We use MK4i modules so the turning motors are inverted
-        public static final boolean kModuleTurningEncoderReversed = true;
-        public static final boolean kModuleDriveEncoderReversed = false;
-        public static final boolean kModuleCANCoderReversed = false;
-        public static final boolean kGyroReversed = true;
+        public static final boolean MODULE_TURNING_ENCODER_REVERSED = true;
+        public static final boolean MODULE_DRIVE_ENCODER_REVERSED = false;
+        public static final boolean MODULE_CAN_CODER_REVERSED = false;
+        public static final boolean GYRO_REVERSED = true;
 
         // Turning encoder offsets
         // public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = -2.6;
@@ -57,128 +57,125 @@ public class Constants {
         // public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 0.436332;
         // public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 1.53589;
 
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = -148 * Math.PI / 180;
-        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 180 * Math.PI / 180;
-        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 25 * Math.PI / 180;
-        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 88 * Math.PI / 180;
+        public static final double FRONT_LEFT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD = -148 * Math.PI / 180;
+        public static final double BACK_LEFT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD = 180 * Math.PI / 180;
+        public static final double FRONT_RIGHT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD = 25 * Math.PI / 180;
+        public static final double BACK_RIGHT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD = 88 * Math.PI / 180;
 
         // Robot speeds
-        public static final double kPhysicalMaxSpeedMetersPerSecond = 3.6; // PHYSICAL max speed of the modules (safety cap) 3.6
-        public static final double kTeleDriveMaxSpeedMetersPerSecond = 2.7; // Max speed set for teleop
-        public static final double kTeleBoostDriveMaxSpeedMetersPerSecond = 3.2; // Max speed set for boost teleop
-        public static final double kTeleSlowDriveMaxSpeedMetersPerSecond = 1.25; // Max speed set for slow teleop
+        public static final double PHYSICAL_MAX_SPEED_METERS_PER_SEC = 3.6; // PHYSICAL max speed of the modules (safety cap) 3.6
+        public static final double TELEDRIVE_MAX_SPEED_METERS_PER_SEC = 2.7; // Max speed set for teleop
+        public static final double TELEBOOST_DRIVE_MAX_SPEED_METERS_PER_SEC = 3.2; // Max speed set for boost teleop
+        public static final double TELESLOW_DRIVE_MAX_SPEED_METERS_PER_SEC = 1.25; // Max speed set for slow teleop
 
         // Robot turning speeds
-        public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
-        public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 3;
+        public static final double PHYSICAL_MAX_ANGULAR_SPEED_RAD_PER_SEC = 2 * 2 * Math.PI;
+        public static final double TELEDRIVE_MAX_ANGULAR_SPEED_RAD_PER_SEC = PHYSICAL_MAX_ANGULAR_SPEED_RAD_PER_SEC / 3;
 
         // Robot acceleration
-        public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 4;
-        public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 4;
+        public static final double TELEDRIVE_MAX_ACCELERATION_UNITS_PER_SEC = 4;
+        public static final double TELEDRIVE_MAX_ANGULAR_ACCELERATION_UNITS_PER_SEC = 4;
     }
 
     public static final class OIConstants {
         // Ports
-        public static final int kOperatorControllerPort = 0;
-        public static final int kDriverTranslateStickPort = 1;
-        public static final int kDriverRotateStickPort = 2;
-        public static final double kDeadband = 0.1;
+        public static final int OPERATOR_CONTROLLER_PORT = 0;
+        public static final int DRIVER_TRANSLATE_STICK_PORT = 1;
+        public static final int DRIVER_ROTATE_STICK_PORT = 2;
+        public static final double DEADBAND = 0.1;
 
         // Joysticks
-        public static final int kDriverYAxis = 1;
-        public static final int kDriverXAxis = 0;
-        public static final int kDriverRotAxis = 2;
+        public static final int DRIVER_X_AXIS = 0;
+        public static final int DRIVER_Y_AXIS = 1;
+        public static final int DRIVER_ROT_AXIS = 2;
 
         // Joystick Triggers
-        public static final int kDriverBoostButtonId = 1;
+        public static final int DRIVER_BOOST_BUTTON_ID = 1;
 
         // Joystick Hatswitches
-        public static final int kDriverSnapBackButtonId = 15;
+        public static final int DRIVER_SNAPBACK_BUTTON_ID = 15;
 
         // Buttons
-        public static final int kDriverButtonId_climberDown = 1; // X button
-        public static final int kDriverButtonId_resetGyro = 2; // B button
-        public static final int kDriverButtonId_toggleFlap = 3; //  button
-        public static final int kDriverButtonId_climberUp = 4; // Y button
-        public static final int kDriverButtonId_stop = 10; // "Start" button
+        public static final int DRIVER_CLIMBER_DOWN_BUTTON_ID = 1; // X button
+        public static final int DRIVER_RESET_GYRO_BUTTON_ID = 2; // B button
+        public static final int DRIVER_TOGGLE_FLAP_BUTTON_ID = 3; //  button
+        public static final int DRIVER_CLIMBER_UP_BUTTON_ID = 4; // Y button
+        public static final int DRIVER_STOP_BUTTON_ID = 10; // "Start" button
 
         // POV
-        public static final int kDriverPOVId_up = 0;
-        public static final int kDriverPOVId_right = 90;
-        public static final int kDriverPOVId_down = 180;
-        public static final int kDriverPOVId_left = 270;
+        public static final int DRIVER_UP_POV_ID = 0;
+        public static final int DRIVER_RIGHT_POV_ID = 90;
+        public static final int DRIVER_DOWN_POV_ID = 180;
+        public static final int DRIVER_LEFT_POV_ID = 270;
 
         // Triggers
-        public static final int kDriverTriggerId_sourceIntake = 5; // Left bumper
-        public static final int kDriverTriggerId_toggleIntake = 6; // Right bumper
-        public static final int kDriverTriggerId_ampOut = 7; // Left trigger
-        public static final int kDriverTriggerId_shoot = 8; // Right trigger
+        public static final int DRIVER_SOURCE_INTAKE_TRIGGER_ID = 5; // Left bumper
+        public static final int DRIVER_TOGGLE_INTAKE_TRIGGER_ID = 6; // Right bumper
+        public static final int DRIVER_AMP_OUT_TRIGGER_ID = 7; // Left trigger
+        public static final int DRIVER_SHOOT_TRIGGER_ID = 8; // Right trigger
     } 
 
     public static final class ShooterConstants {
-        public static final int kShooterSpinMotorId_1 = 50;
-        public static final int kShooterSpinMotorId_2 = 52;
-        public static final int kShooterFlapServoId_1 = 9;
-        public static final int kShooterFlapServoId_2 = 8;
+        public static final int SPIN_MOTOR_1_ID = 50;
+        public static final int SPIN_MOTOR_2_ID = 52;
+        public static final int FLAP_SERVO_1_ID = 9;
+        public static final int FLAP_SERVO_2_ID = 8;
 
-        public static final double kShooterFlywheelSpeed = 1.0;
-        public static final double kShooterIntakeSpeed = 0.25;
-        public static final double kShooterAmpSpeed = 0.15;
+        public static final double FLYWHEEL_SPEED = 1.0;
+        public static final double INTAKE_SPEED = 0.25;
+        public static final double AMP_SPEED = 0.15;
 
-        public static final double kShooterFlapSpeakerPos = 65;
+        public static final double SPEED_CAP = 1.0;
 
-        public static final double kShooterFlapDefaultPos = 0;
-
-        public static final double kShooterFlapAmpPos = 40;
-
-        public static final double kShooterSpeedCap = 1.0;
+        public static final double FLAP_SPEAKER_POS = 65;
+        public static final double FLAP_DEFAULT_POS = 0;
+        public static final double FLAP_AMP_POS = 40;
     }
 
     public static final class IntakeConstants {
-        public static final int kIntakeMotorId = 51;
-        public static final int kIntakeArticulateMotorId = 54;
+        public static final int MOTOR_ID = 51;
+        public static final int ARTICULATE_MOTOR_ID = 54;
 
-        public static final double kIntakeMotorSpeed_ground = 0.7;
-        public static final double kIntakeMotorSpeed_source = 0.4;
-        public static final double kIntakeMotorSpeed_in = 0.25;
-        public static final double kIntakeMotorSpeed_out = -0.5;
-        public static final double kIntakeMotorSpeed_amp = -0.72;
+        public static final double GROUND_MOTOR_SPEED = 0.7;
+        public static final double SOURCE_MOTOR_SPEED = 0.4;
+        public static final double IN_MOTOR_SPEED = 0.25;
+        public static final double OUT_MOTOR_SPEED = -0.5;
+        public static final double AMP_MOTOR_SPEED = -0.72;
 
-        public static final double kIntakeArticulateSpeed = 0.4;
-        public static final double kIntakeArticulateAccelerationUnitsPerSecond = 3;
+        public static final double ARTICULATE_SPEED = 0.4;
+        public static final double ARTICULATE_ACCELERATION_UNITS_PER_SEC = 3;
 
-        public static final double kIntakeDesiredPos_amp = -20.5;
-        public static final double kIntakeDesiredPos_store = 0;
-        public static final double kIntakeDesiredPos_out = -44.5;
+        public static final double AMP_DESIRED_POS = -20.5;
+        public static final double STORE_DESIRED_POS = 0;
+        public static final double OUT_DESIRED_POS = -44.5;
     }
 
     public static final class AutoConstants {
 
         //Speed
-        public static final double kAutoMaxSpeedMetersPerSecond = 1.25; // Max speed set for auto
-        public static final double kAutoGroundIntakingMaxSpeedMetersPerSecond = 1.25;
+        public static final double MAX_SPEED_METERS_PER_SEC = 1.25; // Max speed set for auto
+        public static final double GROUND_INTAKE_MAX_SPEED_METERS_PER_SEC = 1.25;
 
         //Accel
-        public static final double kAutoMaxAccelerationUnitsPerSecond = 6;
-        public static final double kAutoMaxAngularAccelerationUnitsPerSecond = 4;
+        public static final double MAX_ACCELERATION_UNITS_PER_SEC = 6;
+        public static final double MAX_ANGULAR_ACCELERATION_UNITS_PER_SEC = 4;
 
         //Turning speed
-        public static final double kAutoMaxAngularSpeedRadiansPerSecond = DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
+        public static final double MAX_ANGULAR_SPEED_RAD_PER_SEC = DriveConstants.PHYSICAL_MAX_ANGULAR_SPEED_RAD_PER_SEC / 4;
 
         //Min Speed
-        public static final double kAutoMinSpeed = 0.02;
-        public static final double kAutoMinTurnSpeedRadians = 0.05;
+        public static final double MIN_SPEED = 0.02;
+        public static final double MIN_TURN_SPEED_RAD = 0.05;
     
         //Tick things
-        public static final int kAutoSpeakerShotCheckTicks = 50;
-        public static final int kAutoGroundIntakeCheckTicks = 7;
+        public static final int SPEAKER_SHOT_CHECK_TICKS = 50;
+        public static final int CLOSE_SPEAKER_SHOT_CHECK_TICKS = 400;
+        public static final int GROUND_INTAKE_CHECK_TICKS = 7;
+        public static final int DEPOSIT_CHECK_TICKS = 300;
+        public static final int SOURCE_COLOR_CHECK_TICKS = 100;
 
         // Tolerances
-        public static final double kAutoToleranceMeters = 0.09;
-        public static final double kAutoToleranceDegrees = 5.0;
-
-        public static  final int kAutoDepositCheckTicks = 300;
-        public static final int kAutoSourceColorCheckTick = 100;
-        public static int kAutoCloseSpeakerShotCheckTick = 400;
+        public static final double TOLERANCE_METERS = 0.09;
+        public static final double TOLERANCE_DEGREES = 5.0;
     }
 }

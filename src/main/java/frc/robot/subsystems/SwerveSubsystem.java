@@ -29,40 +29,40 @@ import frc.robot.Constants.DriveConstants;
 public class SwerveSubsystem extends SubsystemBase {
     
     private final SwerveModule frontLeft = new SwerveModule(
-        DriveConstants.kFrontLeftDriveMotorPort,
-        DriveConstants.kFrontLeftTurningMotorPort,
-        DriveConstants.kModuleDriveEncoderReversed,
-        DriveConstants.kModuleTurningEncoderReversed,
-        DriveConstants.kFrontLeftCANCoderId,
-        DriveConstants.kFrontLeftDriveAbsoluteEncoderOffsetRad,
-        DriveConstants.kModuleCANCoderReversed);
+        DriveConstants.FRONT_LEFT_DRIVE_MOTOR_PORT,
+        DriveConstants.FRONT_LEFT_TURNING_MOTOR_PORT,
+        DriveConstants.MODULE_DRIVE_ENCODER_REVERSED,
+        DriveConstants.MODULE_TURNING_ENCODER_REVERSED,
+        DriveConstants.FRONT_LEFT_CAN_CODER_ID,
+        DriveConstants.FRONT_LEFT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD,
+        DriveConstants.MODULE_CAN_CODER_REVERSED);
 
     private final SwerveModule frontRight = new SwerveModule(
-        DriveConstants.kFrontRightDriveMotorPort,
-        DriveConstants.kFrontRightTurningMotorPort,
-        DriveConstants.kModuleDriveEncoderReversed,
-        DriveConstants.kModuleTurningEncoderReversed,
-        DriveConstants.kFrontRightCANCoderId,
-        DriveConstants.kFrontRightDriveAbsoluteEncoderOffsetRad,
-        DriveConstants.kModuleCANCoderReversed);
+        DriveConstants.FRONT_RIGHT_DRIVE_MOTOR_PORT,
+        DriveConstants.FRONT_RIGHT_TURNING_MOTOR_PORT,
+        DriveConstants.MODULE_DRIVE_ENCODER_REVERSED,
+        DriveConstants.MODULE_TURNING_ENCODER_REVERSED,
+        DriveConstants.FRONT_RIGHT_CAN_CODER_ID,
+        DriveConstants.FRONT_RIGHT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD,
+        DriveConstants.MODULE_CAN_CODER_REVERSED);
 
     private final SwerveModule backLeft = new SwerveModule(
-        DriveConstants.kBackLeftDriveMotorPort,
-        DriveConstants.kBackLeftTurningMotorPort,
-        DriveConstants.kModuleDriveEncoderReversed,
-        DriveConstants.kModuleTurningEncoderReversed,
-        DriveConstants.kBackLeftCANCoderId,
-        DriveConstants.kBackLeftDriveAbsoluteEncoderOffsetRad,
-        DriveConstants.kModuleCANCoderReversed);
+        DriveConstants.BACK_LEFT_DRIVE_MOTOR_PORT,
+        DriveConstants.BACK_LEFT_TURNING_MOTOR_PORT,
+        DriveConstants.MODULE_DRIVE_ENCODER_REVERSED,
+        DriveConstants.MODULE_TURNING_ENCODER_REVERSED,
+        DriveConstants.BACK_LEFT_CAN_CODER_ID,
+        DriveConstants.BACK_LEFT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD,
+        DriveConstants.MODULE_CAN_CODER_REVERSED);
 
     private final SwerveModule backRight = new SwerveModule(
-        DriveConstants.kBackRightDriveMotorPort,
-        DriveConstants.kBackRightTurningMotorPort,
-        DriveConstants.kModuleDriveEncoderReversed,
-        DriveConstants.kModuleTurningEncoderReversed,
-        DriveConstants.kBackRightCANCoderId,
-        DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad,
-        DriveConstants.kModuleCANCoderReversed);
+        DriveConstants.BACK_RIGHT_DRIVE_MOTOR_PORT,
+        DriveConstants.BACK_RIGHT_TURNING_MOTOR_PORT,
+        DriveConstants.MODULE_DRIVE_ENCODER_REVERSED,
+        DriveConstants.MODULE_TURNING_ENCODER_REVERSED,
+        DriveConstants.BACK_RIGHT_CAN_CODER_ID,
+        DriveConstants.BACK_RIGHT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD,
+        DriveConstants.MODULE_CAN_CODER_REVERSED);
 
     public final AHRS gyro = new AHRS(SPI.Port.kMXP);
     public final LimeLight limeLight = new LimeLight();
@@ -82,7 +82,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public SwerveModule[] swerveModules = {frontLeft, frontRight, backLeft, backRight};
 
     public final SwerveDriveOdometry kOdometry = new SwerveDriveOdometry(
-            Constants.DriveConstants.kDriveKinematics, getRotation2d(),
+            Constants.DriveConstants.DRIVE_KINEMATICS, getRotation2d(),
             new SwerveModulePosition[] {
               backLeft.getPosition(),
               backRight.getPosition(),
@@ -165,7 +165,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public double getHeading() {
-        return Math.IEEEremainder(DriveConstants.kGyroReversed ? gyro.getAngle() * -1 : gyro.getAngle(), 360);
+        return Math.IEEEremainder(DriveConstants.GYRO_REVERSED ? gyro.getAngle() * -1 : gyro.getAngle(), 360);
     }
 
     public Pose2d getPose() {
@@ -295,7 +295,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.PHYSICAL_MAX_SPEED_METERS_PER_SEC);
         backLeft.setDesiredState(desiredStates[0]);
         backRight.setDesiredState(desiredStates[1]);
         frontLeft.setDesiredState(desiredStates[2]);

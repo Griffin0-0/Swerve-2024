@@ -19,7 +19,7 @@ public class SimpleFireAtSpeakerCmd extends Command {
     private final ShooterSubsystem shooterSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
-    private int currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks;
+    private int currentShootTick = Constants.AutoConstants.SPEAKER_SHOT_CHECK_TICKS;
     private Pose2d[] blueSpeakerPositions = {
                                             new Pose2d(2.3,5.48,Rotation2d.fromDegrees(0)),
                                             new Pose2d(1.95,6.45,Rotation2d.fromDegrees(26)),
@@ -39,9 +39,9 @@ public class SimpleFireAtSpeakerCmd extends Command {
         this.swerveSubsystem = swerveSubsystem;
         this.shooterSubsystem = shooterSubsystem;
         this.intakeSubsystem = intakeSubsystem;
-        this.xLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
-        this.yLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAccelerationUnitsPerSecond);
-        this.turningLimiter = new SlewRateLimiter(AutoConstants.kAutoMaxAngularAccelerationUnitsPerSecond);
+        this.xLimiter = new SlewRateLimiter(AutoConstants.MAX_ACCELERATION_UNITS_PER_SEC);
+        this.yLimiter = new SlewRateLimiter(AutoConstants.MAX_ACCELERATION_UNITS_PER_SEC);
+        this.turningLimiter = new SlewRateLimiter(AutoConstants.MAX_ANGULAR_ACCELERATION_UNITS_PER_SEC);
         addRequirements(swerveSubsystem);
 
         if (swerveSubsystem.isAllianceBlue) {
@@ -57,7 +57,7 @@ public class SimpleFireAtSpeakerCmd extends Command {
         intakeSubsystem.intakeUp();
         shooterSubsystem.flapSpeaker();
         isDone = false;
-        currentShootTick = Constants.AutoConstants.kAutoSpeakerShotCheckTicks; 
+        currentShootTick = Constants.AutoConstants.SPEAKER_SHOT_CHECK_TICKS; 
         // Find closest shooting point and set as targetPose
         double minDistance = Double.MAX_VALUE;
         for (Pose2d speakerPos : speakerPositions) {
@@ -74,7 +74,7 @@ public class SimpleFireAtSpeakerCmd extends Command {
 
         // If close to targetPos, shoot
         if (moveSwerve() && shooterSubsystem.getRollerSpeed() > 0.99) {
-            intakeSubsystem.runIntake(IntakeConstants.kIntakeMotorSpeed_out);
+            intakeSubsystem.runIntake(IntakeConstants.OUT_MOTOR_SPEED);
         } else {
             intakeSubsystem.stop();
         }
@@ -96,26 +96,26 @@ public class SimpleFireAtSpeakerCmd extends Command {
 
         // Calculate the angle and speed to move swerve to targetPose
         double angle = Math.atan2(yError, xError);
-        double speed = (xError * xError + yError * yError) * 15 * (1 / AutoConstants.kAutoMaxSpeedMetersPerSecond) * (1 / AutoConstants.kAutoMaxSpeedMetersPerSecond) * (1 / AutoConstants.kAutoMaxSpeedMetersPerSecond) > AutoConstants.kAutoMaxSpeedMetersPerSecond ? AutoConstants.kAutoMaxSpeedMetersPerSecond : (xError * xError + yError * yError) * 7;
+        double speed = (xError * xError + yError * yError) * 15 * (1 / AutoConstants.MAX_SPEED_METERS_PER_SEC) * (1 / AutoConstants.MAX_SPEED_METERS_PER_SEC) * (1 / AutoConstants.MAX_SPEED_METERS_PER_SEC) > AutoConstants.MAX_SPEED_METERS_PER_SEC ? AutoConstants.MAX_SPEED_METERS_PER_SEC : (xError * xError + yError * yError) * 7;
 
         // Calculate xSpeed, ySpeed, and turnSpeed
         double xSpeed = Math.cos(angle) * speed;
         double ySpeed = Math.sin(angle) * speed;
-        double turnSpeed = (Math.abs(turnError * 60 * Math.sqrt(Math.abs(turnError * 60)) * -0.005) < AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond) ? turnError * 60 * Math.sqrt(Math.abs(turnError * 60)) * -0.005 : AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond * Math.signum(turnError);
+        double turnSpeed = (Math.abs(turnError * 60 * Math.sqrt(Math.abs(turnError * 60)) * -0.005) < AutoConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC) ? turnError * 60 * Math.sqrt(Math.abs(turnError * 60)) * -0.005 : AutoConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC * Math.signum(turnError);
 
-        xSpeed = Math.abs(xSpeed) > AutoConstants.kAutoMinSpeed ? xSpeed : 0.0;
-        ySpeed = Math.abs(ySpeed) > AutoConstants.kAutoMinSpeed ? ySpeed : 0.0;
-        turnSpeed = Math.abs(turnSpeed) > AutoConstants.kAutoMinTurnSpeedRadians ? turnSpeed : 0.0;
+        xSpeed = Math.abs(xSpeed) > AutoConstants.MIN_SPEED ? xSpeed : 0.0;
+        ySpeed = Math.abs(ySpeed) > AutoConstants.MIN_SPEED ? ySpeed : 0.0;
+        turnSpeed = Math.abs(turnSpeed) > AutoConstants.MIN_TURN_SPEED_RAD ? turnSpeed : 0.0;
 
-        xSpeed = xLimiter.calculate(xSpeed) * AutoConstants.kAutoMaxSpeedMetersPerSecond;
-        ySpeed = yLimiter.calculate(ySpeed) * AutoConstants.kAutoMaxSpeedMetersPerSecond;
-        turnSpeed = turningLimiter.calculate(turnSpeed) * AutoConstants.kAutoMaxAngularSpeedRadiansPerSecond;
+        xSpeed = xLimiter.calculate(xSpeed) * AutoConstants.MAX_SPEED_METERS_PER_SEC;
+        ySpeed = yLimiter.calculate(ySpeed) * AutoConstants.MAX_SPEED_METERS_PER_SEC;
+        turnSpeed = turningLimiter.calculate(turnSpeed) * AutoConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC;
         
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveSubsystem.getRotation2d());
-        SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+        SwerveModuleState[] moduleStates = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModuleStates(moduleStates);
 
-        if (Math.sqrt(xError * xError + yError * yError) < AutoConstants.kAutoToleranceMeters && Math.abs(turnError * 180 / Math.PI) < AutoConstants.kAutoToleranceDegrees) {
+        if (Math.sqrt(xError * xError + yError * yError) < AutoConstants.TOLERANCE_METERS && Math.abs(turnError * 180 / Math.PI) < AutoConstants.TOLERANCE_DEGREES) {
             return true;
         }
 

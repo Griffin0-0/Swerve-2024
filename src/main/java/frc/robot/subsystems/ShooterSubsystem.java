@@ -27,16 +27,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
     public ShooterSubsystem() {
-        shooterMotor_1 = new CANSparkMax(ShooterConstants.kShooterSpinMotorId_1, MotorType.kBrushless);
-        shooterMotor_2 = new CANSparkMax(ShooterConstants.kShooterSpinMotorId_2, MotorType.kBrushless);
+        shooterMotor_1 = new CANSparkMax(ShooterConstants.SPIN_MOTOR_1_ID, MotorType.kBrushless);
+        shooterMotor_2 = new CANSparkMax(ShooterConstants.SPIN_MOTOR_2_ID, MotorType.kBrushless);
 
         shooterMotor_1.setSmartCurrentLimit(30);
         shooterMotor_2.setSmartCurrentLimit(30);
 
         shooterLimiter = new SlewRateLimiter(1);
 
-        servo_1 = new Servo(ShooterConstants.kShooterFlapServoId_1);
-        servo_2 = new Servo(ShooterConstants.kShooterFlapServoId_2);
+        servo_1 = new Servo(ShooterConstants.FLAP_SERVO_1_ID);
+        servo_2 = new Servo(ShooterConstants.FLAP_SERVO_2_ID);
 
         this.flapDefault();
     }
@@ -52,11 +52,11 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void spinIn() {
-        limiterSetting = -ShooterConstants.kShooterIntakeSpeed;
+        limiterSetting = -ShooterConstants.INTAKE_SPEED;
     }
 
     public void speakerSpinOut() {
-        limiterSetting = ShooterConstants.kShooterFlywheelSpeed;
+        limiterSetting = ShooterConstants.FLYWHEEL_SPEED;
     }
 
     public void setRollerSpeed(double speed) {
@@ -64,7 +64,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void ampSpinOut() {
-        limiterSetting = ShooterConstants.kShooterAmpSpeed;
+        limiterSetting = ShooterConstants.AMP_SPEED;
     }
 
 
@@ -85,17 +85,17 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void flapDefault() {
-        flapMove(ShooterConstants.kShooterFlapDefaultPos);
+        flapMove(ShooterConstants.FLAP_DEFAULT_POS);
         flapState = 0;
     }
 
     public void flapAmp() {
-        flapMove(ShooterConstants.kShooterFlapAmpPos);
+        flapMove(ShooterConstants.FLAP_AMP_POS);
         flapState = 1;
     }
 
     public void flapSpeaker() {
-        flapMove(ShooterConstants.kShooterFlapSpeakerPos);
+        flapMove(ShooterConstants.FLAP_SPEAKER_POS);
         flapState = 2;
     }
 

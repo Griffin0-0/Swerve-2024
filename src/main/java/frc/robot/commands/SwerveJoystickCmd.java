@@ -30,9 +30,9 @@ public class SwerveJoystickCmd extends Command {
         this.isRobotRelative = isRobotRelative;
         this.isBoost = isBoost;
         this.isSlow = isSlow;
-        this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
-        this.yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
-        this.turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
+        this.xLimiter = new SlewRateLimiter(DriveConstants.TELEDRIVE_MAX_ACCELERATION_UNITS_PER_SEC);
+        this.yLimiter = new SlewRateLimiter(DriveConstants.TELEDRIVE_MAX_ACCELERATION_UNITS_PER_SEC);
+        this.turningLimiter = new SlewRateLimiter(DriveConstants.TELEDRIVE_MAX_ANGULAR_ACCELERATION_UNITS_PER_SEC);
         addRequirements(swerveSubsystem);
     }
 
@@ -45,26 +45,26 @@ public class SwerveJoystickCmd extends Command {
         double turningSpeed = turningSpdFunction.get();
 
         // 2. Apply deadband
-        xSpeed = Math.abs(xSpeed) > OIConstants.kDeadband ? xSpeed : 0.0;
-        ySpeed = Math.abs(ySpeed) > OIConstants.kDeadband ? ySpeed : 0.0;
-        turningSpeed = Math.abs(turningSpeed) > OIConstants.kDeadband ? turningSpeed : 0.0;
+        xSpeed = Math.abs(xSpeed) > OIConstants.DEADBAND ? xSpeed : 0.0;
+        ySpeed = Math.abs(ySpeed) > OIConstants.DEADBAND ? ySpeed : 0.0;
+        turningSpeed = Math.abs(turningSpeed) > OIConstants.DEADBAND ? turningSpeed : 0.0;
 
         // 3. Make the driving smoother
         if (isBoost.get()) {
-            xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleBoostDriveMaxSpeedMetersPerSecond;
-            ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleBoostDriveMaxSpeedMetersPerSecond;
+            xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.TELEBOOST_DRIVE_MAX_SPEED_METERS_PER_SEC;
+            ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.TELEBOOST_DRIVE_MAX_SPEED_METERS_PER_SEC;
         } else if (isSlow.get()) {
-            xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleSlowDriveMaxSpeedMetersPerSecond;
-            ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleSlowDriveMaxSpeedMetersPerSecond;
+            xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.TELESLOW_DRIVE_MAX_SPEED_METERS_PER_SEC;
+            ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.TELESLOW_DRIVE_MAX_SPEED_METERS_PER_SEC;
         } else {
-            xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
-            ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+            xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.TELEDRIVE_MAX_SPEED_METERS_PER_SEC;
+            ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.TELEDRIVE_MAX_SPEED_METERS_PER_SEC;
         }
         
         
 
         turningSpeed = turningLimiter.calculate(turningSpeed)
-                * DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
+                * DriveConstants.TELEDRIVE_MAX_ANGULAR_SPEED_RAD_PER_SEC;
 
         // 5. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;
@@ -79,7 +79,7 @@ public class SwerveJoystickCmd extends Command {
         }
 
         // 6. Convert chassis speeds to individual module states
-        SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+        SwerveModuleState[] moduleStates = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
 
         
         // 7. Output each module states to wheels

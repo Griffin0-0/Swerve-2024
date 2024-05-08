@@ -52,9 +52,9 @@ public class RobotContainer {
   private final LEDSubsystem ledSubsystem = new LEDSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(ledSubsystem);
 
-  private final Joystick driverJoystick = new Joystick(OIConstants.kOperatorControllerPort);
-  private final Joystick translateStick = new Joystick(OIConstants.kDriverTranslateStickPort);
-  private final Joystick rotateStick = new Joystick(OIConstants.kDriverRotateStickPort);
+  private final Joystick driverJoystick = new Joystick(OIConstants.OPERATOR_CONTROLLER_PORT);
+  private final Joystick translateStick = new Joystick(OIConstants.DRIVER_TRANSLATE_STICK_PORT);
+  private final Joystick rotateStick = new Joystick(OIConstants.DRIVER_ROTATE_STICK_PORT);
 
   UsbCamera intakeCamera;
 
@@ -62,8 +62,8 @@ public class RobotContainer {
 
     swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
       swerveSubsystem,
-      () -> -translateStick.getRawAxis(OIConstants.kDriverYAxis),
-      () -> -translateStick.getRawAxis(OIConstants.kDriverXAxis),
+      () -> -translateStick.getRawAxis(OIConstants.DRIVER_Y_AXIS),
+      () -> -translateStick.getRawAxis(OIConstants.DRIVER_X_AXIS),
       () -> rotateStick.getRawAxis(0),
       () -> translateStick.getRawButton(2),
       () -> translateStick.getRawButton(1), // Trigger
@@ -85,24 +85,24 @@ public class RobotContainer {
 
   private void configureBindings() {
     // BUTTONS
-    new JoystickButton(driverJoystick, OIConstants.kDriverButtonId_resetGyro).onTrue(swerveSubsystem.zeroHeading());
-    new JoystickButton(driverJoystick, OIConstants.kDriverButtonId_climberUp).onTrue(new ToggleClimberCmd(climberSubsystem, true));
-    new JoystickButton(driverJoystick, OIConstants.kDriverButtonId_climberDown).onTrue(new ToggleClimberCmd(climberSubsystem, false));
-    new JoystickButton(driverJoystick, OIConstants.kDriverButtonId_toggleFlap).whileTrue(new ToggleFlapCmd(shooterSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.DRIVER_RESET_GYRO_BUTTON_ID).onTrue(swerveSubsystem.zeroHeading());
+    new JoystickButton(driverJoystick, OIConstants.DRIVER_CLIMBER_UP_BUTTON_ID).onTrue(new ToggleClimberCmd(climberSubsystem, true));
+    new JoystickButton(driverJoystick, OIConstants.DRIVER_CLIMBER_DOWN_BUTTON_ID).onTrue(new ToggleClimberCmd(climberSubsystem, false));
+    new JoystickButton(driverJoystick, OIConstants.DRIVER_TOGGLE_FLAP_BUTTON_ID).whileTrue(new ToggleFlapCmd(shooterSubsystem));
 
-    new JoystickButton(driverJoystick, OIConstants.kDriverButtonId_stop).onTrue(new EmergencyStopMechanismsCmd(shooterSubsystem, intakeSubsystem, climberSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.DRIVER_STOP_BUTTON_ID).onTrue(new EmergencyStopMechanismsCmd(shooterSubsystem, intakeSubsystem, climberSubsystem));
 
 
     // POV
-    new POVButton(driverJoystick, OIConstants.kDriverPOVId_left).whileTrue(new DepositToAmpCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem));
-    new POVButton(driverJoystick, OIConstants.kDriverPOVId_down).whileTrue(new SequentialCommandGroup(new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem)));
+    new POVButton(driverJoystick, OIConstants.DRIVER_LEFT_POV_ID).whileTrue(new DepositToAmpCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem));
+    new POVButton(driverJoystick, OIConstants.DRIVER_DOWN_POV_ID).whileTrue(new SequentialCommandGroup(new SimpleFireAtSpeakerCmd(swerveSubsystem, shooterSubsystem, intakeSubsystem)));
 
 
     // TRIGGERS
-    new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_sourceIntake).whileTrue(new SourceIntakeCmd(shooterSubsystem, intakeSubsystem));
-    new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_toggleIntake).whileTrue(new ToggleArticulateCmd(intakeSubsystem));
-    new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_ampOut).whileTrue(new ShootAmpCmd(intakeSubsystem, ledSubsystem));
-    new JoystickButton(driverJoystick, OIConstants.kDriverTriggerId_shoot).whileTrue(new ShootCmd(shooterSubsystem, intakeSubsystem, ledSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.DRIVER_SOURCE_INTAKE_TRIGGER_ID).whileTrue(new SourceIntakeCmd(shooterSubsystem, intakeSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.DRIVER_TOGGLE_INTAKE_TRIGGER_ID).whileTrue(new ToggleArticulateCmd(intakeSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.DRIVER_AMP_OUT_TRIGGER_ID).whileTrue(new ShootAmpCmd(intakeSubsystem, ledSubsystem));
+    new JoystickButton(driverJoystick, OIConstants.DRIVER_SHOOT_TRIGGER_ID).whileTrue(new ShootCmd(shooterSubsystem, intakeSubsystem, ledSubsystem));
   }
 
 

@@ -35,8 +35,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
     public IntakeSubsystem(LEDSubsystem ledSubsystem) {
-        intakeMotor = new CANSparkMax(IntakeConstants.kIntakeMotorId, MotorType.kBrushless);
-        articulateMotor = new CANSparkMax(IntakeConstants.kIntakeArticulateMotorId, MotorType.kBrushless);
+        intakeMotor = new CANSparkMax(IntakeConstants.MOTOR_ID, MotorType.kBrushless);
+        articulateMotor = new CANSparkMax(IntakeConstants.ARTICULATE_MOTOR_ID, MotorType.kBrushless);
 
         articulateMotor.setSmartCurrentLimit(30);
         intakeMotor.setSmartCurrentLimit(40);
@@ -46,7 +46,7 @@ public class IntakeSubsystem extends SubsystemBase {
         articulatePID.setFeedbackDevice(articulateEncoder);
         articulateEncoder.setPosition(0);
 
-        articulatePID.setOutputRange(-IntakeConstants.kIntakeArticulateSpeed, IntakeConstants.kIntakeArticulateSpeed);
+        articulatePID.setOutputRange(-IntakeConstants.ARTICULATE_SPEED, IntakeConstants.ARTICULATE_SPEED);
         articulatePID.setP(0.1); // Increase until oscillation
         articulatePID.setI(0); // Always leave zero 
         articulatePID.setD(1.8); // Once oscillation, increase to dampen
@@ -74,17 +74,17 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void intakeDown() {
         // currentGoal = IntakeConstants.kIntakeDesiredPos_out;
-        articulatePID.setReference(IntakeConstants.kIntakeDesiredPos_out, ControlType.kPosition);   
+        articulatePID.setReference(IntakeConstants.OUT_DESIRED_POS, ControlType.kPosition);   
         intakeState = "out";
     }
     public void intakeUp() {
         // currentGoal = IntakeConstants.kIntakeDesiredPos_store;
-        articulatePID.setReference(IntakeConstants.kIntakeDesiredPos_store, ControlType.kPosition);
+        articulatePID.setReference(IntakeConstants.STORE_DESIRED_POS, ControlType.kPosition);
         intakeState = "store";
     }
     public void intakeAmp() {
         // currentGoal = IntakeConstants.kIntakeDesiredPos_amp;
-        articulatePID.setReference(IntakeConstants.kIntakeDesiredPos_amp, ControlType.kPosition);
+        articulatePID.setReference(IntakeConstants.AMP_DESIRED_POS, ControlType.kPosition);
         intakeState = "amp";
     }
 
@@ -114,19 +114,19 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void spinIn() {
-        runIntake(IntakeConstants.kIntakeMotorSpeed_ground);
+        runIntake(IntakeConstants.GROUND_MOTOR_SPEED);
     }
 
     public void spinInSource() {
-        runIntake(IntakeConstants.kIntakeMotorSpeed_source);
+        runIntake(IntakeConstants.SOURCE_MOTOR_SPEED);
     }
 
     public void spinOut() {
-        runIntake(IntakeConstants.kIntakeMotorSpeed_out);
+        runIntake(IntakeConstants.OUT_MOTOR_SPEED);
     }
 
     public void spinAmp() {
-        runIntake(IntakeConstants.kIntakeMotorSpeed_amp);
+        runIntake(IntakeConstants.AMP_MOTOR_SPEED);
     }
 
     public double getPosition() {
@@ -158,7 +158,7 @@ public class IntakeSubsystem extends SubsystemBase {
             intakeUp();
         }
 
-        if (atPoint(IntakeConstants.kIntakeDesiredPos_amp, 0.5) && intakeState == "amp") {
+        if (atPoint(IntakeConstants.AMP_DESIRED_POS, 0.5) && intakeState == "amp") {
             spinAmp();
         }
     }

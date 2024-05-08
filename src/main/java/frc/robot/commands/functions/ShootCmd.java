@@ -17,7 +17,7 @@ public class ShootCmd extends Command {
   ShooterSubsystem shooterSubsystem;
   LEDSubsystem ledSubsystem;
   Boolean isDone = false;
-  int tickLimit = AutoConstants.kAutoCloseSpeakerShotCheckTick;
+  int tickLimit = AutoConstants.CLOSE_SPEAKER_SHOT_CHECK_TICKS;
 
   public ShootCmd(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, LEDSubsystem ledSubsystem) {
     this.shooterSubsystem = shooterSubsystem;
@@ -33,7 +33,7 @@ public class ShootCmd extends Command {
     ledSubsystem.setShoot();
     shooterSubsystem.flapAmp();
     isDone = false;
-    tickLimit = AutoConstants.kAutoCloseSpeakerShotCheckTick;
+    tickLimit = AutoConstants.CLOSE_SPEAKER_SHOT_CHECK_TICKS;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
