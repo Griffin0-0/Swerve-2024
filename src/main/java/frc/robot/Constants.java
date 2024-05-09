@@ -17,9 +17,10 @@ public class Constants {
     }
 
     public static final class DriveConstants {
-
-        public static final double TRACK_WIDTH = Units.inchesToMeters(29.5); // Distance between right and left wheels
-        public static final double WHEEL_BASE = Units.inchesToMeters(29.5); // Distance between front and back wheels
+        /**Distance between the right and left wheels in meters*/
+        public static final double TRACK_WIDTH = Units.inchesToMeters(29.5);
+        /**Distance between the front and back wheels in meters*/
+        public static final double WHEEL_BASE = Units.inchesToMeters(29.5);
 
         public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
                 new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2),
@@ -62,11 +63,15 @@ public class Constants {
         public static final double FRONT_RIGHT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD = 25 * Math.PI / 180;
         public static final double BACK_RIGHT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD = 88 * Math.PI / 180;
 
-        // Robot speeds
-        public static final double PHYSICAL_MAX_SPEED_METERS_PER_SEC = 3.6; // PHYSICAL max speed of the modules (safety cap) 3.6
-        public static final double TELEDRIVE_MAX_SPEED_METERS_PER_SEC = 2.7; // Max speed set for teleop
-        public static final double TELEBOOST_DRIVE_MAX_SPEED_METERS_PER_SEC = 3.2; // Max speed set for boost teleop
-        public static final double TELESLOW_DRIVE_MAX_SPEED_METERS_PER_SEC = 1.25; // Max speed set for slow teleop
+        // Robot max speeds
+        /**Physical max speed of the modules (safety limit)*/
+        public static final double PHYSICAL_MAX_SPEED_METERS_PER_SEC = 3.6;
+        /**Max speed set for normal teleop*/
+        public static final double TELEDRIVE_MAX_SPEED_METERS_PER_SEC = 2.7;
+        /**Max speed set for boosted teleop*/
+        public static final double TELEBOOST_DRIVE_MAX_SPEED_METERS_PER_SEC = 3.2;
+        /**Max speed set for slow teleop*/
+        public static final double TELESLOW_DRIVE_MAX_SPEED_METERS_PER_SEC = 1.25;
 
         // Robot turning speeds
         public static final double PHYSICAL_MAX_ANGULAR_SPEED_RAD_PER_SEC = 2 * 2 * Math.PI;
@@ -153,7 +158,8 @@ public class Constants {
     public static final class AutoConstants {
 
         //Speed
-        public static final double MAX_SPEED_METERS_PER_SEC = 1.25; // Max speed set for auto
+        /**Max speed set for auto*/
+        public static final double MAX_SPEED_METERS_PER_SEC = 1.25;
         public static final double GROUND_INTAKE_MAX_SPEED_METERS_PER_SEC = 1.25;
 
         //Accel

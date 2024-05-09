@@ -9,6 +9,9 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 
+/**
+ * A base class for commands that need to control the swerve subsystem
+ */
 public abstract class MobileCommand extends Command {
 
     protected SwerveSubsystem swerveSubsystem;
@@ -16,7 +19,10 @@ public abstract class MobileCommand extends Command {
 
     protected Pose2d targetPose;
 
-    // Moves swerve to targetPose. Returns true when it reaches the position
+    /**
+     * Moves swerve to targetPose. Returns true when it reaches the position
+     * @return True if the difference between the current pose and the target pose is within the tolerance, false if the swerve still needs to move
+     */
     public boolean moveSwerve() {
 
         // Calculate the error between current position and targetPos
