@@ -27,12 +27,11 @@ public class IntakeSubsystem extends SubsystemBase {
     
     private final Rev2mDistanceSensor distanceSensor;
 
-    public String intakeState = "store";
+    public IntakeState intakeState = IntakeState.STORE;
     public boolean switchTemp = false;
     public double currentGoal = 0.0;
     public boolean noteConfirmed = false;
     public boolean useDistanceSensor = true;
-
 
     public IntakeSubsystem(LEDSubsystem ledSubsystem) {
         intakeMotor = new CANSparkMax(IntakeConstants.MOTOR_ID, MotorType.kBrushless);
@@ -72,20 +71,24 @@ public class IntakeSubsystem extends SubsystemBase {
         this.ledSubsystem = ledSubsystem;
     }
 
+    public static enum IntakeState {
+        OUT, STORE, AMP
+    }
+
     public void intakeDown() {
         // currentGoal = IntakeConstants.kIntakeDesiredPos_out;
         articulatePID.setReference(IntakeConstants.OUT_DESIRED_POS, ControlType.kPosition);   
-        intakeState = "out";
+        intakeState = IntakeState.OUT;
     }
     public void intakeUp() {
         // currentGoal = IntakeConstants.kIntakeDesiredPos_store;
         articulatePID.setReference(IntakeConstants.STORE_DESIRED_POS, ControlType.kPosition);
-        intakeState = "store";
+        intakeState = IntakeState.STORE;
     }
     public void intakeAmp() {
         // currentGoal = IntakeConstants.kIntakeDesiredPos_amp;
         articulatePID.setReference(IntakeConstants.AMP_DESIRED_POS, ControlType.kPosition);
-        intakeState = "amp";
+        intakeState = IntakeState.AMP;
     }
 
     public void runIntake(double speed) {
@@ -93,9 +96,9 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void toggleIntake() {
-        if (intakeState == "out") {
+        if (intakeState == IntakeState.OUT) {
             intakeUp();
-        } else if (intakeState == "store") {
+        } else if (intakeState == IntakeState.STORE) {
             intakeDown();
         }
     }
@@ -105,7 +108,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public boolean isDown() {
-        if (intakeState == "out") {
+        if (intakeState == IntakeState.OUT) {
             if (getPosition() < -40) {
                 return true;
             }
@@ -158,7 +161,7 @@ public class IntakeSubsystem extends SubsystemBase {
             intakeUp();
         }
 
-        if (atPoint(IntakeConstants.AMP_DESIRED_POS, 0.5) && intakeState == "amp") {
+        if (atPoint(IntakeConstants.AMP_DESIRED_POS, 0.5) && intakeState == IntakeState.AMP) {
             spinAmp();
         }
     }
