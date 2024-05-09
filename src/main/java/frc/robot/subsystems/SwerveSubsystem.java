@@ -93,27 +93,17 @@ public class SwerveSubsystem extends SubsystemBase {
     public SwerveSubsystem() {
         // UNCOMMENT THIS CODE FOR COMPETITION: v
 
-        // if (DriverStation.getAlliance().get() == Alliance.Red) {
-        //     this.isAllianceBlue = false;
-        // } else if (DriverStation.getAlliance().get() == Alliance.Blue) {
-        //     this.isAllianceBlue = true;
-        // }
+        // isAllianceBlue = DriverStation.getAlliance().get() == Alliance.Blue;
 
         // ^
 
         // COMMENT THIS CODE FOR COMPETITION: v
 
-        Alliance test = Alliance.Red;
-
-        if (test == Alliance.Red) {
-            this.isAllianceBlue = false;
-        } else if (test == Alliance.Blue) {
-            this.isAllianceBlue = true;
-        }
+        isAllianceBlue = false;
 
         // ^
 
-        this.tick = 0;
+        tick = 0;
 
         new Thread(() -> {
             try {
