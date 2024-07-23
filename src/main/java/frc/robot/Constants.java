@@ -34,21 +34,21 @@ public class Constants {
 
         // DRIVE Motor Ports
         public static final int kFrontLeftDriveMotorPort = 2;
-        public static final int kBackLeftDriveMotorPort = 4;
-        public static final int kFrontRightDriveMotorPort = 8;
+        public static final int kBackLeftDriveMotorPort = 8;
+        public static final int kFrontRightDriveMotorPort = 4;
         public static final int kBackRightDriveMotorPort = 6;
 
         // TURNING Motor Ports
         public static final int kFrontLeftTurningMotorPort = 1;
-        public static final int kBackLeftTurningMotorPort = 3;
-        public static final int kFrontRightTurningMotorPort = 7;
-        public static final int kBackRightTurningMotorPort = 5;
+        public static final int kBackLeftTurningMotorPort = 7;
+        public static final int kFrontRightTurningMotorPort = 3;
+        public static final int kBackRightTurningMotorPort = 8;
 
         // CANCoder Ids
         public static final int kFrontLeftCANCoderId = 1;
-        public static final int kBackLeftCANCoderId = 3;
-        public static final int kFrontRightCANCoderId = 7;
-        public static final int kBackRightCANCoderId = 5;
+        public static final int kBackLeftCANCoderId = 7;
+        public static final int kFrontRightCANCoderId = 3;
+        public static final int kBackRightCANCoderId = 8;
 
 
         // Invert booleans | We use MK4i modules so the turning motors are inverted
@@ -113,20 +113,7 @@ public class Constants {
         public static final int kDriverIntakeDownButtonId = 4;
     } 
 
-    public static final class ShooterConstants {
-        public static final int kShooterSpinMotorId_1 = 50;
-        public static final int kShooterSpinMotorId_2 = 52;
 
-        public static final double kShooterFlywheelSpeed = 1.0;
-        public static final double kShooterIntakeSpeed = 0.25;
-        public static final double kShooterAmpSpeed = 0.25;
-
-        public static final int kShooterFlapServoId_1 = 9;
-        public static final int kShooterFlapServoId_2 = 8;
-        public static final double kShooterFlapUpPos = 180;
-
-        public static final double kShooterSpeedCap = 1.0;
-    }
 
     public static final class IntakeConstants {
         public static final int kIntakeMotorId = 51;
@@ -137,28 +124,26 @@ public class Constants {
         public static final double kIntakeArticulateAccelerationUnitsPerSecond = 3;
     }
 
-    public static final class AutoConstants {
+    // public static final class AutoConstants {
 
-        //Speed
-        public static final double kAutoMaxSpeedMetersPerSecond = 2; // Max speed set for auto
+    //     //Speed
+    //     public static final double kAutoMaxSpeedMetersPerSecond = 2; // Max speed set for auto
 
-        //Accel
-        public static final double kAutoMaxAccelerationUnitsPerSecond = 6;
-        public static final double kAutoMaxAngularAccelerationUnitsPerSecond = 3;
+    //     //Accel
+    //     public static final double kAutoMaxAccelerationUnitsPerSecond = 6;
+    //     public static final double kAutoMaxAngularAccelerationUnitsPerSecond = 3;
 
-        //Turning speed
-        public static final double kAutoMaxAngularSpeedRadiansPerSecond = DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
+    //     //Turning speed
+    //     public static final double kAutoMaxAngularSpeedRadiansPerSecond = DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
 
-        //Min Speed
-        public static final double kAutoMinSpeed = 0.02;
-        public static final double kAutoMinTurnSpeedRadians = 0.05;
+    //     //Min Speed
+    //     public static final double kAutoMinSpeed = 0.02;
+    //     public static final double kAutoMinTurnSpeedRadians = 0.05;
 
-        public static final int kAutoStoppedCheckTicks = 20; // Ticks it waits to make sure swerve has come to a complete stop before moving to next point
-        public static final int kAutoStartCheckTicks = 7; // Ticks it waits after beginning to move to another point before starting to count the stop check ticks
-    }
+    //     public static final int kAutoStoppedCheckTicks = 20; // Ticks it waits to make sure swerve has come to a complete stop before moving to next point
+    //     public static final int kAutoStartCheckTicks = 7; // Ticks it waits after beginning to move to another point before starting to count the stop check ticks
+    // }
 
-    public static final class AprilTags {
-        public static final Pose2d kID1 = new Pose2d(1, 0, Rotation2d.fromDegrees(180));
-    }
+  
 
 }
