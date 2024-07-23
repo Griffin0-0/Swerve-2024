@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.subsystems.LimeLight;
+
 
 public class SwerveSubsystem extends SubsystemBase {
     
@@ -62,7 +62,6 @@ public class SwerveSubsystem extends SubsystemBase {
         DriveConstants.kModuleCANCoderReversed);
 
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
-    public final LimeLight limeLight = new LimeLight();
     public Pose2d pose;
     public Pose2d limeLightPose;
     public boolean isAllianceBlue;

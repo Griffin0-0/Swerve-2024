@@ -33,22 +33,23 @@ public class Constants {
                 new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
 
         // DRIVE Motor Ports
-        public static final int kFrontLeftDriveMotorPort = 10;
-        public static final int kBackLeftDriveMotorPort = 3;
-        public static final int kFrontRightDriveMotorPort = 6;
-        public static final int kBackRightDriveMotorPort = 8;
+        public static final int kFrontLeftDriveMotorPort = 2;
+        public static final int kBackLeftDriveMotorPort = 4;
+        public static final int kFrontRightDriveMotorPort = 8;
+        public static final int kBackRightDriveMotorPort = 6;
 
         // TURNING Motor Ports
-        public static final int kFrontLeftTurningMotorPort = 2;
-        public static final int kBackLeftTurningMotorPort = 4;
-        public static final int kFrontRightTurningMotorPort = 5;
-        public static final int kBackRightTurningMotorPort = 7;
+        public static final int kFrontLeftTurningMotorPort = 1;
+        public static final int kBackLeftTurningMotorPort = 3;
+        public static final int kFrontRightTurningMotorPort = 7;
+        public static final int kBackRightTurningMotorPort = 5;
 
         // CANCoder Ids
-        public static final int kFrontLeftCANCoderId = 22;
-        public static final int kBackLeftCANCoderId = 24;
-        public static final int kFrontRightCANCoderId = 23;
-        public static final int kBackRightCANCoderId = 21;
+        public static final int kFrontLeftCANCoderId = 1;
+        public static final int kBackLeftCANCoderId = 3;
+        public static final int kFrontRightCANCoderId = 7;
+        public static final int kBackRightCANCoderId = 5;
+
 
         // Invert booleans | We use MK4i modules so the turning motors are inverted
         public static final boolean kModuleTurningEncoderReversed = true;
