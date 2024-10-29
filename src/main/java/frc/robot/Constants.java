@@ -42,13 +42,13 @@ public class Constants {
         public static final int kFrontLeftTurningMotorPort = 1;
         public static final int kBackLeftTurningMotorPort = 7;
         public static final int kFrontRightTurningMotorPort = 3;
-        public static final int kBackRightTurningMotorPort = 8;
+        public static final int kBackRightTurningMotorPort = 5;
 
         // CANCoder Ids
-        public static final int kFrontLeftCANCoderId = 1;
-        public static final int kBackLeftCANCoderId = 7;
-        public static final int kFrontRightCANCoderId = 3;
-        public static final int kBackRightCANCoderId = 8;
+        public static final int kFrontLeftCANCoderId = 20;
+        public static final int kBackLeftCANCoderId = 23;
+        public static final int kFrontRightCANCoderId = 21;
+        public static final int kBackRightCANCoderId = 22;
 
 
         // Invert booleans | We use MK4i modules so the turning motors are inverted
@@ -58,10 +58,10 @@ public class Constants {
         public static final boolean kGyroReversed = true;
 
         // Turning encoder offsets
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = -2.6;
-        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 3.14159;
-        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 0.436332;
-        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 1.53589;
+        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 3.927;
+        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 1.147;
+        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 4.71;
+        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 1.047;
 
         // Robot speeds
         public static final double kPhysicalMaxSpeedMetersPerSecond = 3.6; // PHYSICAL max speed of the modules (safety cap) 3.6

@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.LimeLight;
 
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -36,6 +37,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class RobotContainer {
 
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  private final LimeLight limeLight = new LimeLight();
   
 
   private final Joystick driverJoystick = new Joystick(OIConstants.kOperatorControllerPort);
@@ -43,12 +45,6 @@ public class RobotContainer {
   private final Joystick rotateStick = new Joystick(OIConstants.kDriverRotateStickPort);
 
   public RobotContainer() {
-    GenericEntry isStickDrive = Shuffleboard.getTab("Driver")
-    .add("Stick Drive", false)
-    .withWidget(BuiltInWidgets.kToggleButton) // specify the widget here
-    .getEntry();
-
-    SmartDashboard.putBoolean("isStickDrive", isStickDrive.getBoolean(false));
 
     swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
       swerveSubsystem,
